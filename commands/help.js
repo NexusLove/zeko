@@ -1,6 +1,7 @@
 exports.run = (client,msg,args) => {
 	if(args[0]) {
-		const cmd = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
+		const cmd = client.commands
+		.filter(cmd => !cmd.config.hidden).get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
 		if(!cmd) return msg.channel.send("Couldn't find that command");
 		const fields = [];
 		if(cmd.config.flags) {
@@ -15,8 +16,9 @@ exports.run = (client,msg,args) => {
 			description:`${cmd.help.description}\n**Usage: **\`${cmd.help.usage}\``,
 			fields
 		}})
+	}else{
+		msg.channel.send('**__Commands__**\n' + client.commands.filter(cmd => !cmd.config.hidden).map(v => `**${v.help.name}** - ${v.help.description}` ).join("\n"))
 	}
-	msg.channel.send('**__Commands__**\n' + client.commands.map(v => `**${v.help.name}** - ${v.help.description}` ).join("\n"))
 };
 
 exports.config = {

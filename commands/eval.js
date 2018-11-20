@@ -81,6 +81,7 @@ exports.run = async (client, msg, args, flags) => {
 
 exports.config = {
 	usageIfNotSet: true,
+	hidden:true,
 	flags: {
 		output: "boolean"
 	}

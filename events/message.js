@@ -5,6 +5,7 @@ const jaroWinkler = require("jaro-winkler");
 const extractor = require("keyword-extractor");
 
 const AlexaPlay = require('../modules/alexa.js');
+const stats = require('../modules/stats.js').db;
 let notified = [];
 module.exports = async (client, msg) => {
 	if(msg.author.bot) return;
@@ -88,6 +89,28 @@ module.exports = async (client, msg) => {
 		}
 		return; 
 	}
+	const optout = stats.get("optout").has(msg.author.id).value();
+
+	const authorStats = stats.get("users").has(msg.author.id).value();
+	if(!authorStats) {
+		if(!optout) stats.get("users").set(msg.author.id,{imgs:0,msgs:1}).write();
+		stats.get("global").update("msgs",m => m+=1).write();
+	}else{
+		if(!optout) stats.get("users").get(msg.author.id).update("msgs",m => m+=1).write();
+		stats.get("global").update("msgs",m => m+=1).write();
+	}
+
+	if(msg.attachments.size > 0) {
+		const authorStats = stats.get("users").has(msg.author.id).value();
+		if(!authorStats) {
+			stats.get("users").set(msg.author.id,{imgs:1,msgs:1}).write();
+			stats.get("global").update("imgs",m => m+=1).write();
+		}else{
+			stats.get("users").get(msg.author.id).update("imgs",m => m+=1).write();
+			stats.get("global").update("imgs",m => m+=1).write();
+		}
+	}
+
 	/*if(msg.author.id === '177552117555396608') {
 		await msg.react('292088385772716042');
 		await msg.react('410580614983712768');

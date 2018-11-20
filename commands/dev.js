@@ -95,6 +95,7 @@ switch(args[0].toLowerCase()) {
 };
 
 exports.config = {
+    hidden:true,
 	usageIfNotSet: false
 };
 
