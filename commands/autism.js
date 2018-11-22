@@ -1,9 +1,11 @@
 let count = 0;
-const fs = require('fs')
+const fs = require('fs');
+const {getFile} = require('../modules/default');
 exports.init = (client) => {
-	fs.readFile(__dirname + '/../db/autism.count',(err,data) => {
-		if(err) return console.log('Failed to load record; start at 0')
-		count = data;
+	getFile("autism.count",0).then(file => {
+		count = file;
+	}).catch(err => {
+		console.error('[cmd/autism]',err.message)
 	})
 }
 exports.run = async(client,msg,args) => {
