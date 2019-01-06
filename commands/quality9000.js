@@ -18,6 +18,7 @@ exports.run = async(client,msg,args,flag) => {
     let bitrate = flag.bitrate||flag.quality||8;
     let volume = flag.volume||flag.vol;
     volume = (volume) ? (volume/100) : 1;
+    console.log(flag)
     let skip = flag.skip||flag.seek;
     let broadcast = (flag.broadcast)?true:false;
    
@@ -47,7 +48,7 @@ exports.config = {
 
 exports.help = {
 	name: 'quality9000',
-	aliases:[],
+	aliases:['q9'],
 	description: 'dont',
 	usage:'<filename w/o .ext> [flags]'
 };

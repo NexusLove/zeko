@@ -7,6 +7,7 @@ const extractor = require("keyword-extractor");
 const AlexaPlay = require('../modules/alexa.js');
 const stats = require('../modules/stats.js').db;
 let notified = [];
+let notified_dm = [];
 module.exports = async (client, msg) => {
 	if(msg.author.bot) return;
 	if(msg.author.id === "165535234593521673" && msg.content === "¯\\_(ツ)_/¯")  {
@@ -65,11 +66,17 @@ module.exports = async (client, msg) => {
 	if(msg.content.startsWith(process.env.PREFIX) && cmd) {
 		try {
 			let flags = {};
+			const newArgs = args.slice();
             for(let i=0;i<args.length;i++) {
                 const flag = args[i].split("=");
-                if(flag.length == 2) {
-					if(!cmd.config.flags) return flags[flag[0].toLowerCase()] = flag[1];
-					args.splice(i,1);
+                if(flag.length === 2) {
+					if(!/^[A-Za-z]+$/.test(flag[0].toLowerCase())) continue; //flag must be alpha chars
+					if(!flag[0] || !flag[1] || flag[0].length === 0 || flag[1].length === 0) continue;
+					if(!cmd.config.flags) {
+						flags[flag[0].toLowerCase()] = flag[1];
+						continue;
+					}
+					newArgs.splice(i,1);
                     switch(cmd.config.flags[flag[0].toLowerCase()]) {
                         case "number":
                             flags[flag[0].toLowerCase()] = parseInt(flag[1]);
@@ -78,16 +85,20 @@ module.exports = async (client, msg) => {
 							flags[flag[0].toLowerCase()] = (flag[1] == 'true')
 							break;
                         default:
-                            console.log("default")
                             flags[flag[0].toLowerCase()] = flag[1];
                     }
                 }
-            }
-			return cmd.run(client,msg,args,flags)
+			}
+			return cmd.run(client,msg,newArgs,flags)
 		}catch(err) {
 			msg.channel.send('**Command Error**\n`' + err.message + "`");
 		}
 		return; 
+	}
+	if(msg.channel.type === "dm" ) {
+		if(notified_dm.includes(msg.author.id)) return;
+		notified_dm.push(msg.author.id);
+		return msg.channel.send("Okay, I'm telling everyone about that.");
 	}
 	const optout = stats.get("optout").has(msg.author.id).value();
 

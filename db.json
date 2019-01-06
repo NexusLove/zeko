@@ -1,1 +1,11 @@
-{}
+{
+    "stats": {
+        "id": {
+            "mgs":"blah",
+            "imgs":blah
+        }
+    },
+    "global":{
+    
+    }
+}

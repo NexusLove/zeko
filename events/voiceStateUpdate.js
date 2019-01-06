@@ -19,7 +19,7 @@ module.exports = async(client,oldMember,newMember) => {
     if(oldMember.voiceChannel && newMember.voiceChannel.id == oldMember.voiceChannel.id) return;
     if(!newMember.guild.voiceConnection || newMember.voiceChannel.id !== newMember.guild.voiceConnection.channel.id) {
         //join
-        
+        if(newMember.guild.voiceConnection && newMember.guild.voiceConnection.speaking) return; //dont move if speaking
         let connection = await newMember.voiceChannel.join().catch(err => {});
         if(!connection || newMember.voiceChannel.id === '473686639034630154') return;
         await connection.playFile('./db/sounds/youpieceofshit.mp3') //dont play in think

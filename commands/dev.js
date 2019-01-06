@@ -1,11 +1,9 @@
-const CHAR0 = 'ㅤ';
-const CHAR1 = 'ﾠ';
-const RGX_CHAR0 = new RegExp(`${CHAR0}`,'g');
-const RGX_CHAR1 = new RegExp(`${CHAR1}`,'g');
 require('dotenv').load();
 const got = require('got')
 const {getSong} = require('../modules/alexa.cache.js');
 
+const git = require('simple-git/promise')
+const { exec } = require("child_process");
 exports.run = async(client,msg,args) => {
 if(!args[0]) return msg.channel.send('❌ Not');
 switch(args[0].toLowerCase()) {
@@ -46,25 +44,6 @@ switch(args[0].toLowerCase()) {
             title:series.join(","),
             description:`**${(converges) ? 'Converges':'Diverges'}**\n**a1** ${a1}\n**r** ${r}\n**n** ${n}`
         }});
-    }case "encode": {
-        const output = unicodeToBinary(args.slice(1).join(" "));
-        if(output.length > 2048) {
-            let post = await got('https://api.paste.ee/v1/pastes',{method:'POST',json:true,headers:{'X-Auth-Token':process.env.PASTEE},body:{description:'JackzTest - Generated',sections:[{name:'Contents',contents:output}]}});
-            msg.delete();
-            return msg.channel.send(`<${post.body.link}>`);
-        }
-        
-        msg.delete();
-        return msg.channel.send({embed:{description:output}});
-    }case "decode": {
-        const output = binaryToUnicode(args.slice(1).join(" "));
-        if(output.length > 2048) {
-            let post = await got('https://api.paste.ee/v1/pastes',{method:'POST',json:true,headers:{'X-Auth-Token':process.env.PASTEE},body:{description:'JackzTest - Generated',sections:[{name:'Contents',contents:output}]}});
-            msg.delete();
-            return msg.channel.send(`<${post.body.link}>`);
-        }
-        msg.delete();
-        return msg.channel.send({embed:{description:output}});
     }case "steves": {
         const failedUsers = msg.guild.members.filter(v => {
             const name = v.nickname||v.user.username; 
@@ -89,6 +68,51 @@ switch(args[0].toLowerCase()) {
             msg.channel.send(err.message);
         }
         break;
+    case "update": {
+        const remote = args[1] ? args[1].toLowerCase() : "origin";
+        const branch = args[2] ? args[2].toLowerCase() : "master";
+		const m = await msg.channel.send({embed:{
+			color:client.color,
+			title:`⏳ Pulling ${remote}/${branch}`,
+			description:'Please wait...'
+		}})
+		let response = await git(__dirname + '/../').pull(remote,branch)
+		.catch(err => m.edit({embed:{
+			color:15549239,
+			title:'Error',
+			description:err.message
+		}}))
+		if(!response) return;
+
+		let yarn = await execPromise('yarn --version')
+		.catch(() => {});
+		let command = (yarn) ? 'yarn install':'npm install';
+
+		let e = await execPromise(command)
+		.catch(err => m.edit({embed:{
+			color:15549239,
+			title:'Update Error',
+			description:err.message
+		}}));
+		if(!e) return;
+
+		await m.edit({embed:{
+			color:client.color,
+			title:"⏳ Updating dependencies...",
+			description:`Running: \`${command}}\``
+		}})
+		await m.edit({embed:{
+			color:5212688,
+			title:'✅ Success!',
+			description:`Updated ${remote}/${branch}\n${response.summary.changes} changes, ${response.summary.insertions} insertions, ${response.summary.deletions} deletions${(restart)?`\nNow restarting.`:''}`,
+			timestamp:new Date()
+		}})
+		if(restart) {
+			console.info('[dev] Bot updated & is now restarting.');
+			return process.exit();
+		}
+		return;
+    }
     default:
         msg.channel.send("❌ Reeeeeeeee ")
 }
@@ -125,4 +149,15 @@ function binaryToUnicode(binaryList) {
 
 function padLeftTo(string, padChar, numChars) {
     return (new Array(numChars-string.length+1)).join(padChar) + string;
+}
+function execPromise(command) {
+    return new Promise(function(resolve, reject) {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve(stdout.trim());
+        });
+    });
 }

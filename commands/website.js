@@ -9,10 +9,11 @@ const {stripIndents} = require('common-tags');
 const db = require('../modules/web_rehost.js').db;
 //const AdmZip = require('adm-zip');
 const WHITELISTED = ["117024299788926978","137393289845407745","177552117555396608"]
-const REHOST_DOMAIN = "http://localhost:8010/rehost/";
+const REHOST_DOMAIN = "http://mc.jackz.me:8010/rehost";
 exports.run = async (client,msg,args) => {
     if(WHITELISTED.indexOf(msg.author.id) === -1) return msg.channel.send('You are not whitelisted to use this.');
     const query = args.slice(1).join(" ");
+    if(args.length === 0)  return msg.channel.send('Please specify an option: >website <rehost/index/screenshot/render> <url>');
     if(args[0] === "rehost") {
         if(!query) return msg.channel.send('Please send a URL');
         const domain = query.replace(/^(?:https?:\/\/)?(?:www\.)?/,'')
@@ -26,8 +27,8 @@ exports.run = async (client,msg,args) => {
                     let r = await scrape({urls:[`http://${domain}`],directory:__dirname + `/../rehost/${folderDir}`});
                     let tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 1)
-                    db.push(`/domains/${folderDir}`,tomorrow.getTime()/1000|0)
-                    return m.edit(`Success! ${REHOST_DOMAIN}/${folderDir} _(Expires in a day)_`)
+                    db.push(`/domains/${folderDir}`,Date.now())
+                    return m.edit(`Success! ${REHOST_DOMAIN}/${folderDir} _(Expires in 2 days)_`)
                 }
                 return m.edit(`Already rehosted at ${REHOST_DOMAIN}/${folderDir}`);
             })

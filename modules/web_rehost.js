@@ -19,7 +19,8 @@ setInterval(() => {
     let domains = this.db.getData('/domains');
     for(let key in domains) {
         if(!domains.hasOwnProperty(key)) return;
-        if(domains[key] < Date.now()) return rimraf(__dirname + `/../rehost/${key}`,err => {
+        let time = Date.now() - domains[key];
+        if(time > 172800000) return rimraf(__dirname + `/../rehost/${key}`,err => {
             if(!err) {
                 console.log(`[web_rehost] Deleted ${key}`)
                 return this.db.delete(`/domains/${key}`)
@@ -27,5 +28,5 @@ setInterval(() => {
             console.log(`[web_rehost] Failed to delete ${key}: ${err.message}`)
         })
     }
-},1.8e+6)
+},1.8e+7)
 exports.router = router;

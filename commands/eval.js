@@ -13,6 +13,7 @@ exports.run = async (client, msg, args, flags) => {
 	if(!output) {
 		console.log(`⚠ ${msg.author.tag} ran an eval command (Output:False): ${code}`);
 		try {
+			console.log(code)
 			eval(code);
 			msg.react("✅")
 		}catch(err) {
