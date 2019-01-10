@@ -5,11 +5,11 @@ exports.run = (client,msg,args) => {
     let amount = parseInt(args[1]);
     let message = args.slice(2).join(" ");
 
-    if(!user) return msg.channel.send('User not found');
-    if(isNaN(amount) || amount < 0) return msg.channel.send('Invalid amount');
+    if(!user) return msg.channel.send('User not found, (spam @user #amount [msg])');
+    if(isNaN(amount) || amount <= 0) return msg.channel.send('Invalid amount (1-150) (spam @user #amount [msg])');
     if(amount > 150) {
         amount = 150;
-        msg.channel.send('Amount capped at 150.'); 
+        msg.channel.send('Amount capped at 150 messages'); 
     }
     for(let i=0;i<amount;i++) {
         msg.channel.send(`<@!${user.id}> ${message||""}`);
