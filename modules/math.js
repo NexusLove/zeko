@@ -7,7 +7,7 @@ math.import({
 }, { override: true })
 
 exports.config = {
-    triggers:["=","=math"],
+    triggers:["=","=math","math"],
     dependencies:["mathjs"],
     command:true
 }

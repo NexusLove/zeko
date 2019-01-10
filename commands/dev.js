@@ -14,6 +14,13 @@ switch(args[0].toLowerCase()) {
         } 
         msg.channel.send("Go to http://mc.jackz.me:8010/rejoin/login")
         break;
+    case "reload":
+        return await client.moduleManager.reloadModule(args[1]).then(r => {
+            msg.channel.send("Success! " + r||"");
+        }).catch(err => {
+            return msg.channel.send("Failed to reload module\n" + err.message);
+        })
+        break;
     case "join":
         break;
     case "math": {
@@ -21,7 +28,7 @@ switch(args[0].toLowerCase()) {
         let input = args.slice(1).join(" ").split(",");
         input.forEach(v => {
             let b = parseInt(v);
-            if(b !== NaN) series.push(b);
+            if(!isNaN(b)) series.push(b);
         })
         const r = series[1] - series[0]; //
         const a1 = series[0];

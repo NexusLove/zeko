@@ -58,6 +58,7 @@ fs.readdir('./commands/', (err, files) => {
 	});
 });
 client.moduleManager = require('./modules/ModuleHandler.js');
+client.moduleManager.init(client);
 fs.readdir('./modules/', (err, files) => {
 	if (err) console.error(err);
 	console.log(`[core] Checking for modules to load..`);
