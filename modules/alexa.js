@@ -1,6 +1,9 @@
 const ytdl = require('ytdl-core');
 const youtubeAPI = require('simple-youtube-api');
-const youtube = new youtubeAPI(process.env.API_YOUTUBE);
+let youtube;
+if(process.env.API_YOUTUBE) {
+    youtube = new youtubeAPI(process.env.API_YOUTUBE);
+}
 
 const SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 const wav = require('wav');
@@ -111,6 +114,7 @@ module.exports = async(client,msg,args) => {
             })
             break;
         case "search": {
+            if(!youtube) return msg.channel.send("Youtube support has been disabled");
             const url = encodeURIComponent(args.slice(1).join(" "));
             let m = await msg.channel.send({embed:{
                 color:12857387,
@@ -194,6 +198,7 @@ module.exports = async(client,msg,args) => {
         case "youtube":
         case "yt":
         case "play": {
+            if(!youtube) return msg.channel.send("Youtube support has been disabled");
             try {
                 let m = await msg.channel.send(`Searching for **${args.slice(1).join(" ")}**`);
                 if(!msg.guild.voiceConnection) {

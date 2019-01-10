@@ -4,7 +4,6 @@ let inital = true;
 module.exports =  async(client) => {
 	console.info(`[core] Bot now ready - ${new Date}`);
 	if(inital) {
-		console.log("init")
 		require('../modules/server.js')(client);
 		client.user.setActivity('Prestoné',{type:'LISTENING'})
 		schedule.scheduleJob({hour: 6, minute: 00}, async() => {

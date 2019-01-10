@@ -57,6 +57,28 @@ fs.readdir('./commands/', (err, files) => {
 		});
 	});
 });
+client.moduleManager = require('./modules/ModuleHandler.js');
+fs.readdir('./modules/', (err, files) => {
+	if (err) console.error(err);
+	console.log(`[core] Checking for modules to load..`);
+	files.forEach(f => {
+		fs.stat(`./modules/${f}`, (err, stat) => {
+			if(f.split(".").slice(-1)[0] !== "js") return;
+			if(f.startsWith("_")) return;
+			try {
+				let props = require(`./modules/${f}`);
+				if(!props.config) return; //not a custom module
+				props.config.name = f.split(".")[0];
+				if(props.config.command) {
+					if(props.init) props.init(client);
+					client.moduleManager.registerCustomCommandModule(props);
+				}
+			}catch(err) {
+				console.error(`[core] \x1b[31mModule ${f} had an error:\n    ${err.stack}\x1b[0m`);
+			}
+		});
+	});
+});
 /* end of loading */
 
 client.login(process.env.TOKEN);

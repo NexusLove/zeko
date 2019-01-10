@@ -6,11 +6,15 @@ math.import({
     'derivative': function () { throw new Error('Function derivative is disabled') }
 }, { override: true })
 
-module.exports = async(client,msg,args) => {
+exports.config = {
+    triggers:["=","=math"],
+    dependencies:["mathjs"],
+    command:true
+}
+exports.run = async(client,msg,args) => {
     if(args.length === 0) {
         return msg.channel.send("Please enter an equation");
     }
-    
     try {
         msg.channel.startTyping();
         const parsed = math.parse(args.join(" "));
