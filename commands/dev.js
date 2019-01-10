@@ -2,7 +2,7 @@ require('dotenv').load();
 const got = require('got')
 const {getSong} = require('../modules/alexa.cache.js');
 
-const git = require('simple-git/promise')
+const git = require('simple-git/promise')(__dirname + "/../")
 const { exec } = require("child_process");
 exports.run = async(client,msg,args) => {
 if(!args[0]) return msg.channel.send('❌ Not');
@@ -76,42 +76,42 @@ switch(args[0].toLowerCase()) {
 			title:`⏳ Pulling ${remote}/${branch}`,
 			description:'Please wait...'
 		}})
-		let response = await git(__dirname + '/../').pull(remote,branch)
+        git.pull(remote,branch)
+        .then(async(response) => {
+            let yarn = await execPromise('yarn --version')
+            .catch(() => {});
+            let command = (yarn) ? 'yarn install':'npm install';
+    
+            let e = await execPromise(command)
+            .catch(err => m.edit({embed:{
+                color:15549239,
+                title:'Update Error',
+                description:err.message
+            }}));
+            if(!e) return;
+    
+            await m.edit({embed:{
+                color:client.color,
+                title:"⏳ Updating dependencies...",
+                description:`Running: \`${command}}\``
+            }})
+            await m.edit({embed:{
+                color:5212688,
+                title:'✅ Success!',
+                description:`Updated ${remote}/${branch}\n${response.summary.changes} changes, ${response.summary.insertions} insertions, ${response.summary.deletions} deletions${(restart)?`\nNow restarting.`:''}`,
+                timestamp:new Date()
+            }})
+            if(restart) {
+                console.info('[dev] Bot updated & is now restarting.');
+                return process.exit();
+            }
+        })
 		.catch(err => m.edit({embed:{
 			color:15549239,
-			title:'Error',
+			title:'Git Error',
 			description:err.message
-		}}))
-		if(!response) return;
-
-		let yarn = await execPromise('yarn --version')
-		.catch(() => {});
-		let command = (yarn) ? 'yarn install':'npm install';
-
-		let e = await execPromise(command)
-		.catch(err => m.edit({embed:{
-			color:15549239,
-			title:'Update Error',
-			description:err.message
-		}}));
-		if(!e) return;
-
-		await m.edit({embed:{
-			color:client.color,
-			title:"⏳ Updating dependencies...",
-			description:`Running: \`${command}}\``
-		}})
-		await m.edit({embed:{
-			color:5212688,
-			title:'✅ Success!',
-			description:`Updated ${remote}/${branch}\n${response.summary.changes} changes, ${response.summary.insertions} insertions, ${response.summary.deletions} deletions${(restart)?`\nNow restarting.`:''}`,
-			timestamp:new Date()
-		}})
-		if(restart) {
-			console.info('[dev] Bot updated & is now restarting.');
-			return process.exit();
-		}
-		return;
+        }}));
+        break;
     }
     default:
         msg.channel.send("❌ Reeeeeeeee ")

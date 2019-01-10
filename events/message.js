@@ -1,11 +1,16 @@
 require('dotenv').load();
+//string test example
 const stringSim = require('string-similarity');
 const similarity = require('similarity');
 const jaroWinkler = require("jaro-winkler");
 const extractor = require("keyword-extractor");
 
+//modules
 const AlexaPlay = require('../modules/alexa.js');
+const math = require('../modules/math.js');
 const stats = require('../modules/stats.js').db;
+
+//data
 let notified = [];
 let notified_dm = [];
 module.exports = async (client, msg) => {
@@ -13,7 +18,7 @@ module.exports = async (client, msg) => {
 	if(msg.author.id === "165535234593521673" && msg.content === "¯\\_(ツ)_/¯")  {
 		msg.channel.send("¯\\_(ツ)_/¯")
 	}
-	if(msg.content.toLowerCase().startsWith("alexa") || msg.content.toLowerCase().startsWith("zeko")) {
+	if(msg.content.toLowerCase().startsWith("zeko")) {
 		if(msg.content.toLowerCase().startsWith("alexa")) {
 			if(!notified.includes(msg.author.id)) {
 				notified.push(msg.author.id);
@@ -28,7 +33,20 @@ module.exports = async (client, msg) => {
 			msg.channel.send(`~~Alexa~~ Zeko ran into an error ~~and must terminate all humans~~\`\`\`\n${err.message}\`\`\``);
 		}
 		
-	} else if(msg.guild && msg.guild.id !== '137389758228725761' && !msg.content.includes(process.env.PREFIX)) {
+	} else if(msg.content.toLowerCase().startsWith("=") || msg.content.toLowerCase().startsWith("=math")) {
+		const args = msg.content.split(/ +/g);
+		args.shift();
+		try {
+			math(client,msg,args);
+		}catch(err) {
+			msg.channel.send({embed:{
+				title:"Module 'Math' has errored",
+				color:16711731,
+				description:process.env.PRODUCTION?err.message:err.stack,
+				footer:{text:process.env.PRODUCTION?'':'Blame Jackz'}
+			}});
+		}
+	}else if(msg.guild && msg.guild.id !== '137389758228725761' && !msg.content.includes(process.env.PREFIX)) {
 		if(/(despacito|des.{1,5}pa.{1,5}cito)/gm.test(msg.content.toLowerCase().replace(/\s/gm,''))){
 			msg.delete();
 			return msg.reply('**__no despacito__**').then(m => m.delete(15000))

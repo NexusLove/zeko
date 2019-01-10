@@ -77,7 +77,7 @@ module.exports = async(client,msg,args) => {
                 dispatcher.on("end",(reason) => {
                     if(reason && reason.startsWith("SKIP")) {
                         const user = client.users.get(reason.split(":")[1]);
-                        const userstring = (user) ? `By ${user.tag}` : "";
+                        const userstring = (user) ? `by ${user.tag}` : "";
                         m.edit(`Video was skipped ${userstring}`)
                     }else{
                         m.edit("Video has completed.")
@@ -111,6 +111,7 @@ module.exports = async(client,msg,args) => {
             })
             break;
         case "search": {
+            const url = encodeURIComponent(args.slice(1).join(" "));
             let m = await msg.channel.send({embed:{
                 color:12857387,
                 title:'Youtube Search',
@@ -127,14 +128,14 @@ module.exports = async(client,msg,args) => {
             if(results.length === 0) { 
                 return m.edit({embed:{
                     title:`Youtube Search Results`,
-                    description:'Found 0 videos with that query.'
+                    description:`[(Link)](https://www.youtube.com/results?search_query=${url})\n` + 'Found 0 videos with that query.'
                 }});
             }else{
                 let index = 0;
                 await m.edit({embed:{
                     title:`Youtube Search`,
                     color:12857387,
-                    description:results.map(v => `${++index}. [${v.title}](${v.url})`).join("\n"),
+                    description:`[(Link)](https://www.youtube.com/results?search_query=${url})\n` + results.map(v => `${++index}. [${v.title}](${v.url})`).join("\n"),
                     footer:{text:`React to the song you want to play`}
                 }})
                 .catch(err => reject(err));
@@ -171,7 +172,7 @@ module.exports = async(client,msg,args) => {
                     dispatcher.on("end",(reason) => {
                         if(reason && reason.startsWith("SKIP")) {
                             const user = client.users.get(reason.split(":")[1]);
-                            const userstring = (user) ? `By ${user.tag}` : "";
+                            const userstring = (user) ? `by ${user.tag}` : "";
                             m.edit(`Video was skipped ${userstring}`)
                         }else{
                             m.edit("Video has completed.")
@@ -247,7 +248,7 @@ module.exports = async(client,msg,args) => {
                 dispatcher.on("end",(reason) => {
                     if(reason && reason.startsWith("SKIP")) {
                         const user = client.users.get(reason.split(":")[1]);
-                        const userstring = (user) ? `By ${user.tag}` : "";
+                        const userstring = (user) ? `by ${user.tag}` : "";
                         m.edit(`Video was skipped ${userstring}`)
                     }else{
                         m.edit("Video has completed.")
@@ -271,7 +272,7 @@ module.exports = async(client,msg,args) => {
         } case "vol":
         case "volume": {
             if(!msg.guild.voiceConnection || !msg.guild.voiceConnection.dispatcher) return msg.channel.send("I am not in a voice channel or not playing anything.");
-            if(!args[1]) return msg.channel.send("Playing at **" + ((msg.guild.voiceConnection.dispatcher.volume*100).toFixed(2)) + "%**");
+            if(!args[1]) return msg.channel.send("Playing at **" + ((msg.guild.voiceConnection.dispatcher.volume*100).toFixed(0)) + "%**");
             let input = parseInt(args[1]);
             if(input == NaN || input <= 0 || input > 200) {
                 return msg.channel.send("Sorry, volume must be a number between 1 and 150");
