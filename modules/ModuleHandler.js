@@ -23,9 +23,7 @@ exports.messageHandler = (client,msg) => {
                     }catch(err) {
                         this.error(err,search,{dev:true})   
                     }
-                    return console.log("FOUND MODULE: " + message_module_list[i].module)
                 }
-                //
             }
         }
         
@@ -34,7 +32,6 @@ exports.messageHandler = (client,msg) => {
 
 exports.registerCustomCommandModule = (module) => {
     if(!module.config) throw new Error(`Invalid module registered.`)
-    console.info(`[ModuleManager] Registered Module ${module.config.name}`);
     const failed_dependencies = [];
     const failed_envs = [];
     if(module.config.dependencies) module.config.dependencies.forEach(v => {
@@ -48,10 +45,11 @@ exports.registerCustomCommandModule = (module) => {
         if(!process.env[v]) failed_envs.push(v);
     })
     if(failed_dependencies.length > 0) {
-        return console.warning(`Module ${module.config.name} missing dependencies: ${failed_dependencies.join(" ")}`);
+        return console.warn(`[ModuleManager] Module ${module.config.name} missing dependencies: ${failed_dependencies.join(" ")}`);
     }else if(failed_envs.length > 0) {
-        return console.warning(`Module ${module.config.name} missing envs: ${failed_envs.join(" ")}`);
+        return console.warn(`[ModuleManager] Module ${module.config.name} missing envs: ${failed_envs.join(" ")}`);
     }
+    console.info(`[ModuleManager] Registered Module ${module.config.name}`);
     registered_modules[module.config.name] = module;
     message_module_list.push({triggers:module.config.triggers,module:module.config.name});
 }

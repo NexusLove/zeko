@@ -9,19 +9,20 @@ const Image = Canvas.Image;
 
 exports.run = async(client,msg,args) => {
 	if(args[0] === "view") {
-		return msg.channel.send('Disabled, blame node-canvas\' Windows support')
+		if(process.platform === "win32") return msg.channel.send('This command is disabled due to node-canvas\'s lack of Windows support')
 		console.log('Starting decode of QR Code');
-		if(msg.attachments.size === 0) return msg.channel.send('Please upload an image with the command');
-		if(!msg.attachments.first().height) return msg.channel.send('Please upload an image.');
-		let attachment = msg.attachments.first();
-		let body = await got(attachment.url)
+		const possibleUrl = args.slice(1).join(" ");
+		if(msg.attachments.size === 0 && !possibleUrl) return msg.channel.send('Please upload an image with the command');
+		if(msg.attachments.size > 0 && !msg.attachments.first().height) return msg.channel.send('Please upload an image.');
+		let attachment = (msg.attachments.size > 0) ? msg.attachments.first().url : possibleUrl;;
+		let body = await got(attachment)
 
 		const image = new Image();
 
 		image.onload = () => {
 			let result;
 			try{
-				result = qrcode.decode(image);
+				result = jqr.decode(image);
 				return msg.channel.send({embed:{
 					title:'QR Code',
 					description:result
@@ -31,6 +32,7 @@ exports.run = async(client,msg,args) => {
 			}
 		}
 		image.src = Buffer.from(body.body,'binary')
+		return;
 	}else if(args[0] === "generate" || args[0] === "create") {
 		var qr_svg = qr.image(args.slice(1).join(" "), { type: 'png',margin:1});
 		return msg.channel.send(new Attachment(qr_svg,`qr${genHex()}.png`));

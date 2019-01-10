@@ -32,8 +32,13 @@ const RESPONSES = {
     ]
 }
 const blacklisted = ["146240326728810496"]
-
-module.exports = async(client,msg,args) => {
+exports.config = {
+    triggers:["zeko"],
+    dependencies:["lowdb","ytdl-core","simple-youtube-api"],
+    //envs:["API_YOUTUBE"],
+    command:true //dont run as command yet
+}
+exports.run = async(client,msg,args) => {
     if(blacklisted.includes(msg.author.id)) return;
     if(args.length == 0) return msg.channel.send(getResponse());
     switch(args[0].toLowerCase()) {
