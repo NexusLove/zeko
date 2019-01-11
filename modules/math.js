@@ -16,13 +16,13 @@ exports.run = async(client,msg,args) => {
         return msg.channel.send("Please enter an equation");
     }
     try {
-        msg.channel.startTyping();
-        const parsed = math.parse(args.join(" "));
+        //msg.channel.startTyping();
+        const parsed = math.parse(args.join(" ").replace(/`/g,""));
         const node = parsed.compile().eval();
         msg.channel.send(`**Result: ** ${node}`)
-        msg.channel.stopTyping();
+        //msg.channel.stopTyping();
     }catch(err) {
-        msg.channel.stopTyping();
+        //msg.channel.stopTyping();
         msg.channel.send({embed:{
             title:"Could not parse your equation",
             color:16711731,

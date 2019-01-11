@@ -15,7 +15,7 @@ app.engine('.hbs', exphbs({
 
 module.exports = (client) => {
     app.listen(process.env.PORT||8888)
-    console.log(`[server] Loaded on port ${process.env.PORT||8888}`)
+    console.log(`[server] Listening on :${process.env.PORT||8888}`)
     app.use('/rehost',require('./web_rehost').router)
     app.use('/quotes',require('./quote').router)
     app.get('/',(req,res) => {
