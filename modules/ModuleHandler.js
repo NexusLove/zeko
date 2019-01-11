@@ -12,7 +12,7 @@ exports.messageHandler = (client,msg) => {
     const message = args.shift();
     for(let i=0;i<message_module_list.length;i++) {
         for(let k=0;k<message_module_list[i].triggers.length;k++) {
-            if(message.startsWith(message_module_list[i].triggers[k])) {
+            if(message.startsWith(message_module_list[i].triggers[k].toLowerCase())) {
                 const search = registered_modules[message_module_list[i].module];
                 if(search) {
                     try {
