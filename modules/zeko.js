@@ -31,7 +31,12 @@ const RESPONSES = {
         "WHO!?!?"
     ]
 }
-const blacklisted = ["146240326728810496"]
+const blacklisted = ["146240326728810496"];
+
+let birthdayModule;
+exports.init = (client) => {
+    birthdayModule = client.moduleManager.findModule("birthday");
+}
 exports.config = {
     triggers:["zeko"],
     dependencies:["lowdb","ytdl-core","simple-youtube-api"],
@@ -42,6 +47,12 @@ exports.run = async(client,msg,args) => {
     if(blacklisted.includes(msg.author.id)) return;
     if(args.length == 0) return msg.channel.send(getResponse());
     switch(args[0].toLowerCase()) {
+        case "birthday":
+            if(!birthdayModule) return msg.channel.send("Sorry, this module failed to load.");
+            console.log(birthdayModule)
+            birthdayModule.addBirthday(msg.author.id,Date.now());
+            msg.channel.send("Added");
+            break;
         case "soundc":
         case "sc":
         case "scloud":

@@ -70,10 +70,8 @@ fs.readdir('./modules/', (err, files) => {
 				let props = require(`./modules/${f}`);
 				if(!props.config) return; //not a custom module
 				props.config.name = f.split(".")[0];
-				if(props.config.command) {
-					if(props.init) props.init(client);
-					client.moduleManager.registerCustomCommandModule(props);
-				}
+				if(props.init) props.init(client);
+				client.moduleManager.registerModule(props);
 			}catch(err) {
 				console.error(`[core] \x1b[31mModule ${f} had an error:\n    ${err.stack}\x1b[0m`);
 			}

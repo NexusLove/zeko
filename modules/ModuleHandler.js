@@ -69,12 +69,15 @@ function internalReloadModule(module) {
     })
 }
 
-exports.registerEventModule = (module) => {
+function registerEventModule(module) {
     throw new Error("Not Implemeneted");
 }
+function registerCommandModule(module) {
+    message_module_list.push({triggers:module.config.triggers,module:module.config.name}); //command module
+    //add extra configuration
+}
 
-
-exports.registerCustomCommandModule = (module) => {
+exports.registerModule = (module) => {
     if(!module.config) throw new Error(`Invalid module registered.`)
     const failed_dependencies = [];
     const failed_envs = [];
@@ -93,9 +96,9 @@ exports.registerCustomCommandModule = (module) => {
     }else if(failed_envs.length > 0) {
         return console.warn(`[ModuleManager] Module ${module.config.name} missing envs: ${failed_envs.join(" ")}`);
     }
-    console.info(`[ModuleManager] Registered Module ${module.config.name}`);
     registered_modules[module.config.name] = module;
-    message_module_list.push({triggers:module.config.triggers,module:module.config.name});
+    if(module.config.command) registerCommandModule(module);
+    console.info(`[ModuleManager] Registered ${module.config.command?"Command ":""}Module ${module.config.name}`);
 }
 exports.error = (error,module,opts = {}) => {
     return {
@@ -105,4 +108,10 @@ exports.error = (error,module,opts = {}) => {
             description:(opts.dev) ? error.stack:error.message
         }
     }
+}
+
+exports.findModule = (search) => {
+    const module = registered_modules[search];
+    if(!module) throw new Error(`Module ${search} not found`);
+    return module;
 }
