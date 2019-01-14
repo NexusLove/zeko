@@ -1,3 +1,5 @@
+const fs = require('fs-extra')
+
 const registered_modules = {};
 exports.cache = new Map();
 const message_module_list = []; /* {triggers:['=math','='],module:name,*/
@@ -56,9 +58,8 @@ function internalReloadModule(module) {
     return new Promise((resolve,reject) => {
         try {
             //delete registered_modules[module.config.name];
-            delete require.cache[`./${module.config.name}.js`];
+            delete require.cache[require.resolve(`./${module.config.name}.js`)];
             const newModule = require(`./${module.config.name}.js`)
-            console.log(newModule.config);
             registered_modules[module.config.name] = newModule;
             if(newModule.init) newModule.init(client);
             resolve();
