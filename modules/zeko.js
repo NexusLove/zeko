@@ -48,9 +48,24 @@ exports.run = async(client,msg,args) => {
     if(args.length == 0) return msg.channel.send(getResponse());
     switch(args[0].toLowerCase()) {
         case "birthday":
-            if(!birthdayModule) return msg.channel.send("Sorry, this module failed to load.");
-            console.log(birthdayModule)
-            birthdayModule.addBirthday(msg.author.id,Date.now());
+            /* enter yyyy mm dd */
+            if(!birthdayModule) return msg.channel.send("Sorry, birthday module failed to load.");
+            if(args.length < 4) return msg.channel.send("Please enter your birthday in ISO 8601. EX: `zeko birthday YYYY MM DD`");
+            const date = new Date();
+            const year = parseInt(args[1]);
+            const month = parseInt(args[2]);
+            const day = parseInt(args[3]);
+            if(isNaN(year) || year <= 1900 || year >= date.getFullYear()) {
+                return msg.channel.send("The year you entered is invalid");
+            }else if(isNaN(month) || month <= 0 || month > 12) {
+                return msg.channel.send("The month you entered is invalid.")
+            }else if(isNaN(day) || day <= 0 || day >= 31) {
+                return msg.channel.send("The day you entered is invalid.");
+            }
+            date.setFullYear(year);
+            date.setMonth(month);
+            date.setDate(day);
+            birthdayModule.addBirthday(msg.author.id,Math.floor(date.getTime()/1000));
             msg.channel.send("Added");
             break;
         case "soundc":
@@ -295,7 +310,7 @@ exports.run = async(client,msg,args) => {
             if(!msg.guild.voiceConnection || !msg.guild.voiceConnection.dispatcher) return msg.channel.send("I am not in a voice channel or not playing anything.");
             if(!args[1]) return msg.channel.send("Playing at **" + ((msg.guild.voiceConnection.dispatcher.volume*100).toFixed(0)) + "%**");
             let input = parseInt(args[1]);
-            if(input == NaN || input <= 0 || input > 200) {
+            if(isNaN(input) || input <= 0 || input > 200) {
                 return msg.channel.send("Sorry, volume must be a number between 1 and 150");
             }else{
                 msg.guild.voiceConnection.dispatcher.setVolume((input / 100))
@@ -525,7 +540,7 @@ function startPlaying(client,m,msg,video,author) {
     const dispatcher = conn.playStream(stream);
     dispatcher.on("start",() => {
         var date = new Date(null);
-        date.setSeconds(SECONDS); // specify value for SECONDS here
+        date.setSeconds(video.durationSeconds); // specify value for SECONDS here
         var result = date.toISOString().substr(11, 8);
         client.user.setActivity(video.title,{type:'PLAYING'})
         msg.channel.send({embed:{
