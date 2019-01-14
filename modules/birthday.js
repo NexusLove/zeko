@@ -14,7 +14,7 @@ db.defaults({dates:[]}).write();
 exports.config = {
     activeGuilds: [
         {
-            guild:"291672183627972610",
+            id:"291672183627972610",
             channel:"312396863594692608"
         }
     ]
