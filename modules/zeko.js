@@ -65,8 +65,12 @@ exports.run = async(client,msg,args) => {
             date.setFullYear(year);
             date.setMonth(month);
             date.setDate(day);
-            birthdayModule.addBirthday(msg.author.id,Math.floor(date.getTime()/1000));
-            msg.channel.send("Added");
+            try {
+                birthdayModule.addBirthday(msg.author.id,Math.floor(date.getTime()/1000));
+                msg.channel.send("Added birthday");
+            }catch(err) {
+                msg.channel.send(`**Failed** ${err.message}`)
+            }
             break;
         case "soundc":
         case "sc":

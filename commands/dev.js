@@ -4,6 +4,11 @@ const {getSong} = require('../modules/alexa.cache.js');
 
 const git = require('simple-git/promise')(__dirname + "/../")
 const { exec } = require("child_process");
+
+const fs = require('fs-extra');
+const textToSpeech = require('@google-cloud/text-to-speech');
+//const client = new textToSpeech.TextToSpeechClient();
+const {Attachment} = require('discord.js');
 exports.run = async(client,msg,args) => {
 if(!args[0]) return msg.channel.send('❌ Not');
 switch(args[0].toLowerCase()) {
@@ -64,6 +69,55 @@ switch(args[0].toLowerCase()) {
             "```"
         )
         break;
+    } case "voice": {
+        try {
+            const client = new textToSpeech.TextToSpeechClient();
+            const text = (args.length > 1) ? msg.cleanContent.split(" ").slice(2).join(" ") : "HELLO EPIC GAMERS JOHN WICK IS DEAD";
+            const request = {
+                input: {text},
+                voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
+                audioConfig: {audioEncoding: 'MP3'},
+            }
+            if(!msg.guild.voiceConnection && msg.member.voiceChannel) await msg.member.voiceChannel.join();
+            const [response] = await client.synthesizeSpeech(request);
+            await fs.writeFile(__dirname + '/../db/output.mp3',response.audioContent,'binary');
+            await msg.guild.voiceConnection.playFile(__dirname + '/../db/output.mp3',{volume:1.5});
+            await msg.react('✅')
+        }catch(err) {
+            console.log("error: " + err.message);
+            msg.channel.send("yeah something happened... \n" + err.message)
+        }
+        break;  
+    } case "voice-export": {
+        try {
+            const m = await msg.channel.send(`⌛ Processing... Please Wait. `);
+            const client = new textToSpeech.TextToSpeechClient();
+            const text = (args.length > 1) ? args.slice(1).join(" ") : "HELLO EPIC GAMERS JOHN WICK IS DEAD";
+            const request = {
+                input: {ssml:`<speak>Rise<break time="1s"></break>and<break time="1s"></break>shine<break time="1s"></break>doctor<break time="1s"></break> <audio src="http://overwikifiles.com/files/Wallace_Breen/Br_oheli03.ogg"> didn't get your MP3 audio file</audio></speak>`},
+                voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
+                audioConfig: {audioEncoding: 'MP3'},
+            }
+            
+            const [response] = await client.synthesizeSpeech(request);
+            const attachment = new Attachment(response.audioContent,"yeet.mp3");
+            await m.delete();
+            await msg.channel.send(attachment)
+        }catch(err) {
+            console.log("error: " + err.message);
+            msg.channel.send("yeah something happened... \n" + err.message)
+        }
+        break;  
+    } case "voices" : {
+        const client = new textToSpeech.TextToSpeechClient();
+        const [result] = await client.listVoices({});
+        let index = 0;
+        const text = result.voices.map(v => {
+            ++index;
+            return `**${index}. ${v.name}** ${v.ssmlGender}`
+        }).join("\n");
+        msg.author.send(`**__Voices are as followed:__**\n` + text,{split:true})
+        break;  
     } case "cache":
         try {
             const result = getSong(args[1]);

@@ -54,17 +54,18 @@ module.exports = async (client, msg) => {
 	if(msg.content.startsWith(process.env.PREFIX) && cmd) {
 		try {
 			let flags = {};
-			const newArgs = args.slice();
+			const newArgs = msg.cleanContent.split(/ +/g).slice(1);
             for(let i=0;i<args.length;i++) {
                 const flag = args[i].split("=");
                 if(flag.length === 2) {
 					if(!/^[A-Za-z]+$/.test(flag[0].toLowerCase())) continue; //flag must be alpha chars
 					if(!flag[0] || !flag[1] || flag[0].length === 0 || flag[1].length === 0) continue;
+					newArgs.splice(i,1);
 					if(!cmd.config.flags) {
 						flags[flag[0].toLowerCase()] = flag[1];
 						continue;
 					}
-					newArgs.splice(i,1);
+					
                     switch(cmd.config.flags[flag[0].toLowerCase()]) {
                         case "number":
                             flags[flag[0].toLowerCase()] = parseInt(flag[1]);

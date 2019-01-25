@@ -35,6 +35,11 @@ module.exports = (connection) => {
     console.log('[recorder] Got Connection')
     //const encoder = new opusscript(48000, 2, opusscript.Application.AUDIO);
     const receiver = connection.createReceiver();
+    connection.on("speaking",(user,speaking) => {
+        if(speaking) {
+            
+        }
+    })
     receiver.on("error",(err) => {
         console.log("sh " + err.message)
     })

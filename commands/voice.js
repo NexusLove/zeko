@@ -11,7 +11,7 @@ exports.run = async(client,msg,args) => {
         //.then(channel => record(channel))
         return;
     }
-    if(args[0].toLowerCase() === "quit" || args[0].toLowerCase() === "leave") {
+    if(args[0].toLowerCase() === "quit" || args[0].toLowerCase() === "leave" || args[0].toLowerCase() === "q") {
         if(!msg.guild.me.voiceChannel) return msg.channel.send("I'm not in a channel");
         return msg.guild.me.voiceChannel.leave()
     }else if(args[0] === "move") {
@@ -39,7 +39,7 @@ exports.config = {
 
 exports.help = {
 	name: 'voice',
-	aliases:[],
+	aliases:['vc'],
 	description: 'join voice',
 	usage:'voice [voice id]'
 };

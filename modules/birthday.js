@@ -37,6 +37,8 @@ exports.checkForBirthdays = function() {
     return birthdays;
 }
 exports.addBirthday = function(userID,date) {
+    const existing = db.get("dates").filter({id:userID}).value();
+    if(existing) throw new Error('Already added to list');
     db.get("dates").push({id:userID,timestamp:date}).write();
 }
 exports.run = async(client,msg,args) => {
