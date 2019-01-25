@@ -17,11 +17,13 @@ exports.messageHandler = (client,msg) => {
             if(message.startsWith(message_module_list[i].triggers[k].toLowerCase())) {
                 const search = registered_modules[message_module_list[i].module];
                 if(search) {
+                    
                     try {
                         search.run(client,msg,args);
                     }catch(err) {
                         this.error(err,search,{dev:true})   
                     }
+                    return;
                 }
             }
         }
