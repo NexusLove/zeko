@@ -10,8 +10,18 @@ const stats = require('../modules/stats.js').db;
 
 //data
 let notified_dm = [];
+let violations = 0;
 module.exports = async (client, msg) => {
 	if(msg.author.bot) return;
+	/*if(msg.author.id === "303027173659246594" && msg.attachments.size > 0) {
+		msg.channel.send(`${msg.author} I'm sorry but that is currently against The Steve Empire's content regulations. ` + (violations >= 3 ? 'Continuation of these violations will result in punishment.' : ''))
+		violations++;
+		if(violations % 3 === 0) {
+			msg.delete().catch(() => {});
+			client.channels.get("521808450381021184").send(`⚠ **${msg.author} has violated the content regulations ${violations } times.**`)
+		}
+		return;
+	}*/
 	if(msg.author.id === "165535234593521673" && msg.content === "¯\\_(ツ)_/¯")  {
 		msg.channel.send("¯\\_(ツ)_/¯")
 	}
@@ -57,7 +67,8 @@ module.exports = async (client, msg) => {
 			const newArgs = msg.cleanContent.split(/ +/g).slice(1);
             for(let i=0;i<args.length;i++) {
                 const flag = args[i].split("=");
-                if(flag.length === 2) {
+                if(flag.length === 2 && flag[0].startsWith("$")) {
+					flag[0] = flag[0].substr(1);
 					if(!/^[A-Za-z]+$/.test(flag[0].toLowerCase())) continue; //flag must be alpha chars
 					if(!flag[0] || !flag[1] || flag[0].length === 0 || flag[1].length === 0) continue;
 					newArgs.splice(i,1);

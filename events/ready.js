@@ -3,6 +3,7 @@ const schedule = require('node-schedule');
 let inital = true;
 
 let birthdayModule; 
+const whys = ["When","Why","Where","How","Who","Who's"];
 module.exports =  async(client) => {
 	console.info(`[core] Bot now ready - ${new Date}`);
 	if(inital) {
@@ -11,32 +12,34 @@ module.exports =  async(client) => {
 		client.user.setActivity('Prestoné',{type:'LISTENING'})
 		schedule.scheduleJob({hour: 6, minute: 00}, async() => {
 			const channel = await client.channels.get("500772757911502848")
-			if(channel) return channel.send("<@!318551843754082304> Where bony?")
-			console.warn('could not find #where-bony')
+			if(channel) channel.send(`<@!318551843754082304> ${whys[Math.floor(Math.random()*whys.length)]} bony?`)
+			if(!channel) console.warn('could not find #where-bony')
 			
 			
 			//should be a scheduler, debugging for now
-			if(!birthdayModule) return;
-			const bds = birthdayModule.checkForBirthdays();
-			//birthdayModule.config.activeGuilds
-			const guilds = birthdayModule.config.activeGuilds;
-			bds.forEach(v => {
-				const user = client.users.get(v.id);
-				if(!user) return;
-				guilds.forEach(guild => {
-					const discord_guild = client.guilds.get(guild.id);
-					if(!guild) return;
-					if(discord_guild.members.has(v.id)) {
-						const channel = discord_guild.channels.get(guild.channel);
-						if(!channel) return;
-						channel.send(`${user.toString()}'s birthday is today!`)
-					}
+			if(!birthdayModule) {
+				const bds = birthdayModule.checkForBirthdays();
+				//birthdayModule.config.activeGuilds
+				const guilds = birthdayModule.config.activeGuilds;
+				bds.forEach(v => {
+					const user = client.users.get(v.id);
+					if(!user) return;
+					guilds.forEach(guild => {
+						const discord_guild = client.guilds.get(guild.id);
+						if(!guild) return;
+						if(discord_guild.members.has(v.id)) {
+							const channel = discord_guild.channels.get(guild.channel);
+							if(!channel) return;
+							channel.send(`${user.toString()}'s birthday is today!`)
+						}
+					})
 				})
-			})
+			}
 		});
+		
 		schedule.scheduleJob({hour: 11, minute: 05}, async() => {
 			const channel = await client.channels.get("500772757911502848")
-			if(channel) return channel.send("<@!318551843754082304> how bony?")
+			if(channel) return channel.send(`<@!318551843754082304> ${whys[Math.floor(Math.random()*whys.length)]} bony?`)
 			console.warn('could not find #where-bony')
 		});
 		initial = false;

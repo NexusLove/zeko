@@ -8,7 +8,7 @@ exports.run = async(client,msg,args,flags) => {
 		const gender = flags.gender||'NEUTRAL';
 		const lang = flags.lang||"en-US";
 		const voice = flags.voice;
-		const input = (flags.ssml) ? {ssml:msg.cleanContent.split(" ").slice(3).join(" ")} : {text:args.slice(1).join(" ")};
+		const input = (flags.ssml) ? {ssml:msg.cleanContent.split(" ").slice(2+Object.keys(flags).length).join(" ").replace(/`/,'')} : {text:args.slice(1).join(" ")};
 		if(args[0].toLowerCase() == "say") {
 			try {
 				if(!args[1]) return msg.channel.send("Please enter a message");
@@ -59,6 +59,10 @@ exports.run = async(client,msg,args,flags) => {
 			}).join("\n");
 			msg.author.send(`**__Voices are as followed:__**\n` + text,{split:true})
 			return;
+		}else if(args[0].toLowerCase() === "debug") {
+			const flag_array = Object.entries(flags);
+			msg.channel.send("flags: " + flag_array.map(v => `$${v[0]}:${v[1]}`).join(" "));
+			msg.channel.send("final: " + msg.cleanContent.split(" ").slice(2+Object.keys(flags).length).join(""))
 		}
 	}
 	return msg.channel.send("**Usage: ** `" + this.help.usage + "`");
@@ -71,7 +75,7 @@ exports.config = {
 exports.help = {
 	name: 'tts',
 	aliases:[],
-	example:'**Use a different voice**\n`>tts say voice=en-US-Standard-B This is a text you want to say`\n**Use a different gender**\n`>tts say gender=FEMALE this is a test in a female voice`\n**Use Speech Synthesis Markup Language (SSML)**\n`>tts say ssml=1 <speak>What the heck?<break time="5s"></break>Please</speak>`',
+	example:'**Use a different voice**\n`>tts say $voice=en-US-Standard-B This is a text you want to say`\n**Use a different gender**\n`>tts say $gender=FEMALE this is a test in a female voice`\n**Use Speech Synthesis Markup Language (SSML)**\n`>tts say $ssml=1 <speak>What the heck?<break time="5s"></break>Please</speak>`',
 	description: 'text to speech using Google Wavenet.',
 	fields:[
 		{
