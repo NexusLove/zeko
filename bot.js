@@ -21,13 +21,18 @@ fs.readdir('./events/', (err, files) => {
 	console.log(`[core] Loading ${files.length} events.`);
 	files.forEach(file => {
 	  if(file.split(".").slice(-1)[0] !== "js") return; //has to be .js file *cough* folder that doesnt exist *cough*
-	  const eventName = file.split(".")[0];
+	  const eventName = file.split(".");
+	  eventName.pop();
 	  	try {
 		  const event = require(`./events/${file}`);
 		  if(!event || typeof event !== 'function') {
 			  return console.warn(`[core] \x1b[33mWarning: ${file} is not setup correctly!\x1b[0m`);
 		  }
-		  client.on(eventName, event.bind(null, client));
+		  if(eventName.length >= 2 && eventName[1].toLowerCase() === "once") {
+			client.once(eventName[0], event.bind(null, client));
+		  }else{
+			client.on(eventName, event.bind(null, client));
+		  }
 		  delete require.cache[require.resolve(`./events/${file}`)];
 	  	}catch(err) {
 		  console.error(`[core] \x1b[31mEvent ${file} had an error:\n    ${err.stack}\x1b[0m`);

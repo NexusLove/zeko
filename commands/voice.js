@@ -23,6 +23,19 @@ exports.run = async(client,msg,args) => {
             v.setVoiceChannel(channel);
         })
         return;
+    }else if(args[0] === "kick") {
+        if(msg.author.id !== '117024299788926978') return msg.channel.send('⛔ FUCKING NERRRRRRRRRRRRRRRRD');
+        const member = msg.guild.members.find(m => m.user.username.toLowerCase() === args[1] || m.id === args[1] || (m.nickname && m.nickname.toLowerCase() === args[1]));
+        if(!member) return msg.channel.send("Cannot find ouser");
+        if(!member.voiceChannel) return msg.channel.send("NOT IN VOIC");
+        msg.guild.createChannel('KICK','voice').then(c => {
+            member.setVoiceChannel(c).then(() => {
+                c.delete();
+            })
+        }).catch(err => {
+            return msg.channel.send("error!" + err.message)
+        })
+        return;
     }
     let channel = await msg.guild.channels.filter(v => v.type === 'voice').find(v => v.id === args[0] || v.name.toLowerCase() === args.join(" ").toLowerCase())
     if(!channel) return msg.channel.send("Couldn't find any channels");

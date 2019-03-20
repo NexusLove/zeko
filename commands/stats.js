@@ -20,23 +20,40 @@ exports.run = (client,msg,args) => {
         }else{
             const user = client.users.get(targetUser);
             console.log(targetUser,msg.author.id)
+            const stat_msg = [
+                `**${userStat.msgs||0}** messages sent`,
+                `**${userStat.imgs||0}** images posted`,
+                `**${userStat.violations||0}** Content Violations committed`
+            ]
             if(targetUser === msg.author.id) {
                 msg.channel.send({embed:{
                     title:`Stats for ${user.tag}`,
-                    description:`**${userStat.msgs}** messages sent\n**${userStat.imgs}** images posted`,
+                    description:stat_msg.join("\n"),
                     footer:{text:`Opt out by sending '>stat optout'`}
                 }})
             }else{
                 msg.channel.send({embed:{
                     title:`Stats for ${user.tag}`,
-                    description:`**${userStat.msgs}** messages sent\n**${userStat.imgs}** images posted`,
+                    description:stat_msg.join("\n")
                 }})
             }
             
         }
     }else{
-        const stat = stats.get("global").value();
-        msg.channel.send(`**${stat.msgs}** messages have been sent.\n**${stat.imgs}** images have been posted.\n\n_type \`>stats me\` to view your own stats_`)
+        const all_stats = stats.get("users").value();
+        console.log(all_stats)
+        let totals = {imgs:0,msgs:0,violations:0};
+        for(const key in all_stats) {
+            if(all_stats[key].imgs) totals.imgs += all_stats[key].imgs;
+            if(all_stats[key].msgs) totals.msgs += all_stats[key].msgs;
+            if(all_stats[key].violations) totals.violations += all_stats[key].violations;
+        }
+        const final_list = [
+            `**${totals.msgs}** messages have been sent.`,
+            `**${totals.imgs}** images have been posted.`,
+            `**${totals.violations}** violations have been committed`
+        ]
+        msg.channel.send(final_list.join("\n") + `\n\n_type \`>stats me\` to view your own stats_`)
     }
 };
 

@@ -105,20 +105,20 @@ module.exports = async (client, msg) => {
 	const authorStats = stats.get("users").has(msg.author.id).value();
 	if(!authorStats) {
 		if(!optout) stats.get("users").set(msg.author.id,{imgs:0,msgs:1}).write();
-		stats.get("global").update("msgs",m => m+=1).write();
+		//stats.get("global").update("msgs",m => m+=1).write();
 	}else{
 		if(!optout) stats.get("users").get(msg.author.id).update("msgs",m => m+=1).write();
-		stats.get("global").update("msgs",m => m+=1).write();
+		//stats.get("global").update("msgs",m => m+=1).write();
 	}
 
 	if(msg.attachments.size > 0) {
 		const authorStats = stats.get("users").has(msg.author.id).value();
 		if(!authorStats) {
 			stats.get("users").set(msg.author.id,{imgs:1,msgs:1}).write();
-			stats.get("global").update("imgs",m => m+=1).write();
+			//stats.get("global").update("imgs",m => m+=1).write();
 		}else{
 			stats.get("users").get(msg.author.id).update("imgs",m => m+=1).write();
-			stats.get("global").update("imgs",m => m+=1).write();
+			//stats.get("global").update("imgs",m => m+=1).write();
 		}
 	}
 

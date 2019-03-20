@@ -234,19 +234,21 @@ exports.run = async(client,msg,args) => {
         case "yt":
         case "play": {
             if(!youtube) return msg.channel.send("Youtube support has been disabled");
+            let m;
             try {
-                let m = await msg.channel.send(`Searching for **${args.slice(1).join(" ")}**`);
+                m = await msg.channel.send(`Searching for **${args.slice(1).join(" ")}**`);
                 if(!msg.guild.voiceConnection) {
                     if(!msg.member.voiceChannel) return m.edit("Please join a voice channel.");
                     await msg.member.voiceChannel.join();
                 }
                 if(msg.guild.voiceConnection && msg.guild.voiceConnection.dispatcher && msg.author.id === "303027173659246594") return m.edit("🚫 Forbidden preston until current song is done")
+                const start = Date.now();                
                 const results = await youtube.searchVideos(args.slice(1).join(" "),1);
                 if(results.length === 0) return m.edit("Could not find any videos with that name.");
-                let start = Date.now();
                 m.edit(`Loading **${results[0].title}**...`)
                 
                 const video = await results[0].fetch();
+                if(video.channel.title.toLowerCase() === "pewdiepie") return msg.channel.send(`❌ An error occurred while attempting to play video`)
                 //if(video.duration.hours > 3) return m.edit("Sorry, No. Over 90minutes.")
                 const conn = msg.guild.voiceConnection;
                 const stream = ytdl(results[0].id,{ filter : 'audioonly' })
@@ -272,18 +274,6 @@ exports.run = async(client,msg,args) => {
                 const dispatcher = conn.playStream(stream);
                 dispatcher.on("start",() => {
                     msTook = Date.now() - start;
-                   /* try {
-                        let msTook = Date.now() - start;
-                        msg.channel.send({embed:{
-                            color:12857387,
-                            footer:{text:`${bytes} | Fetched in ${(msTook/1000).toFixed(2)} seconds | Requested by ${msg.author.tag}`},
-                            description:`Now playing **[${results[0].title}](https://youtu.be/${results[0].id})** by **${results[0].channel.title}** (${formatTime(video.duration)})`
-                        }})
-                        m.delete();
-                    }catch(err) {
-                        console.error('[zeko] ' + err.message)
-                        m.edit(`Something happened when playing. ${err.message}`)
-                    }*/
                 })
                 dispatcher.on("end",(reason) => {
                     if(reason && reason.startsWith("SKIP")) {
@@ -305,11 +295,16 @@ exports.run = async(client,msg,args) => {
                     color:12857387,
                     description: `${err.message}`
                 }});*/
-                m.delete();
                 msg.channel.send(`Error: ${err.message}`)
+                if(m) m.delete();
             }
             break;
-        } case "vol":
+        } case "do":
+            if(args[1].toLowerCase() === "cocaines" || args[1].toLowerCase() === "cocaine") {
+                return msg.channel.send("Okay, I will do cocaines.")
+            }
+            return msg.channel.send("I will do " + args.slice(1).join(" "))
+        case "vol":
         case "volume": {
             if(!msg.guild.voiceConnection || !msg.guild.voiceConnection.dispatcher) return msg.channel.send("I am not in a voice channel or not playing anything.");
             if(!args[1]) return msg.channel.send("Playing at **" + ((msg.guild.voiceConnection.dispatcher.volume*100).toFixed(0)) + "%**");
@@ -426,6 +421,9 @@ exports.run = async(client,msg,args) => {
                     msg.channel.send("It was tails!")
                 }
             }
+            break;
+        case "commit":
+            msg.channel.send(`Okay, I will be committing ${args.slice(1).join(" ")}`)
             break;
         case "watson":
             let watson = null;

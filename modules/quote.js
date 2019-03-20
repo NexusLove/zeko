@@ -19,7 +19,6 @@ router.get('/',(req,res) => {
         if(!items[v.type]) items[v.type] = [];
         items[v.type].push(v.value)
     })
-    console.log(items)
     return res.render('quotes',{items})
 });
 exports.postQuote = (client,channel) => {

@@ -49,6 +49,7 @@
     "watson-speech": "^0.35.4",
     "wav": "^1.0.2",
     "website-scraper": "^3.3.2",
-    "ytdl-core": "^0.26.3"
+    "ytdl-core": "^0.26.3",
+    "ytdl-core-discord": "^1.0.2"
   }
 }
