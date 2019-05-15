@@ -20,8 +20,10 @@ module.exports = (client,react,user) => {
             }
         }
     }
+    if(react.message.channel.id === "291675586324070401") return;
     if(member.roles.has("521740547837132820")) {
-
+        if(member.id !== client.user.id) return react.message.channel.send(`${user} You think you can do that? I don't think so.`);
+        
         if(react.emoji.name === "❌") {
             console.log(`[contentreg] ${user.tag} removed post from ${react.message.author.tag}`);
     

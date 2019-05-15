@@ -11,11 +11,16 @@ exports.config = {
     dependencies:["mathjs"],
     command:true
 }
+const temp = [];
 exports.run = async(client,msg,args) => {
     if(args.length === 0) {
         return msg.channel.send("Please enter an equation");
     }
     try {
+        if(!temp.includes(msg.author.id)) {
+            temp.push(msg.author.id)
+            return msg.channel.send("Please watch this video to get your equation or pay $1.99:\nhttps://zeko.jackz.me/video-ad?type=math&clientid=" + msg.author.id);
+        }
         //msg.channel.startTyping();
         const parsed = math.parse(args.join(" ").replace(/`/g,""));
         const node = parsed.compile().eval();

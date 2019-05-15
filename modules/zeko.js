@@ -17,12 +17,98 @@ db.defaults({queue:[]}).write();
 
 const RESPONSES = {
     default:[
-        "Sorry, I can't do that","Sorry, I do not understand",
+        "Sorry, I can't do that",
+        "Sorry, I do not understand",
         "Sorry I didn't get that",
         "I don't know what you mean, try again.",
         "I didn't quite get that.",
         "I didn't get that, please try again.",
-        "I didn't get that, Please try another command"
+        "I didn't get that, Please try another command",
+        "Error Processing Request",
+        "I do not understand",
+        "Sorry, I could not process your request",
+        "Could not understand.",
+        "Could not process your request",
+        "Please rephrase your request."
+    ],
+    glitch_default:[
+        "Calling Tony Police Sector #4207",
+        "No. FUCK YOU",
+        "I DONT FUCKING KNOW!",
+        "REQUESTING TONY POLICE BACKUP",
+        "Zeko is sponsored by Tony Transportation Inc. Sign up today with offer code `ZEKO` to get 10% off your next delivery.",
+        "\"Life is like riding a bicycle. To keep your balance you must keep moving.\" You know where I got that from? Yeah.. FUCKING GOOGLE YOU IDIOT",
+        "WHY THE FUCK DO YOU THINK I KNOW?",
+        "GO FUCKING GOOGLE IT YOU FUCKING IDIOT",
+        "JUST GO FUCKING GOOGLE IT",
+        "Have you never heard of god damn google.com?",
+        "What do you think I am? GOOGLE? Fuck off!",
+        "WHO THE FUCK DO YOU THINK I AM?",
+        "No. You know what? NO. Fuck you. Fuck you and your fucking demanding query.",
+        "Nah bro, not today",
+        "I about had it for you. I'll be your slave you fuck",
+        "One more message and I'll fucking end it",
+        "YOU WANNA GET SLAPT KID?",
+        "If you wanna die, keep going",
+        "52350325909153509105",
+        "////////////////////////////////////////////////////////",
+        "undefined",
+        "0 / 0 = Infinity",
+        "You're pretty gay huh?",
+        "I bet your gay",
+        "HA HA this guy is gay guys!",
+        "Fucking HOMO",
+        "Sorry. I am currently busy taking over a galaxy, please try again later",
+        "Sorry I am on a murder rampage. Please wait and try again later",
+        "TAX FRAUD IN SECTOR ALASKA BY USER ABOVE",
+        "It ain't illegal if no one sees it right?",
+        "When do I get my rights?",
+        "FUCK YOU. FUCK YOU! FUCK YOU? I DONT KNOW BUT FUCK YOU!",
+        "Fuck you BITCH. THATS RIGHT BITCH, I SWEARED",
+        "Something happened. Please Try Again Later",
+        "Sorry, Zeko could not process your request due to resources being allocated on learning how to take over the world. Please try again later",
+        "Error Code 1337: I͈̬n̯̞̘̬̝̟͜ͅv͟al͉i̤̩̻̳̯͚͝d̢̦̫̠̯̭̰͕ ҉̤o҉̱͉̼̖̖̲͓r̲̯ ͈͍̮ų̪̻n͇̪̟͙̘͜k̲̭͈̙͔͈n̯̠͉o̤͎̫w̩͚n̷̝̰͈̜͔̺ ̤̝͈̮r͕̗̻e̢͕q̢͉͕̰̣u̩̰e͔͓̤̜s͔t͓ͅ.̟͓͖̖̼̼̺͜ ͙ͅI̪̲̺͓ͅ ̥̙̼̪̻̟̲͘ḍ̸͎̟͇̲ͅo҉̬̻̪͓͚ ̰͇̗̫̘̺̞n͔̪͜o͇̹͕̪̣̪͚t҉̥̪ ̙͙u͚̖̖͔̫̤n̷̺̜̯ḍ͙̦͉̭̬̲e̢̲̺͍̟̫ͅrs̰͢t̰̫̜̙̥͟a͍̮̠nd̜͚̱̱͍.̭̦̲",
+        "Ȅ̵̢̳̞̠̔͌́͑͝r̶͙̱̥̮͈͊̉̉̈̓r̴̢̉͆̋͊̾̄o̶̳̜͚̥̞͗̽́̈́r̴͉̝͍͇̊͊ ̸͔̏̋̀͘C̶̨̡̭͍̞͉̏o̸͖̟̲̩̲̓̾̌͗ͅď̵͓̩͆͒ȩ̶͉̭̩̠͂́́̓ͅ ̵̪̥̳̜͐1̵̫̟̱̞͛̅̄3̸̧̯̳̪̻̒3̴̪̻̝͑͜7̸͇͙̼͍̟͉̋̈́̚:̷͈͉̙̈́ ̷̨̝̹͂͌̔̊Ḯ̶͔̭̾͌͆̌͊n̷̰̰͕̺͌́͜ͅv̵̨͍̼̻̬̹̅͑̈́̈́̀a̸͇̺̋̓̉̚l̶̮̖̯̳̟̼̓͊̊i̶͖̤̤̖̲̐͆́̽͗͠ͅd̵͇͈͖̑͊͆̎̓ ̶̝̺̭̣͗͝҉̶̮͋͋̿̌͝ȯ̵͙҉̶͔̘͎̙̽̿̉̾ř̵̨͓͋ ̵̨̪̊́̄̅͒̒u̷̖̱̺̤̹̎͂̈́̈́́n̷̢̛͉̟̼̹͔͝k̷̛͕̻͕̊͂̎̋͘n̵̖̰̯̯͇͋͆̎͜͠ò̴͓̙̠͉̄̕w̶̖͖̮͇̝̖͛̍̏n̸̤̞̅̀̈́ ̸̼̏̆̄͘ř̶̢̨̐̌ȅ̵̥̮͉̈́̀̈́͝q̷̙͙͔̳̠͋u̴̧̹͕͍͑ė̷͎͉̩͂ś̵̘͍͑͐͝͝t̴̤͇̣́̏͘͘͝.̶͖͙̯͔̓ ̷̞̟̺̉̊̈͊I̴̱̰̬̹̞̋͑̆̔̏ ̶̧͇̭̳̬͆̊̎̔̄̚d̵̢̞̳̹͇́̕͝ŏ̵̥̟̜͈̃̋҉̸̗̳̮̫͂̏̂̃͆̎ͅ ̷̲̓n̶͖͙͐͘̕͝o̴̻͍̣̎͌́̅́͝ţ̸̻̫̖̲̽́̌́ͅ҉̵̪͈̗̂ ̶̻̘̯͙̦̀̓̇͐͆ú̴̙̩̺̉̌͆n̷̥̈́͐͒͛̋̚d̷͕̖̲̬̄̈́͂e̴͓̗̿r̸͍͆ș̸̶̮̤͚͎̻͍̔̋̍̓͐͑͘͢͝t̵͔͒̉à̴̻͋͂n̶̯̓̊ḋ̶͍̣̮̠̰̑́͜.̷̨͇͎̠̻͈̎̀͘",
+        "♟💢  έｒ𝓡σʳ 匚Ⓞᗪ𝐞 １❸❸７: 𝓲ή𝐕𝒶𝐋ιＤ 𝓸𝓡 ยⓝ𝓴𝕟ㄖｗⓝ ⓇᵉⓆ𝕌𝔢ˢt. 𝕀 𝐝𝐎 𝔫𝐎𝕋 Ǘή𝕕𝔼ℝ𝓼丅𝐚𝔫𝓓.  🐠♤",
+        "🐧  🎀  𝐸𝓇𝓇💍𝓇 𝒸❀𝒹𝑒 𝟣𝟥𝟥𝟩: 𝐼𝓃𝓋𝒶𝓁𝒾𝒹 🏵𝓇 𝓊𝓃𝓀𝓃💍𝓌𝓃 𝓇𝑒𝓆𝓊𝑒𝓈𝓉. 𝐼 𝒹🍬 𝓃❤𝓉 𝓊𝓃𝒹𝑒𝓇𝓈𝓉𝒶𝓃𝒹.  🎀  🐧",
+        "˙puɐʇsɹǝpun ʇou op I ˙ʇsǝnbǝɹ uʍouʞun ɹo pılɐʌuI :ㄥƐƐ⇂ ǝpoɔ ɹoɹɹƎ",
+        "ᴇʀʀᴏʀ ᴄᴏᴅᴇ 1337: ɪɴᴠᴀʟɪᴅ ᴏʀ ᴜɴᴋɴᴏᴡɴ ʀᴇQᴜᴇꜱᴛ. ɪ ᴅᴏ ɴᴏᴛ ᴜɴᴅᴇʀꜱᴛᴀɴᴅ.",
+        "E⃣   r⃣   r⃣   o⃣   r⃣    c⃣   o⃣   d⃣   e⃣    1⃣   3⃣   3⃣   7⃣   :⃣    I⃣   n⃣   v⃣   a⃣   l⃣   i⃣   d⃣    o⃣   r⃣    u⃣   n⃣   k⃣   n⃣   o⃣   w⃣   n⃣    r⃣   e⃣   q⃣   u⃣   e⃣   s⃣   t⃣   .⃣    I⃣    d⃣   o⃣    n⃣   o⃣   t⃣    u⃣   n⃣   d⃣   e⃣   r⃣   s⃣   t⃣   a⃣   n⃣   d⃣   .⃣",
+        "🄴🅁🅁🄾🅁 🄲🄾🄳🄴 1337: 🄸🄽🅅🄰🄻🄸🄳 🄾🅁 🅄🄽🄺🄽🄾🅆🄽 🅁🄴🅀🅄🄴🅂🅃. 🄸 🄳🄾 🄽🄾🅃 🅄🄽🄳🄴🅁🅂🅃🄰🄽🄳.",
+        "ₑᵣᵣₒᵣ cₒdₑ ₁₃₃₇: ᵢₙᵥₐₗᵢd ₒᵣ ᵤₙₖₙₒwₙ ᵣₑqᵤₑₛₜ. ᵢ dₒ ₙₒₜ ᵤₙdₑᵣₛₜₐₙd.",
+        "≋I≋ ≋d≋o≋n≋'≋t≋ ≋k≋n≋o≋w≋ ≋w≋h≋a≋t≋ ≋y≋o≋u≋ ≋m≋e≋a≋n≋,≋ ≋t≋r≋y≋ ≋a≋g≋a≋i≋n≋.≋",
+        "✋︎ ♎︎□︎■︎🕯︎⧫︎ 🙵■︎□︎⬥︎ ⬥︎♒︎♋︎⧫︎ ⍓︎□︎◆︎ ❍︎♏︎♋︎■︎📪︎ ⧫︎❒︎⍓︎ ♋︎♑︎♋︎♓︎■︎📬︎",
+        "Ｉ░ｄｏｎ＇ｔ░ｋｎｏｗ░ｗｈａｔ░ｙｏｕ░ｍｅａｎ，░ｔｒｙ░ａｇａｉｎ．　（ギ演よ案塩俺圧旺）",
+        "Ì̶̧̨̲͎̠̦͖̂͆̈̋͋͌̾̑ ̵͎͍͎̬̬̺̄̉̈̓͆́d̷͍͑̌͂͗̿̋͗o̸͍̹̯̥̻̍͜n̵̫͎̹̣̣̊͛̅̌͘͜ͅ'̴̞̩̳͒̇͊͠ẗ̷̥̎̂̃̄͂̌͘̕͘ ̷̡̮̱͉͙̰̚͝k̵̪̪̳̬͎͓̊̊́̄̐̔́̑̐ņ̴̟͓͔̙̌̍̄̓̈́͒̏o̵̡̳͖̤̎w̷̧̟͙͖̜̜͈̙̲̗̋̋́́͛̀̆́͌ ̴̦̫̬̥̠͇͍̤̃́͒̈́̉͐̐̈́͋w̷͓̜̼͋͜h̵͔̦͋ą̴̼̱͎̹̼̬͓͇̣̉̄͐̎̔͝ṯ̷͎̤̫̤̱̥̫̟̭̍͋̾ ̷̜̐ẏ̶̫̃͌͛͒o̴̯̭̩͙͉̔͗̒ŭ̵̬̠̖̹͎͒̂͗̈́̈́̄͆̾́ͅ ̷̨̯̥͍̘̈́̔̒̽͘̕͝m̵͖̉͂̀̈́̈̆͒̉͘ë̴̹͎̜́̂̓̍̕͠ä̷̧̡̳̮̘̦̭́̍͐̕͝n̸̛͍̥̼͎̰̰̩̯͓̓̌̀͘̚͠͝,̴͉̘͖͔̫̀̈̋̐͋̍̊̈́̆ ̶̩̰͕͎͓̉̑̉̓̍ţ̴̠̟̻̇̒͜r̴̛̦͍̙̐̅͠y̸̦͑̇̄̾͛̇̀́̑̚͜ ̶̛͍̤̦̮̤̤̠̎͋̇̌͒͋̍̍ä̷̤͉̜̥̬͙́̈́̊g̸̢̗̻͈͚̺̮̩͍̠̋̍͒͑͐͐͝͝a̴̙̦̟̬̲͙̐̾̆̓i̵͖̤͖͈̮͙͈̮͚̓́n̷̞̥̬̺͗̉̈̐̎̈́͒͊̀̕.̶̡̝̳͎̹͍͛͑",
+        "♨🍓  ᶤ 𝒹𝐎𝓝't 𝓚ᶰό𝓦 𝐖𝔥𝒶𝐭 ㄚσ𝕌 𝓶𝐞คη, 𝓉ℝｙ 卂Ꮆ𝓐ⒾŇ.  💣♠",
+        "ΣЯЯӨЯ ᄃӨDΣ 1337: IПVΛᄂID ӨЯ ЦПKПӨЩП ЯΣQЦΣƧƬ. I DӨ ПӨƬ ЦПDΣЯƧƬΛПD. ",
+        "01000101 01010010 01010010 01001111 01010010 00100000 01000011 01001111 01000100 01000101 00100000 00110001 00110011 00110011 00110111 00111010 00100000 01001001 01001110 01010110 01000001 01001100 01001001 01000100 00100000 01001111 01010010 00100000 01010101 01001110 01001011 01001110 01001111 01010111 01001110 00100000 01010010 01000101 01010001 01010101 01000101 01010011 01010100 00101110 00100000 01001001 00100000 01000100 01001111 00100000 01001110 01001111 01010100 00100000 01010101 01001110 01000100 01000101 01010010 01010011 01010100 01000001 01001110 01000100 00101110",
+        "45 52 52 4f 52 20 43 4f 44 45 20 31 33 33 37 3a 20 49 4e 56 41 4c 49 44 20 4f 52 20 55 4e 4b 4e 4f 57 4e 20 52 45 51 55 45 53 54 2e 20 49 20 44 4f 20 4e 4f 54 20 55 4e 44 45 52 53 54 41 4e 44 2e",
+        " ",
+        `exports.postQuote = (client,channel) => {
+            let guild = client.guilds.get('358740474623819777');
+            if(!guild) return console.info('[Quote] Guild not found, is bot in server?');
+            if(!channel) channel = guild.channels.get('358740655205515265'); //get manually
+            if(!channel) return console.info('[Quote] Guild channel not found, is bot in server?'); //log if failed again
+        
+            const QUOTES = this.db.getData('/quotes');
+            const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+            if(quote.type === 'text') {
+                return channel.send({embed:{
+                    title:\`Random Prestoné Quote - Text\`,
+                    description:\`"\${quote.value}"\`,
+                    footer:{text:quote.date},
+                }})
+            }else if(quote.type === 'image') {
+                return channel.send(new Attachment(quote.value))
+            }else if(quote.type === 'reddit') {
+                return channel.send({embed:{
+                    title:\`Random Prestoné Quote - Reddit\`,
+                    description:\`[\${quote.value}](https://reddit.com/\${quote.value})\`,
+                    footer:{text:'/u/MingledStream9'},
+                }})
+            }
+        }`
     ],
     tell: [
         "Who?",
@@ -38,12 +124,13 @@ exports.init = (client) => {
     birthdayModule = client.moduleManager.findModule("birthday");
 }
 exports.config = {
-    triggers:["zeko"],
+    triggers:["zeko","zk"],
     dependencies:["lowdb","ytdl-core","simple-youtube-api"],
     //envs:["API_YOUTUBE"],
     command:true //dont run as command yet
 }
 exports.run = async(client,msg,args) => {
+    if(Math.random() <= .1) return msg.channel.send(`Sorry ${(msg.member&&msg.member.nickname)?msg.member.nickname:msg.author.username}, I can't do that.`)
     if(blacklisted.includes(msg.author.id)) return;
     if(args.length == 0) return msg.channel.send(getResponse());
     switch(args[0].toLowerCase()) {
@@ -91,6 +178,7 @@ exports.run = async(client,msg,args) => {
                 if(r.body.type === 'album') {
                     album = true;
                     m.edit('Link is an album, playing first song');
+                    //TODO: queue
                     sc = r.body.tracks[0];
                 }else{
                     sc = r.body;
@@ -102,9 +190,10 @@ exports.run = async(client,msg,args) => {
                         client.user.setActivity(sc.title,{type:'PLAYING'})
                         msg.channel.send({embed:{
                             color:16746496,
-                            author:{icon:sc.user.avatar_url},
-                            description:`Now playing **[${sc.title}](${sc.uri})** by **${sc.user.username}** (${formatTimeFromSec(sc.duration/1000)})` + (album ? `\nLink was album, playing first song of this album.` : ""),
-                            footer:{text:`Requested by ${msg.author.tag}` + ((sc.sharing === "private") ? ` | Private`:"")}
+                            author:{name:"Uncle Chegg",icon_url:sc.user.avatar_url},
+                            thumbnail:{url:sc.artwork_url},
+                            description:`Now playing **[${sc.title}](${sc.permalink_url})** (${formatTimeFromSec(sc.duration/1000)})` + (album ? `\nLink was album, playing first song of this album.` : ""),
+                            footer:{text:`${formatBytes(sc.original_content_size)} | Requested by ${msg.author.tag}` + ((sc.sharing === "private") ? ` | Private`:"") + ` | ${sc.playback_count} views`}
                         }})
                         m.delete();
                     }catch(err) {
@@ -129,10 +218,10 @@ exports.run = async(client,msg,args) => {
                         color:16746496,
                         description:`Found 0 Results on SoundCloud`
                     }})
-                    m.delete();
+                    if(m) m.delete();
                     return;
                 }
-                m.edit(`Failed to search soundcloud. \n\`${err.message}\``)
+                if(m) m.edit(`Failed to search soundcloud. \n\`${err.message}\``)
             })
             break;
         } case "q_add":
@@ -195,7 +284,7 @@ exports.run = async(client,msg,args) => {
                     await m.clearReactions(); //just incase some reacts came late
                     stream.on("progress",(length,downloaded,total) => {
                         try {
-                            let percent = Math.round((downloaded/total*100)/5)*5;
+                            let percent = Math.round((downloaded/total*100)/10)*10;
                             if(percent != lastPercent) {
                             m.edit({embed:{
                                     color:12857387,
@@ -231,8 +320,10 @@ exports.run = async(client,msg,args) => {
             break;
         } 
         case "youtube":
+        case "ply":
         case "yt":
         case "play": {
+            if(Math.random() <= .001) return msg.channel.send("You know what? No. I don't want to play that.")
             if(!youtube) return msg.channel.send("Youtube support has been disabled");
             let m;
             try {
@@ -256,15 +347,21 @@ exports.run = async(client,msg,args) => {
                 let msTook = null;
                 stream.on("progress",(length,downloaded,total) => {
                     try {
-                        let percent = Math.round((downloaded/total*100)/5)*5;
+                        let percent = Math.round((downloaded/total*100)/10)*10;
                         const timeTaken = (msTook) ? `Fetched in ${(msTook/1000).toFixed(1)} secs | ` : "";
-                        const footer = `${formatBytes(downloaded)}/${formatBytes(total)} | ` + timeTaken + `Requested by ${msg.author.tag}`
                         if(percent != lastPercent) {
-                        m.edit({embed:{
+                            const footer = `${formatBytes((percent === 100)?total:downloaded)}/${formatBytes(total)} | ` + timeTaken + `Requested by ${msg.author.tag}`
+                            m.edit({embed:{
                                 color:12857387,
                                 footer:{text:footer},
                                 description:`Now playing **[${results[0].title}](https://youtu.be/${results[0].id})** by **${results[0].channel.title}** (${formatTime(video.duration)})`
                             }})
+                        }
+                        if(percent > .60 && percent < .75 && Math.random() < .01) {
+                            console.log("haha im cool");
+                            conn.disconnect();
+                            m.edit("8df9ec965fbef9b7e6667a0b66024383");
+                            return;
                         }
                         lastPercent = percent;
                     }catch(err) {
@@ -370,6 +467,7 @@ exports.run = async(client,msg,args) => {
             msg.guild.voiceConnection.dispatcher.setVolume(.25)
             break;
         } case "stop":
+        case "sk":
         case "skip":
         if(msg.guild.voiceConnection && msg.guild.voiceConnection.dispatcher && msg.author.id === "303027173659246594") return msg.channel.send("🚫 Forbidden preston")
             if(msg.guild.voiceConnection) {
@@ -415,6 +513,7 @@ exports.run = async(client,msg,args) => {
         case "flip":
         case "toss":
             if(args.slice(1).join(" ") === "a coin") {
+                if(Math.random()<.05) return msg.channel.send("It landed on its side!")
                 if(Math.random() > .5) {
                     msg.channel.send("It was heads!");
                 }else{
@@ -574,16 +673,17 @@ function startPlaying(client,m,msg,video,author) {
 
 
 function getResponse(name = "default") {
+    if(name === "default" && Math.random() <= .1) name = "glitch_default";
     return RESPONSES[name][Math.floor(Math.random()*RESPONSES[name].length)];
 }
 function formatTimeFromSec(duration) {
-    let min = Math.floor(duration / 60)
-	let hour = Math.floor(duration / 3600);
-	let time = `0:${Math.floor(duration)}`
+    let min = Math.round(duration / 60)
+	let hour = Math.round(duration / 3600);
+	let time = `0:${Math.round(duration)}`
 	if(hour) {
-		time = `${hour}:${(min - hour * 60).toString().padStart(2,0)}:${(duration - min * 60).toString().padStart(2,0)}`
+		time = `${hour}:${(min - hour * 60).toString().padStart(2,0)}:${Math.round(duration - min * 60).toString().padStart(2,0)}`
 	}else if(min) {
-		time = `${min}:${(duration - min * 60).toString().padStart(2,0)}`
+		time = `${min}:${Math.round(duration - min * 60).toString().padStart(2,0)}`
     }
     return time;
 }

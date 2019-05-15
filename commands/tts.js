@@ -11,6 +11,7 @@ exports.run = async(client,msg,args,flags) => {
 		const input = (flags.ssml) ? {ssml:msg.cleanContent.split(" ").slice(2+Object.keys(flags).length).join(" ").replace(/`/,'')} : {text:args.slice(1).join(" ")};
 		if(args[0].toLowerCase() == "say") {
 			try {
+                if(msg.guild.voiceConnection && msg.guild.voiceConnection.dispatcher && msg.author.id === "303027173659246594") return msg.channel.send("🚫 Forbidden preston until current song is done")
 				if(!args[1]) return msg.channel.send("Please enter a message");
 				const client = new textToSpeech.TextToSpeechClient();
 				if(!msg.guild.voiceConnection && !msg.member.voiceChannel) return msg.channel.send("I'm not in a voice channel, either join one or make me join one.");

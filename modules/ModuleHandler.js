@@ -14,10 +14,9 @@ exports.messageHandler = (client,msg) => {
     const message = args.shift();
     for(let i=0;i<message_module_list.length;i++) {
         for(let k=0;k<message_module_list[i].triggers.length;k++) {
-            if(message.startsWith(message_module_list[i].triggers[k].toLowerCase())) {
+            if(message.toLowerCase().startsWith(message_module_list[i].triggers[k].toLowerCase())) {
                 const search = registered_modules[message_module_list[i].module];
                 if(search) {
-                    
                     try {
                         search.run(client,msg,args);
                     }catch(err) {
@@ -78,7 +77,6 @@ function registerCommandModule(module) {
     message_module_list.push({triggers:module.config.triggers,module:module.config.name}); //command module
     //add extra configuration
 }
-
 exports.registerModule = (module) => {
     if(!module.config) throw new Error(`Invalid module registered.`)
     const failed_dependencies = [];

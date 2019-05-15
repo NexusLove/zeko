@@ -12,11 +12,8 @@ db.defaults({dates:[]}).write();
 ]
 */
 exports.config = {
-    activeGuilds: [
-        {
-            id:"291672183627972610",
-            channel:"312396863594692608"
-        }
+    channels: [
+        "291672183627972610"
     ]
 }
 exports.checkForBirthdays = function() {
@@ -38,7 +35,7 @@ exports.checkForBirthdays = function() {
 }
 exports.addBirthday = function(userID,date) {
     const existing = db.get("dates").filter({id:userID}).value();
-    if(existing) throw new Error('Already added to list');
+    if(existing && existing.length > 0) throw new Error('Already added to list');
     db.get("dates").push({id:userID,timestamp:date}).write();
 }
 exports.run = async(client,msg,args) => {

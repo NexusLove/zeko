@@ -17,8 +17,11 @@ exports.run = async(client,msg,args) => {
     }else if(args[0] === "move") {
         if(msg.author.id !== '117024299788926978') return msg.channel.send('⛔ You do not have permission.');
         //if(!msg.member.voiceChannel) return msg.channel.send('Join a channel');
-        let channel = msg.guild.channels.filter(v => v.type === 'voice').find(v => v.id === args[1] || v.name.toLowerCase() === args.slice(1).join(" ").toLowerCase());
-        if(!channel) return msg.channel.send('Could not find that channel');
+        let channel = null;
+        if(args[1].toLowerCase() !== "void" && args[1].toLowerCase() !== "null") {
+            channel = msg.guild.channels.filter(v => v.type === 'voice').find(v => v.id === args[1] || v.name.toLowerCase() === args.slice(1).join(" ").toLowerCase());
+            if(!channel) return msg.channel.send('Could not find that channel');
+        }
         msg.member.voiceChannel.members.forEach(v => {
             v.setVoiceChannel(channel);
         })
@@ -28,7 +31,7 @@ exports.run = async(client,msg,args) => {
         const member = msg.guild.members.find(m => m.user.username.toLowerCase() === args[1] || m.id === args[1] || (m.nickname && m.nickname.toLowerCase() === args[1]));
         if(!member) return msg.channel.send("Cannot find ouser");
         if(!member.voiceChannel) return msg.channel.send("NOT IN VOIC");
-        msg.guild.createChannel('KICK','voice').then(c => {
+        msg.guild.createChannel('bye fuckers','voice').then(c => {
             member.setVoiceChannel(c).then(() => {
                 c.delete();
             })

@@ -7,12 +7,35 @@ const extractor = require("keyword-extractor");
 
 //modules
 const stats = require('../modules/stats.js').db;
-
+const fs = require('fs-extra');
+const {Attachment} = require('discord.js');
 //data
 let notified_dm = [];
 let violations = 0;
+const msgs = {
+	lowerAttachment:[
+		"No.",
+		"I don't think so.",
+		"You are forbidden",
+		"fuck you",
+		"0",
+		"Nope.",
+		"Undo."
+	]
+}
+let last_auto_remove = {};
+let auto_remove_enabled = false;
 module.exports = async (client, msg) => {
 	if(msg.author.bot) return;
+	if(msg.channel.id === "291675586324070401") return;
+	if(auto_remove_enabled && msg.author.id === "303027173659246594") {
+		msg.delete();
+		if(!last_auto_remove[msg.author.id] || Date.now() - last_auto_remove[msg.author.id] > 40000) {
+			msg.channel.send(`${msg.author} Your message was detected to be in violation of the Steve Content Regulations and has been removed automatically.\n_If you think this was incorrect, then your wrong. Zeko is never wrong_`)
+		}
+		last_auto_remove[msg.author.id] = Date.now();
+		return;
+	}
 	/*if(msg.author.id === "303027173659246594" && msg.attachments.size > 0) {
 		msg.channel.send(`${msg.author} I'm sorry but that is currently against The Steve Empire's content regulations. ` + (violations >= 3 ? 'Continuation of these violations will result in punishment.' : ''))
 		violations++;
@@ -22,14 +45,36 @@ module.exports = async (client, msg) => {
 		}
 		return;
 	}*/
+	/*if(msg.mentions.users.size > 0 && msg.mentions.users.first().id === client.user.id) {
+		msg.channel.send("Yes?");
+	}*/
+	if(msg.guild && msg.guild.id === "551224997268553729") {
+		if(!msg.member.roles.has('551225872175202315')) {
+			if(msg.attachments.size > 0) {
+				msg.delete();
+				msg.channel.send(`${msg.member} ${msgs.lowerAttachment[Math.floor(Math.random()*msgs.lowerAttachment.length)]}`)
+			}
+		}
+		if(msg.content.toLowerCase().startsWith("train")) {
+			const trains = await fs.readdir('./db/trains');
+			const train = trains[Math.floor(Math.random()*trains.length)];
+			msg.channel.send(new Attachment(`./db/trains/${train}`))
+		}
+	}
 	if(msg.author.id === "165535234593521673" && msg.content === "¯\\_(ツ)_/¯")  {
 		msg.channel.send("¯\\_(ツ)_/¯")
 	}
 	client.moduleManager.messageHandler(client,msg);
 	if(msg.guild && msg.guild.id !== '137389758228725761' && !msg.content.includes(process.env.PREFIX)) {
-		if(/(despacito|des.{1,5}pa.{1,5}cito)/gm.test(msg.content.toLowerCase().replace(/\s/gm,''))){
+		if(/(despacito|des.{1,5}pa.{1,5}cito?)/gm.test(msg.content.toLowerCase().replace(/\s/gm,''))){
 			msg.delete();
 			return msg.reply('**__no despacito__**').then(m => m.delete(15000))
+		}
+		//( |\t)+((acquir|g(i|e)tt|grabb)(en|ing?))
+		const crapRegex = new RegExp(/(crapp|sh(i|e)tt|poop(e|i)n|anus juice|fecal\smatter|dodo)(ing?|en|in)?.{0,2}( |\t)?(and|n)/,'gm');
+		if(crapRegex.test(msg.content.toLowerCase()) || crapRegex.test(msg.content.toLowerCase().replace(/\s/g,''))){
+			msg.delete();
+			return msg.channel.send(`${msg.author.toString()} nope. we don't say that.`)
 		}
 		/*if(msg.content.toLowerCase().replace(/(despacito|des.{1,3}pa.{1,3}cito)/gm.test(msg.content.toLowerCase()))) {
 			

@@ -34,25 +34,64 @@ module.exports =  async(client) => {
     birthdayModule = client.moduleManager.findModule("birthday");
     require('../modules/server.js')(client);
     client.user.setActivity('Prestoné',{type:'LISTENING'})
-    schedule.scheduleJob({hour: 6, minute: 00}, async() => {
+
+    const trainEmpire = client.guilds.get("551224997268553729");
+    const warnChat = trainEmpire.channels.get("551225517949321236");
+
+    const stevesChat = client.channels.get("291672183627972610")
+    schedule.scheduleJob({hour: 6, minute: 0}, async() => {
         //should be a scheduler, debugging for now
-        if(!birthdayModule) {
+        //check train
+        if(trainEmpire && warnChat) {
+            const failedCheck = [];
+            trainEmpire.members.forEach(v => {
+                if(v.roles.has("551225839908552744") || v.roles.has("551225814033760276")) return;
+                const name = v.nickname||v.user.username;
+                if(!name.toLowerCase().includes("train")) {
+                    failedCheck.push(v);
+                }
+            })
+            if(failedCheck.length > 0) {
+                warnChat.send("**The Following Members Are In Violation of Rule 1:**\n" + failedCheck.map(v => `${v.toString()}`).join("\n")
+                + "\nFailure to comply will result in punishment."
+                );
+
+            }
+        }
+        /*if(stevesChat) {
+            const failedCheck = [];
+            stevesChat.guild.members.forEach(v => {
+                if(v.roles.has("371123829155823627") || v.roles.has("523273422105477130") || v.roles.has("546112985215533057")) return;
+                const name = v.nickname||v.user.username;
+                if(!name.toLowerCase().includes("steve")) {
+                    failedCheck.push(v);
+                }
+            })
+            if(failedCheck.length > 0) {
+                warnChat.send("**The Following Members Are In Violation of Rule 1:**\n" + failedCheck.map(v => `${v.toString()}`).join("\n")
+                + "\nFailure to comply will result in punishment."
+                );
+
+            }
+        }*/
+        if(birthdayModule) {
             const bds = birthdayModule.checkForBirthdays();
+            console.log(bds)
+
             //birthdayModule.config.activeGuilds
-            const guilds = birthdayModule.config.activeGuilds;
+            const channels = birthdayModule.config.channels;
             bds.forEach(v => {
                 const user = client.users.get(v.id);
                 if(!user) return;
-                guilds.forEach(guild => {
-                    const discord_guild = client.guilds.get(guild.id);
-                    if(!guild) return;
-                    if(discord_guild.members.has(v.id)) {
-                        const channel = discord_guild.channels.get(guild.channel);
-                        if(!channel) return;
-                        channel.send(`${user.toString()}'s birthday is today!`)
+                
+                channels.forEach(chn => {
+                    if(chn.guild.members.has(v.id)) {
+                        chn.send(`${user.toString()}'s birthday is today!`)
                     }
                 })
             })
+        }else{
+            console.warn("[ready] BirthdayModule not found")
         }
     });
 }

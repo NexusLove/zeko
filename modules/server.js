@@ -20,11 +20,15 @@ module.exports = (client) => {
     app.use('/quotes',require('./quote').router)
     app.get('/',(req,res) => {
         if(Math.random() > .50) {
-            return res.send("<h1>Hi</h1><audio autoplay loop><source src='https://cdn.jackz.me/drkleiner_why.mp3'></audio>")
+            return res.send("<h1>Hi. I'm zeko</h1><audio autoplay controls loop><source src='https://cdn.jackz.me/drkleiner_why.mp3'></audio>")
         }else{
-            return res.send("<h1>Hi</h1><audio autoplay loop><source src='https://cdn.jackz.me/gman_why.mp3'></audio>")
+            return res.send("<h1>Hi. I'm ZEKO</h1><audio autoplay controls loop><source src='https://cdn.jackz.me/gman_why.mp3'></audio>")
         }
         
+    })
+    app.get('/video-ad',(req,res) => {
+        //req.query
+        res.send("Thank you for paying $1.99. It has been automatically charged to any valid credit cards we found on your computer. You may now use Zeko Equations Feature.");
     })
     app.get('*', function(req, res){
         res.status(404).send('<h1>404</h1><p>Page was not found</p>');
