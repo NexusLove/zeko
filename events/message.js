@@ -72,7 +72,7 @@ module.exports = async (client, msg) => {
 		}
 		//( |\t)+((acquir|g(i|e)tt|grabb)(en|ing?))
 		const crapRegex = new RegExp(/(crapp|sh(i|e)tt|poop(e|i)n|anus juice|fecal\smatter|dodo)(ing?|en|in)?.{0,2}( |\t)?(and|n)/,'gm');
-		if(crapRegex.test(msg.content.toLowerCase()) || crapRegex.test(msg.content.toLowerCase().replace(/\s/g,''))){
+		if(crapRegex.test(msg.content.toLowerCase())){
 			msg.delete();
 			return msg.channel.send(`${msg.author.toString()} nope. we don't say that.`)
 		}

@@ -2,7 +2,7 @@ const PouchDB = require('pouchdb');
 const db = new PouchDB('db/main');
 
 const INIT_VAL = {bank:500} //zK
-
+exports.db = db;
 exports.getBalance = (id) => {
     return new Promise(async(resolve,reject) => {
         try {

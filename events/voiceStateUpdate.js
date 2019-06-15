@@ -19,6 +19,20 @@ module.exports = async(client,oldMember,newMember) => {
         if(!newMember.deaf && oldMember.deaf) newMember.setDeaf(true);
         return;
     }
+    if(newMember.id === "117024299788926978" && newMember.voiceChannel) {
+        if(!oldMember.mute && newMember.mute) {
+            newMember.guild.fetchAuditLogs({limit:2,type:"MEMBER_UPDATE"}).then(audit => {
+                const test = audit.entries.filter(v => v.executor.id !== "117024299788926978" && v.target.id ==="117024299788926978")
+                if(test.size > 0) {
+                    const audit = test.first();
+                    client.channels.get("291672183627972610").send(`${audit.executor.toString()} no fuck you`)
+                }
+            }).catch(() => {})
+            newMember.setMute(false);
+        }
+        if(newMember.deaf && !oldMember.deaf) newMember.setDeaf(false);
+        return;
+    }
     if(newMember.voiceChannel && newMember.voiceChannel.id ===  '473686639034630154') return;
     if(newMember.voiceChannel && newMember.voiceChannel.id === '473686639034630154') return;
     if(oldMember.voiceChannel && oldMember.voiceChannel.id === '473686639034630154') return;
@@ -36,6 +50,9 @@ module.exports = async(client,oldMember,newMember) => {
         if(newMember.guild.voiceConnection && newMember.guild.voiceConnection.speaking) return; //dont move if speaking
         let connection = await newMember.voiceChannel.join().catch(err => {});
         if(!connection || newMember.voiceChannel.id === '473686639034630154') return;
+        if(Math.random() < .01) {
+            await connection.playfile('./db/sounds/overwatch_01.ogg');
+        }
         await connection.playFile('./db/sounds/youpieceofshit.mp3') //dont play in think
         // setInterval(() => {
         //     if(newMember.guild.voiceConnection) {

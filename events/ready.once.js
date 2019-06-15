@@ -3,6 +3,8 @@ const schedule = require('node-schedule');
 let birthdayModule; 
 const whys = ["When","Why","Where","How","Who","Who's"];
 let toDisconnect = [];
+
+const eco = require('../modules/economy').db;
 module.exports =  async(client) => {
     setInterval(() => {
         client.voiceConnections.forEach(conn => {
@@ -93,5 +95,8 @@ module.exports =  async(client) => {
         }else{
             console.warn("[ready] BirthdayModule not found")
         }
+    });
+    var moneySchedule = schedule.scheduleJob({dayOfWeek: 0,hour:6}, function(){
+        console.info('[Economy] Payday time.')
     });
 }

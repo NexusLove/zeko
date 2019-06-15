@@ -11,9 +11,9 @@ exports.run = async(client,msg,args,flag) => {
         const files = await fs.readdir("./db/sounds");
         return msg.author.send("Files: ```" + files.join("\n") + "```")
     }
-    args[0] = args[0].replace(".mp3","");
-    if(!fs.existsSync(`./db/sounds/${args[0]}.mp3`)) {
-        return msg.channel.send(`**${args[0]}.mp3** does not exist`);
+    args[0] = (args[0].split(".").length > 1) ? args[0] : args[0] + ".mp3";
+    if(!fs.existsSync(`./db/sounds/${args[0]}`)) {
+        return msg.channel.send(`**${args[0]}** does not exist`);
     }
     let bitrate = flag.bitrate||flag.quality||8;
     let volume = flag.volume||flag.vol;
@@ -24,14 +24,14 @@ exports.run = async(client,msg,args,flag) => {
    
     if(broadcast) {
         const broadcast = client.createVoiceBroadcast();
-        broadcast.playFile(`./db/sounds/${args[0]}.mp3`,{volume,seek:skip,bitrate})
+        broadcast.playFile(`./db/sounds/${args[0]}`,{volume,seek:skip,bitrate})
         for (const connection of client.voiceConnections.values()) {
             connection.playBroadcast(broadcast);
         }
-        return msg.channel.send(`Broadcasting **${args[0]}.mp3** at ${bitrate*1000}kbps,volume @ ${volume}, seeking to ${skip||0}`);
+        return msg.channel.send(`Broadcasting **${args[0]}** at ${bitrate*1000}kbps,volume @ ${volume}, seeking to ${skip||0}`);
     }
-    msg.channel.send(`Playing **${args[0]}.mp3** at ${bitrate*1000}kbps,volume @ ${volume}, seeking to ${skip||0}`);
-    msg.guild.voiceConnection.playFile(`./db/sounds/${args[0]}.mp3`,{volume,seek:skip,bitrate})
+    msg.channel.send(`Playing **${args[0]}** at ${bitrate*1000}kbps,volume @ ${volume}, seeking to ${skip||0}`);
+    msg.guild.voiceConnection.playFile(`./db/sounds/${args[0]}`,{volume,seek:skip,bitrate})
 }
 
 exports.config = {

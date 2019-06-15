@@ -117,7 +117,9 @@ const RESPONSES = {
         "WHO!?!?"
     ]
 }
-const blacklisted = ["146240326728810496"];
+const blacklisted = [
+    //"146240326728810496"
+];
 
 let birthdayModule;
 exports.init = (client) => {
@@ -130,11 +132,57 @@ exports.config = {
     command:true //dont run as command yet
 }
 exports.run = async(client,msg,args) => {
-    if(Math.random() <= .1) return msg.channel.send(`Sorry ${(msg.member&&msg.member.nickname)?msg.member.nickname:msg.author.username}, I can't do that.`)
+    if(Math.random() <= .001) return msg.channel.send(`Sorry ${(msg.member&&msg.member.nickname)?msg.member.nickname:msg.author.username}, I can't do that.`)
     if(blacklisted.includes(msg.author.id)) return;
     if(args.length == 0) return msg.channel.send(getResponse());
     switch(args[0].toLowerCase()) {
-        case "birthday":
+        case "mcwiki":
+        case "wiki": {
+            const query = args.slice(1).join(" ");
+            got(`https://api.jackz.me/mcwiki/${query}`,{json:true})
+            .then(res => {
+                const r = res.body;
+                //const fields = [];
+                const keys = [];
+                for(const key in r.content) {
+                    console.log(key)
+                    if(["issues","see also","references","gallery","video","trivia"].includes(key.toLowerCase())) continue;
+                    if(r.content[key] === null) continue;
+                    keys.push(key)
+                }
+                let i = 0;
+                msg.channel.send({embed:{
+                    title:`Results for "${r.subject}"`,
+                    thumbnail:{url:r.image},
+                    description:`[[Link to Wiki Page]](https://minecraft.gamepedia.com/${query.replace(/\s/g,'+')})\n` + keys.map(v => {
+                        return `**${++i}.** [${v}](https://minecraft.gamepedia.com/${query.replace(/\s/g,'+')}#${v.replace(/\s/g,'_')})`
+                    }).join("\n")
+                }})
+                const numbers = [ "1⃣", "2⃣", "3⃣", "4⃣", "5⃣","🚫"/*, "6⃣", "7⃣", "8⃣", "9⃣" */];
+                /*for(const key in r.content) {
+                    if(["issues","see also","references","gallery","video","trivia"].includes(key.toLowerCase())) continue;
+                    if(r.content[key] === null) continue;
+                    i++;
+                    if(i > 2) continue;
+                    fields.push({
+                        name:key,
+                        value:(r.content[key].length > 1024) ? r.content[key].slice(0,1021) + "..." : r.content[key]
+                    })
+                }
+                console.log(i,fields.length)
+                msg.channel.send({embed:{
+                    title:r.subject,
+                    description:r.subtitle + "\n[[Link to Wiki]](https://minecraft.gamepedia.com/" + query + ")",
+                    fields
+                }})*/
+            }).catch(err => {
+                msg.channel.send({embed:{
+                    title:'Failed to fetch wiki entry',
+                    description:err.message
+                }})
+            })
+            break;
+        } case "birthday":
             /* enter yyyy mm dd */
             if(!birthdayModule) return msg.channel.send("Sorry, birthday module failed to load.");
             if(args.length < 4) return msg.channel.send("Please enter your birthday in ISO 8601. EX: `zeko birthday YYYY MM DD`");
@@ -190,7 +238,7 @@ exports.run = async(client,msg,args) => {
                         client.user.setActivity(sc.title,{type:'PLAYING'})
                         msg.channel.send({embed:{
                             color:16746496,
-                            author:{name:"Uncle Chegg",icon_url:sc.user.avatar_url},
+                            author:{name:sc.user.username,icon_url:sc.user.avatar_url},
                             thumbnail:{url:sc.artwork_url},
                             description:`Now playing **[${sc.title}](${sc.permalink_url})** (${formatTimeFromSec(sc.duration/1000)})` + (album ? `\nLink was album, playing first song of this album.` : ""),
                             footer:{text:`${formatBytes(sc.original_content_size)} | Requested by ${msg.author.tag}` + ((sc.sharing === "private") ? ` | Private`:"") + ` | ${sc.playback_count} views`}
@@ -323,18 +371,19 @@ exports.run = async(client,msg,args) => {
         case "ply":
         case "yt":
         case "play": {
-            if(Math.random() <= .001) return msg.channel.send("You know what? No. I don't want to play that.")
+            if(Math.random() <= .0001) return msg.channel.send("You know what? No. I don't want to play that.")
             if(!youtube) return msg.channel.send("Youtube support has been disabled");
             let m;
             try {
-                m = await msg.channel.send(`Searching for **${args.slice(1).join(" ")}**`);
+                const query = args.slice(1).join(" ").replace(/#/g,'');
+                m = await msg.channel.send(`Searching for **${(query.includes("http")?`<${query}>`:query)}**`);
                 if(!msg.guild.voiceConnection) {
                     if(!msg.member.voiceChannel) return m.edit("Please join a voice channel.");
                     await msg.member.voiceChannel.join();
                 }
                 if(msg.guild.voiceConnection && msg.guild.voiceConnection.dispatcher && msg.author.id === "303027173659246594") return m.edit("🚫 Forbidden preston until current song is done")
                 const start = Date.now();                
-                const results = await youtube.searchVideos(args.slice(1).join(" "),1);
+                const results = await youtube.searchVideos(query,1);
                 if(results.length === 0) return m.edit("Could not find any videos with that name.");
                 m.edit(`Loading **${results[0].title}**...`)
                 
@@ -343,9 +392,21 @@ exports.run = async(client,msg,args) => {
                 //if(video.duration.hours > 3) return m.edit("Sorry, No. Over 90minutes.")
                 const conn = msg.guild.voiceConnection;
                 const stream = ytdl(results[0].id,{ filter : 'audioonly' })
+
+                let ytdl_error = null;
+                stream.on('error',(err) => {
+                    console.log('[zeko/PLAY] ' + err.message)
+                    if(err.message.includes("403")) {
+                        m.edit(`❌ **Error Occurred**: Status Code 403 - Quota Reached`)
+                    }else{
+                        m.edit(`❌ **Error Occurred**: ${err.message}`)
+                    }
+                    ytdl_error = err.message;
+                })
                 let lastPercent = null;
                 let msTook = null;
                 stream.on("progress",(length,downloaded,total) => {
+                    console.log(downloaded,total)
                     try {
                         let percent = Math.round((downloaded/total*100)/10)*10;
                         const timeTaken = (msTook) ? `Fetched in ${(msTook/1000).toFixed(1)} secs | ` : "";
@@ -357,7 +418,7 @@ exports.run = async(client,msg,args) => {
                                 description:`Now playing **[${results[0].title}](https://youtu.be/${results[0].id})** by **${results[0].channel.title}** (${formatTime(video.duration)})`
                             }})
                         }
-                        if(percent > .60 && percent < .75 && Math.random() < .01) {
+                        if(percent > .60 && percent < .75 && Math.random() < .001) {
                             console.log("haha im cool");
                             conn.disconnect();
                             m.edit("8df9ec965fbef9b7e6667a0b66024383");
@@ -378,7 +439,9 @@ exports.run = async(client,msg,args) => {
                         const userstring = (user) ? `by ${user.tag}` : "";
                         m.edit(`Video was skipped ${userstring}`)
                     }else{
-                        m.edit("Video has completed.")
+                        console.log(reason,ytdl_error)
+                        if(ytdl_error != null) return;
+                        m.edit("Video has completed. " + reason)
                     }
                     client.user.setActivity('Prestoné',{type:'LISTENING'})
                 })
@@ -386,13 +449,8 @@ exports.run = async(client,msg,args) => {
                 
 
             }catch(err) {
-                console.log('[zeko] ' + err.stack)
-                /*msg.channel.send({embed:{
-                    title:'Error Occurred while Playing',
-                    color:12857387,
-                    description: `${err.message}`
-                }});*/
-                msg.channel.send(`Error: ${err.message}`)
+                console.log('[zeko/PLAY] ' + err.message)
+                msg.channel.send(`❌ Error Occurred: ${err.message}`)
                 if(m) m.delete();
             }
             break;
@@ -485,6 +543,7 @@ exports.run = async(client,msg,args) => {
             const query = args[1].toLowerCase();
             let user = await client.users.filter(v => !v.bot).find(v => v.username.toLowerCase() === query || v.id === query || v.username.toLowerCase().startsWith(query) || query.startsWith(v.username.toLowerCase()));
             if(!user) return msg.channel.send(getResponse("tell"))
+            if(user.id === "117024299788926978") return msg.channel.send("fook off m8. i dont want your shitty message. fuk u and fook ur fooking ugly face cunt")
             user.send(`${msg.author.tag} told me to tell you: \`\`\`${args.slice(2).join(" ")}\`\`\``)
             .then(r => msg.react("👍").catch(() => {}))
             .catch(err => {

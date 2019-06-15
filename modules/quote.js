@@ -17,7 +17,7 @@ router.get('/',(req,res) => {
     const items = {};
     QUOTES.forEach(v => { 
         if(!items[v.type]) items[v.type] = [];
-        items[v.type].push(v.value)
+        items[v.type].push(v);
     })
     return res.render('quotes',{items})
 });
