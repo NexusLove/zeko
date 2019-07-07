@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const schedule = require('node-schedule');
 let birthdayModule; 
 const whys = ["When","Why","Where","How","Who","Who's"];

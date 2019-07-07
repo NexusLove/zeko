@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const path = require('path')
 exports.getFile = (name,defVal) => {
     //getFile returns file, and creates if missing

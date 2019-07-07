@@ -19,7 +19,7 @@ exports.run = async(client,msg,args) => {
     try {
         if(!temp.includes(msg.author.id)) {
             temp.push(msg.author.id)
-            return msg.channel.send("Please watch this video to get your equation or pay $1.99:\nhttps://zeko.jackz.me/video-ad?type=math&clientid=" + msg.author.id);
+            return msg.channel.send("Please watch this video to get your equation or pay $2.99:\nhttps://zeko.jackz.me/video-ad?type=math&clientid=" + msg.author.id);
         }
         //msg.channel.startTyping();
         const parsed = math.parse(args.join(" ").replace(/`/g,""));

@@ -1,0 +1,9 @@
+{
+    "script": "bot.js",
+    "watch": true,
+    "ignore_watch": ["node_modules","db","node_modules","recordings","rehost"],
+    "watch_options": {
+        "followSymlinks": false
+    },
+    "name": "zeko"
+}

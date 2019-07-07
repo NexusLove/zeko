@@ -8,7 +8,7 @@ db.defaults({playlists:[]}).write();
 const quality = 24; //* 1000;
 
 const uuid = require('uuid/v4');
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 exports.run = async(client,msg,args,flag) => {
     if(args.length === 0) return msg.channel.send("Please add a sopng nanemt and any options");
     switch(args[0].toLowerCase()) {

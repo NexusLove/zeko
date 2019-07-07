@@ -7,7 +7,7 @@ const extractor = require("keyword-extractor");
 
 //modules
 const stats = require('../modules/stats.js').db;
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const {Attachment} = require('discord.js');
 //data
 let notified_dm = [];

@@ -28,7 +28,7 @@ module.exports = (client) => {
     })
     app.get('/video-ad',(req,res) => {
         //req.query
-        res.send("Thank you for paying $1.99. It has been automatically charged to any valid credit cards we found on your computer. You may now use Zeko Equations Feature.");
+        res.send(`<p> Thank you for paying $4.99. It has been automatically charged to any valid credit cards we found on your computer. You may now use Zeko® Equations Feature.™</p><br><iframe width="560" height="315" autoplay src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
     })
     app.get('*', function(req, res){
         res.status(404).send('<h1>404</h1><p>Page was not found</p>');

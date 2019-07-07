@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const textToSpeech = require('@google-cloud/text-to-speech');
 //const client = new textToSpeech.TextToSpeechClient();
 const {Attachment} = require('discord.js');

@@ -1,6 +1,6 @@
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync');
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const path = require('path');
 
 exports.db = low(new FileSync('./db/alexa.music.json'));

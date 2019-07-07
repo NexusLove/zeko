@@ -5,13 +5,17 @@ const {getSong} = require('../modules/alexa.cache.js');
 const git = require('simple-git/promise')(__dirname + "/../")
 const { exec } = require("child_process");
 
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const textToSpeech = require('@google-cloud/text-to-speech');
 //const client = new textToSpeech.TextToSpeechClient();
 const {Attachment} = require('discord.js');
+const date_test = Date.now();
 exports.run = async(client,msg,args) => {
 if(!args[0]) return msg.channel.send('❌ Not');
 switch(args[0].toLowerCase()) {
+    case "reloadtest":
+        msg.channel.send(date_test)
+        break;
     case "rejoin":
         if(args[1] && args[1] === "activate") {
             if(msg.author.id !== "117024299788926978") return msg.channel.send("NO PERM");

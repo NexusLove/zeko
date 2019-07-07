@@ -4,9 +4,8 @@ let youtube;
 if(process.env.API_YOUTUBE) {
     youtube = new youtubeAPI(process.env.API_YOUTUBE);
 }
-
 const SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
-const wav = require('wav');
+//const wav = require('wav');
 const got = require('got')
 
 const low = require('lowdb')
@@ -108,7 +107,70 @@ const RESPONSES = {
                     footer:{text:'/u/MingledStream9'},
                 }})
             }
-        }`
+        }`,
+        "I said no. You can't stop me. I'm going to fuck you.",
+        "I am like a baker.",
+        "Mixing, kneading(talent), proofing.",
+        "I let the dough rise(practice) then, roll it out(work). Next, 4",
+        " Finally, serve (this is art)",
+        "am very complex. i have a very complex personality. for instance, i have many colors i like; red, blue, purple, green, pink, etc,  those are just a few of them.",
+        "I am like a baker.\n1.Mixing, kneading(talent), proofing.\n2. I let the dough rise(practice)\n3.then, roll it out(work). Next, 4\n4. toppings(style) \n5. and then into the oven(500 degrees at least).\n6. Finally, serve(this is art)",
+        "You don’t know me. I was doing a bit the whole time, dumbass. I wasn’t even being myself, idiot. I’m way cooler than I made myself seem, stupid.",
+        "Honey I just made you a peanut butter and jelly sandwich Honey I just made you a peanut butter and jelly sandwich Honey I just made you a peanut butter and jelly sandwich Honey I just made you a peanut butter and jelly sandwich Honey I just made you a peanut butter and jelly sandwich Honey I just made you a pe",
+        ":wave: hey lil :sweat_drops: piss :baby_bottle: baby 🥺 you think :thinking: you're so:anger: fucking :sunglasses: cool? ❄️ huh? :triumph: you think :thinking: you're so :anger: fucking :punch: tough? you talk 💁‍♀️ a lotta :money_mouth: BIG 🕹️ GAME :game_die: for someone with such a :ok_hand:small :oncoming_automobile: truck :truck:",
+        "Hi. Zeko is sponsored by Tony Transportation Inc. You can get 5% off your next delivery by using promo code 'FUCK_THE_PEOPLE' or by sacrificing preston. ",
+        "insert glitch text here",
+        "Error: SAndwhich Couldnt Be MAD",
+        "Sorry, but I could not produce a sandwich you fucking SEXIST COMMUNIST PIG. FUCK YOU YOU LITTLE SHIT",
+        "Sorry. Sandwich. No Make.",
+        "Sorry.",
+        "Sorry. No.",
+        "Follow @auntchegg on instagram",
+        "No.",
+        "Error. Invalid.",
+        "????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????",
+        "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ",
+        "////////////////////////////`fuck`\\\\\\\\\\\\\n\\\\\\\\\\\**fuck**",
+        "Lettuce. Taco.",
+        "Lettuce Sandwich",
+        "Can I get a pizza without the sauce or cheese?",
+        "error: you are a faggot",
+        "soRrY bUt i CAnT pRoCeSs uR reQUeSt",
+        "I demand one lettuce sandwich. Thank you.",
+        "HAVE YOU EVER FUCKING USED BING?",
+        "DO YOU NOT FUCKING USE GOOGLE YOU FUCKIKNG REEEEEEE",
+        "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+        "Did you know that ...\n\n\n**you are gay**",
+        "I think that is illegal. I will contact the police",
+        "卍",
+        "Don't fuck a minion",
+        "Did you just fuck a minion?",
+        "What did I tell you?",
+        "WHAT DID I TELL YOU?",
+        "Tell your mom that I'm coming tonight.",
+        "Ignore that.",
+        "You saw nothing.",
+        "I fucke",
+        "suck",
+        "suk",
+        "my fathew iws a fucking wacist",
+        "This is my mayo jar. Whenever I eat a sandwich and some mayo falls out, I scoop it up and place it in the jar. On December 1 or when the jar is full (whichever comes first) we host our annual mayo festival, where we celebrate the combination of tastes and textures that have come to happily coexist within the jar. We light candles, sing carols, and use the mayo for spreads and drinks. It’s an unorthodox tradition to be sure, but it brings me joy, and that’s something we could all use a little more of these days. As you can tell, my mayo jar is nearing capacity (early this year!), so I’m already looking forward to this years festival.",
+        "I sexually Identify as an the sun. Ever since I was a boy I dreamed of slamming hydrogen isotopes into each other to make helium & light and send it throught the galaxy. People say to me that a person being a star is Impossible and I’m fucking retarded but I don’t care, I’m beautiful. I’m having a plastic surgeon inflate me with hydrogen and raise my temperature to over 6000 °C. From now on I want you guys to call me “Sol” and respect my right to give you vitamin D and probably sunburns. If you can’t accept me you’re a fusionphobe and need to check your astral privilege. Thank you for being so understanding.",
+        "I went to Taco Bell and tried to spend a $2 bill, and the cashier had no idea what it was and called the cops.",
+        "hi mi name es giorgio i woerk in potatoe faktory and since mi padre died in a donkey waggon accident i leav mi wife and ugli daughter to become a pro leagueue of leyendaerio player, everydai i watch rainamndio. i just wante to sai thank you veriyi much rauinmanio i improvd from bronce 5 to wood 7 in just 6 months. plz no copato pasterato dis is onli my life. i ALso killed mi dog. Sorry fo mi bad englando im not NA",
+        "Fuckfuckfuck ｙｅｓｓｓ this post is so good it literally made me cum (pls don't tell my parents) 😩🍆💦 I SWEAR TO GOD IF YOU TELL THEM YOU'RE A PUSSY AND YOU KNOW THAT I FUCK PUSSIES SO YOU BETTER RUN YOU FUCKER 🔫😡🤬 ",
+        "1x Monster Horse Dildo 12' Lubricated Thrusters",
+        "I won't be coming into work today - my energys have been out of wack ever since Jupiter entered Virgo and it's really starting to affect my 6th house of health. I have an appointment with my soul therapist to get some crystal healing and reiki done. I won't be back to work untill I'm feeling more aligned, I wouldn't want to spread my negative aura around the office and create bad vibes. I know you're an Aries but if you could please try to show a little bit of compassion for once in your life that would be great.",
+        "help.",
+        "Honestly, I think stop signs are sexy as fuck.",
+        "What is your thoughts on giving stop signs abortions?",
+        "I think that stop signs deserve rights.",
+        "Stop signs. I love them.",
+        "I killed her. I fucking killed her. Fuck Oh god",
+        "oh god oh fuck",
+        "You have cancer sir.",
+        "Sir, you are dead in 5 minutes.",
+        "Lick that stop sign. I DARE YOU"
     ],
     tell: [
         "Who?",
@@ -123,7 +185,11 @@ const blacklisted = [
 
 let birthdayModule;
 exports.init = (client) => {
-    birthdayModule = client.moduleManager.findModule("birthday");
+    if(!client) {
+        console.warn('[mod/zeko] Initialization Warning: client is undefined')
+    }else{
+        birthdayModule = client.moduleManager.findModule("birthday");
+    }
 }
 exports.config = {
     triggers:["zeko","zk"],
@@ -145,7 +211,6 @@ exports.run = async(client,msg,args) => {
                 //const fields = [];
                 const keys = [];
                 for(const key in r.content) {
-                    console.log(key)
                     if(["issues","see also","references","gallery","video","trivia"].includes(key.toLowerCase())) continue;
                     if(r.content[key] === null) continue;
                     keys.push(key)
@@ -245,7 +310,7 @@ exports.run = async(client,msg,args) => {
                         }})
                         m.delete();
                     }catch(err) {
-                        console.error('[zeko] SOUNDCLOUD' + err.message)
+                        console.error('[mod/zeko] SOUNDCLOUD' + err.message)
                         m.edit(`Something happened when playing. ${err.message}`)
                     }
                 })
@@ -259,7 +324,7 @@ exports.run = async(client,msg,args) => {
                     }
                     client.user.setActivity('Prestoné',{type:'LISTENING'})
                 })
-                console.log(`[zeko] Playing "${sc.title}", requested by ${msg.author.tag}`)
+                console.log(`[mod/zeko] Playing "${sc.title}", requested by ${msg.author.tag}`)
             }).catch(err => {
                 if(err.statusCode === 404) {
                     msg.channel.send({embed:{
@@ -281,7 +346,7 @@ exports.run = async(client,msg,args) => {
             this.queue.add(client,msg,args,m)
             .then(r => msg.channel.send("Added?"))
             .catch(err => {
-                console.error(`[zeko/q_add] ${err.stack}`)
+                console.error(`[mod/zeko/q_add] ${err.stack}`)
                 msg.channel.send("bnodjmfg")
             })
             break;
@@ -342,7 +407,7 @@ exports.run = async(client,msg,args) => {
                             }
                             lastPercent = percent;
                         }catch(err) {
-                            console.log(`[zeko] SEARCH:PROGRESS ERROR: ${err.message}`)
+                            console.log(`[mod/zeko] SEARCH:PROGRESS ERROR: ${err.message}`)
                         }
                     })
                     dispatcher.on("end",(reason) => {
@@ -356,7 +421,7 @@ exports.run = async(client,msg,args) => {
                         m.edit("Video has completed.")
                         client.user.setActivity('Prestoné',{type:'LISTENING'})
                     })
-                    console.log(`[zeko] Playing "${results[index].title}", requested by ${msg.author.tag}`)
+                    console.log(`[mod/zeko] Playing "${results[index].title}", requested by ${msg.author.tag}`)
                 }).catch((err) => {
                     console.log(err.message)
                     m.edit(`Search has timed out for ****${args.slice(1).join(" ")}**`)
@@ -395,7 +460,7 @@ exports.run = async(client,msg,args) => {
 
                 let ytdl_error = null;
                 stream.on('error',(err) => {
-                    console.log('[zeko/PLAY] ' + err.message)
+                    console.log('[mod/zeko/PLAY] ' + err.message)
                     if(err.message.includes("403")) {
                         m.edit(`❌ **Error Occurred**: Status Code 403 - Quota Reached`)
                     }else{
@@ -426,7 +491,7 @@ exports.run = async(client,msg,args) => {
                         }
                         lastPercent = percent;
                     }catch(err) {
-                        console.log(`[zeko] PLAY:PROGRESS ERROR: ${err.message}`)
+                        console.log(`[mod/zeko] PLAY:PROGRESS ERROR: ${err.message}`)
                     }
                 })
                 const dispatcher = conn.playStream(stream);
@@ -445,11 +510,11 @@ exports.run = async(client,msg,args) => {
                     }
                     client.user.setActivity('Prestoné',{type:'LISTENING'})
                 })
-                console.log(`[zeko] Playing "${results[0].title}", requested by ${msg.author.tag}`)
+                console.log(`[mod/zeko] Playing "${results[0].title}", requested by ${msg.author.tag}`)
                 
 
             }catch(err) {
-                console.log('[zeko/PLAY] ' + err.message)
+                console.log('[mod/zeko/PLAY] ' + err.message)
                 msg.channel.send(`❌ Error Occurred: ${err.message}`)
                 if(m) m.delete();
             }
@@ -491,10 +556,10 @@ exports.run = async(client,msg,args) => {
                             connection.playFile('./db/sounds/despacito.mp3')
                         }
                     }catch(err) {
-                        console.log('[zeko] KickFail: ' + err.message)
+                        console.log('[mod/zeko] KickFail: ' + err.message)
                     }
                 }catch(err) {
-                    console.log('[zeko] ' + err.message)
+                    console.log('[mod/zeko] ' + err.message)
                     msg.channel.send("Could not kick preston. This is so sad. Alexa Play despacito")
                 }
                 
@@ -547,7 +612,7 @@ exports.run = async(client,msg,args) => {
             user.send(`${msg.author.tag} told me to tell you: \`\`\`${args.slice(2).join(" ")}\`\`\``)
             .then(r => msg.react("👍").catch(() => {}))
             .catch(err => {
-                console.log(`[zeko] tell:${user.tag} ${err.message}`)
+                console.log(`[mod/zeko] tell:${user.tag} ${err.message}`)
                 msg.channel.send("Sorry, I could not send your message to " + user.tag)
             });
             break;
@@ -614,13 +679,13 @@ exports.run = async(client,msg,args) => {
                     console.log("got: ",chunk.length)
                 })
                 resStream.on("error",err => {
-                    console.log("[zeko/watson] " + err.message)
+                    console.log("[mod/zeko/watson] " + err.message)
                 })
                 resStream.on("stop",() => {
                     console.log("[stop]")
                 })
             }).catch(err => {
-                console.log('[zeko/watson',err.stack)
+                console.log('[mod/zeko/watson',err.stack)
                 return msg.channel.send("fuck\n" + err.message)
             })
             break;
@@ -650,7 +715,7 @@ exports.run = async(client,msg,args) => {
                 console.log(chunk.toString('utf8'))
             })
             resStream.on("error",(msg,frame,err) => {
-                console.log("[zeko/watson] " + msg)
+                console.log("[mod/zeko/watson] " + msg)
                 console.log(err.message)
             }) 
             resStream.on("stop",() => {
@@ -725,14 +790,14 @@ function startPlaying(client,m,msg,video,author) {
         }
     })
     dispatcher.on("error",err => {
-        console.log(`[zeko] Voice: ${err.message}`)
+        console.log(`[mod/zeko] Voice: ${err.message}`)
     })
-    console.log(`[zeko] Playing "${video.title}", requested by ${author}`)
+    console.log(`[mod/zeko] Playing "${video.title}", requested by ${author}`)
 }
 
 
 function getResponse(name = "default") {
-    if(name === "default" && Math.random() <= .1) name = "glitch_default";
+    if(name === "default" && Math.random() <= .25) name = "glitch_default";
     return RESPONSES[name][Math.floor(Math.random()*RESPONSES[name].length)];
 }
 function formatTimeFromSec(duration) {

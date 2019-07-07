@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 exports.run = async(client,msg,args,flag) => {
     if(msg.author.id === "303027173659246594") return msg.channel.send(':no_entry: You do not have permission');
     if(!args[0]) return msg.channel.send(':middle_finger:');

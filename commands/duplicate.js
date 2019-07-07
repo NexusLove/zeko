@@ -2,7 +2,7 @@ const default_percent = 50;
 const stringSim = require('string-similarity');
 const extractor = require("keyword-extractor");
 
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 
 exports.run = (client,msg,args) => {
 	const finalMatches = [];

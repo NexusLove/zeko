@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs').promises;
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 

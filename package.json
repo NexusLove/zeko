@@ -1,6 +1,6 @@
 {
   "name": "andrewserver",
-  "version": "1.16.0",
+  "version": "1.0.0",
   "description": "",
   "main": "bot.js",
   "scripts": {
@@ -37,6 +37,7 @@
     "node-webshot": "^1.0.2",
     "node-zip": "^1.1.1",
     "opusscript": "^0.0.6",
+    "pm2": "^3.5.1",
     "pouchdb": "^7.0.0",
     "present": "^1.0.0",
     "qr-image": "^3.2.0",
@@ -50,7 +51,6 @@
     "watson-speech": "^0.35.4",
     "wav": "^1.0.2",
     "website-scraper": "^3.3.2",
-    "ytdl-core": "^0.26.3",
-    "ytdl-core-discord": "^1.0.2"
+    "ytdl-core": "^0.26.3"
   }
 }
