@@ -33,3 +33,6 @@ nodemon.json
 recordings
 db/
 .node-persist
+commands/
+events/
+modules/

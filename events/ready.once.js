@@ -6,6 +6,7 @@ let toDisconnect = [];
 
 const eco = require('../modules/economy').db;
 module.exports =  async(client) => {
+    const log = new client.Logger("ready.once",{type:'event'});
     setInterval(() => {
         client.voiceConnections.forEach(conn => {
             const users = conn.channel.members.filter(v => !v.user.bot).size
@@ -25,7 +26,7 @@ module.exports =  async(client) => {
                     try {
                         if(conn.channel.members.filter(v => !v.user.bot).size === 0) conn.disconnect()
                     }catch(err) {
-                        console.log("[ready]",err)
+                        log.error(err)
                     }
                 },1.8e+6)
                 //conn.disconnect().catch(err => console.error('[ready] ' + err.message));
@@ -33,7 +34,6 @@ module.exports =  async(client) => {
             //todo: time out feature?
         })
     },5000);
-    birthdayModule = client.moduleManager.findModule("birthday");
     require('../modules/server.js')(client);
     client.user.setActivity('Prestoné',{type:'LISTENING'})
 
@@ -76,27 +76,8 @@ module.exports =  async(client) => {
 
             }
         }*/
-        if(birthdayModule) {
-            const bds = birthdayModule.checkForBirthdays();
-            console.log(bds)
-
-            //birthdayModule.config.activeGuilds
-            const channels = birthdayModule.config.channels;
-            bds.forEach(v => {
-                const user = client.users.get(v.id);
-                if(!user) return;
-                
-                channels.forEach(chn => {
-                    if(chn.guild.members.has(v.id)) {
-                        chn.send(`${user.toString()}'s birthday is today!`)
-                    }
-                })
-            })
-        }else{
-            console.warn("[ready] BirthdayModule not found")
-        }
     });
     var moneySchedule = schedule.scheduleJob({dayOfWeek: 0,hour:6}, function(){
-        console.info('[Economy] Payday time.')
+        log.info('Payday time.')
     });
 }

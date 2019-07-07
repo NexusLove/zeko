@@ -4,7 +4,9 @@ const JsonDB = require('node-json-db')
 const rimraf = require('rimraf');
 const express = require('express');
 const router = express.Router();
-
+exports.config = {
+    type:'normal'
+}
 router.get('/',async (req,res) => {
     let files = [];
     await fs.readdirSync(__dirname + "/../rehost").forEach(file => {

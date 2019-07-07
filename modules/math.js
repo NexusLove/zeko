@@ -1,10 +1,10 @@
-const math = require('mathjs');
-math.import({
+const { parse } = require('mathjs')
+/*math.import({
     'import': function () { throw new Error('Function import is disabled') },
     'createUnit': function () { throw new Error('Function createUnit is disabled') },
     'eval': function () { throw new Error('Function eval is disabled') },
     'derivative': function () { throw new Error('Function derivative is disabled') }
-}, { override: true })
+}, { override: true })*/
 
 exports.config = {
     triggers:["=","=math","math"],
@@ -22,7 +22,7 @@ exports.run = async(client,msg,args) => {
             return msg.channel.send("Please watch this video to get your equation or pay $2.99:\nhttps://zeko.jackz.me/video-ad?type=math&clientid=" + msg.author.id);
         }
         //msg.channel.startTyping();
-        const parsed = math.parse(args.join(" ").replace(/`/g,""));
+        const parsed = parse(args.join(" ").replace(/`/g,""));
         const node = parsed.compile().eval();
         msg.channel.send(`**Result: ** ${node}`)
         //msg.channel.stopTyping();

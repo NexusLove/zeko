@@ -86,9 +86,9 @@ const RESPONSES = {
         " ",
         `exports.postQuote = (client,channel) => {
             let guild = client.guilds.get('358740474623819777');
-            if(!guild) return console.info('[Quote] Guild not found, is bot in server?');
+            if(!guild) return log.info('[Quote] Guild not found, is bot in server?');
             if(!channel) channel = guild.channels.get('358740655205515265'); //get manually
-            if(!channel) return console.info('[Quote] Guild channel not found, is bot in server?'); //log if failed again
+            if(!channel) return log.info('[Quote] Guild channel not found, is bot in server?'); //log if failed again
         
             const QUOTES = this.db.getData('/quotes');
             const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
@@ -184,11 +184,13 @@ const blacklisted = [
 ];
 
 let birthdayModule;
+let log;
 exports.init = (client) => {
     if(!client) {
-        console.warn('[mod/zeko] Initialization Warning: client is undefined')
+        log.warn('Initialization Warning: client is undefined')
     }else{
-        birthdayModule = client.moduleManager.findModule("birthday");
+        log = new client.Logger("zeko",{type:'module'})
+        birthdayModule = client.moduleManager.getModule("birthday");
     }
 }
 exports.config = {
@@ -234,7 +236,7 @@ exports.run = async(client,msg,args) => {
                         value:(r.content[key].length > 1024) ? r.content[key].slice(0,1021) + "..." : r.content[key]
                     })
                 }
-                console.log(i,fields.length)
+                log.log(i,fields.length)
                 msg.channel.send({embed:{
                     title:r.subject,
                     description:r.subtitle + "\n[[Link to Wiki]](https://minecraft.gamepedia.com/" + query + ")",
@@ -310,7 +312,7 @@ exports.run = async(client,msg,args) => {
                         }})
                         m.delete();
                     }catch(err) {
-                        console.error('[mod/zeko] SOUNDCLOUD' + err.message)
+                        log.error('SOUNDCLOUD' + err.message)
                         m.edit(`Something happened when playing. ${err.message}`)
                     }
                 })
@@ -324,7 +326,7 @@ exports.run = async(client,msg,args) => {
                     }
                     client.user.setActivity('Prestoné',{type:'LISTENING'})
                 })
-                console.log(`[mod/zeko] Playing "${sc.title}", requested by ${msg.author.tag}`)
+                log.log(`Playing "${sc.title}", requested by ${msg.author.tag}`)
             }).catch(err => {
                 if(err.statusCode === 404) {
                     msg.channel.send({embed:{
@@ -346,7 +348,7 @@ exports.run = async(client,msg,args) => {
             this.queue.add(client,msg,args,m)
             .then(r => msg.channel.send("Added?"))
             .catch(err => {
-                console.error(`[mod/zeko/q_add] ${err.stack}`)
+                log.error(`[mod/zeko/q_add] ${err.stack}`)
                 msg.channel.send("bnodjmfg")
             })
             break;
@@ -407,7 +409,7 @@ exports.run = async(client,msg,args) => {
                             }
                             lastPercent = percent;
                         }catch(err) {
-                            console.log(`[mod/zeko] SEARCH:PROGRESS ERROR: ${err.message}`)
+                            log.log(`SEARCH:PROGRESS ERROR: ${err.message}`)
                         }
                     })
                     dispatcher.on("end",(reason) => {
@@ -421,9 +423,9 @@ exports.run = async(client,msg,args) => {
                         m.edit("Video has completed.")
                         client.user.setActivity('Prestoné',{type:'LISTENING'})
                     })
-                    console.log(`[mod/zeko] Playing "${results[index].title}", requested by ${msg.author.tag}`)
+                    log.log(`Playing "${results[index].title}", requested by ${msg.author.tag}`)
                 }).catch((err) => {
-                    console.log(err.message)
+                    log.log(err.message)
                     m.edit(`Search has timed out for ****${args.slice(1).join(" ")}**`)
                 });
                 await numbers.reduce((p, e, i) => p.then(async () => {
@@ -460,7 +462,7 @@ exports.run = async(client,msg,args) => {
 
                 let ytdl_error = null;
                 stream.on('error',(err) => {
-                    console.log('[mod/zeko/PLAY] ' + err.message)
+                    log.log('[mod/zeko/PLAY] ' + err.message)
                     if(err.message.includes("403")) {
                         m.edit(`❌ **Error Occurred**: Status Code 403 - Quota Reached`)
                     }else{
@@ -471,7 +473,7 @@ exports.run = async(client,msg,args) => {
                 let lastPercent = null;
                 let msTook = null;
                 stream.on("progress",(length,downloaded,total) => {
-                    console.log(downloaded,total)
+                    log.log(downloaded,total)
                     try {
                         let percent = Math.round((downloaded/total*100)/10)*10;
                         const timeTaken = (msTook) ? `Fetched in ${(msTook/1000).toFixed(1)} secs | ` : "";
@@ -484,14 +486,14 @@ exports.run = async(client,msg,args) => {
                             }})
                         }
                         if(percent > .60 && percent < .75 && Math.random() < .001) {
-                            console.log("haha im cool");
+                            log.log("haha im cool");
                             conn.disconnect();
                             m.edit("8df9ec965fbef9b7e6667a0b66024383");
                             return;
                         }
                         lastPercent = percent;
                     }catch(err) {
-                        console.log(`[mod/zeko] PLAY:PROGRESS ERROR: ${err.message}`)
+                        log.log(`PLAY:PROGRESS ERROR: ${err.message}`)
                     }
                 })
                 const dispatcher = conn.playStream(stream);
@@ -504,17 +506,17 @@ exports.run = async(client,msg,args) => {
                         const userstring = (user) ? `by ${user.tag}` : "";
                         m.edit(`Video was skipped ${userstring}`)
                     }else{
-                        console.log(reason,ytdl_error)
+                        log.log(reason,ytdl_error)
                         if(ytdl_error != null) return;
                         m.edit("Video has completed. " + reason)
                     }
                     client.user.setActivity('Prestoné',{type:'LISTENING'})
                 })
-                console.log(`[mod/zeko] Playing "${results[0].title}", requested by ${msg.author.tag}`)
+                log.log(`Playing "${results[0].title}", requested by ${msg.author.tag}`)
                 
 
             }catch(err) {
-                console.log('[mod/zeko/PLAY] ' + err.message)
+                log.log('[mod/zeko/PLAY] ' + err.message)
                 msg.channel.send(`❌ Error Occurred: ${err.message}`)
                 if(m) m.delete();
             }
@@ -556,10 +558,10 @@ exports.run = async(client,msg,args) => {
                             connection.playFile('./db/sounds/despacito.mp3')
                         }
                     }catch(err) {
-                        console.log('[mod/zeko] KickFail: ' + err.message)
+                        log.log('KickFail: ' + err.message)
                     }
                 }catch(err) {
-                    console.log('[mod/zeko] ' + err.message)
+                    log.log('' + err.message)
                     msg.channel.send("Could not kick preston. This is so sad. Alexa Play despacito")
                 }
                 
@@ -612,7 +614,7 @@ exports.run = async(client,msg,args) => {
             user.send(`${msg.author.tag} told me to tell you: \`\`\`${args.slice(2).join(" ")}\`\`\``)
             .then(r => msg.react("👍").catch(() => {}))
             .catch(err => {
-                console.log(`[mod/zeko] tell:${user.tag} ${err.message}`)
+                log.log(`tell:${user.tag} ${err.message}`)
                 msg.channel.send("Sorry, I could not send your message to " + user.tag)
             });
             break;
@@ -671,21 +673,21 @@ exports.run = async(client,msg,args) => {
                     //url:'ws://stream.watsonplatform.net/speech-to-text/api'
                 });
                 await conn.playFile('./db/sounds/fixAudio.wav');
-                console.log("Established connection")
+                log.log("Established connection")
                 const recv = conn.createReceiver();
                 const OpusStream = recv.createOpusStream(msg.author.id) 
                     
                 resStream.on("data",chunk => {
-                    console.log("got: ",chunk.length)
+                    log.log("got: ",chunk.length)
                 })
                 resStream.on("error",err => {
-                    console.log("[mod/zeko/watson] " + err.message)
+                    log.log("[mod/zeko/watson] " + err.message)
                 })
                 resStream.on("stop",() => {
-                    console.log("[stop]")
+                    log.log("[stop]")
                 })
             }).catch(err => {
-                console.log('[mod/zeko/watson',err.stack)
+                log.log('[mod/zeko/watson',err.stack)
                 return msg.channel.send("fuck\n" + err.message)
             })
             break;
@@ -707,19 +709,19 @@ exports.run = async(client,msg,args) => {
             const resStream = file.pipe(watStream);
             //const resStream = OpusStream.pipe(watStream)
             resStream.on("open",() => {
-                console.log("Starting")
+                log.log("Starting")
                 msg.channel.send(`Converting Speech to Text with **${song}**`)
             })
             resStream.on("data",chunk => {
                 msg.channel.send(chunk.toString("utf8"))
-                console.log(chunk.toString('utf8'))
+                log.log(chunk.toString('utf8'))
             })
             resStream.on("error",(msg,frame,err) => {
-                console.log("[mod/zeko/watson] " + msg)
-                console.log(err.message)
+                log.log("[mod/zeko/watson] " + msg)
+                log.log(err.message)
             }) 
             resStream.on("stop",() => {
-                console.log("[stop]")
+                log.log("[stop]")
             })
             break;
         default:
@@ -739,7 +741,7 @@ const queue = {
                 tag: msg.author.tag,
                 channel: msg.channel.id
             }).write()
-            console.log("request",q.length)
+            log.log("request",q.length)
             if(q.length === 1) { //should only hav eone video
                 startPlaying(client,m,msg,video,msg.author.tag)
                 m.edit(`Loading **${results[0].title}**...`)
@@ -758,7 +760,7 @@ exports.queue = queue;
 
 function startPlaying(client,m,msg,video,author) {
     client.user.setActivity(video.title,{type:'PLAYING'})
-    console.log('got: ', video.id)
+    log.log('got: ', video.id)
     if(!video.id) throw "SFDUJFSM<DFSF "
     const conn = msg.guild.voiceConnection;
     const stream = ytdl(video.id,{ filter : 'audioonly' })
@@ -777,10 +779,10 @@ function startPlaying(client,m,msg,video,author) {
     })
     dispatcher.on("end",(reason) => {
         db.get("queue").remove({id:video.id}).write();
-        console.log(reason)
+        log.log(reason)
         const q = queue.get();
         if(q.length > 0) {
-            console.log("queue end",q[0])
+            log.log("queue end",q[0])
             startPlaying(client,m,msg,q[0].id,q[0].tag)
         }else if(q.length === 0) {
             if(conn.channel.members.filter(v => !v.bot).size === 0) {
@@ -790,9 +792,9 @@ function startPlaying(client,m,msg,video,author) {
         }
     })
     dispatcher.on("error",err => {
-        console.log(`[mod/zeko] Voice: ${err.message}`)
+        log.log(`Voice: ${err.message}`)
     })
-    console.log(`[mod/zeko] Playing "${video.title}", requested by ${author}`)
+    log.log(`Playing "${video.title}", requested by ${author}`)
 }
 
 

@@ -3,7 +3,7 @@ const path = require('path')
 exports.getFile = (name,defVal) => {
     //getFile returns file, and creates if missing
     return new Promise(async(resolve,reject) => {
-        const filePath = path.join(__dirname,"/../db",name);
+        const filePath = path.join(__dirname,"/../db/",name);
         try {
             
             const file = await fs.readFile(filePath,'utf-8')

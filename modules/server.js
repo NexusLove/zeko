@@ -12,10 +12,11 @@ app.engine('.hbs', exphbs({
     extname:'.hbs'
 }));
 
-
+let log;
 module.exports = (client) => {
+    log = new client.Logger('server');
     app.listen(process.env.PORT||8888)
-    console.log(`[server] Listening on :${process.env.PORT||8888}`)
+    log.log(`Listening on :${process.env.PORT||8888}`)
     app.use('/rehost',require('./web_rehost').router)
     app.use('/quotes',require('./quote').router)
     app.get('/',(req,res) => {

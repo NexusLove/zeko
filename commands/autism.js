@@ -11,7 +11,7 @@ exports.init = (client) => {
 exports.run = async(client,msg,args) => {
     if(args[0] === "add") {
 		++count;
-		fs.writeFile(__dirname + '/../db/autism.count',count,(err) => {
+		fs.writeFile(__dirname + '/../../db/autism.count',count,(err) => {
 			if(err) return msg.channel.send('Failed to keep track');
 			return msg.channel.send(`+1 acousticness, now ${count}`)
 		})

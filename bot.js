@@ -1,5 +1,4 @@
-const {loadCommands,loadEvents,loadModules} = require('./modules/loader')
-const {log,warn,error} = require('./modules/logger');
+const {loadCore} = require('./src/modules/loader.js')
 const Discord = require("discord.js");
 require('dotenv').load();
 const client = new Discord.Client({
@@ -9,26 +8,21 @@ const client = new Discord.Client({
 	messageSweepInterval:600,
 	messageCacheMaxSize:100
 });  
-client.commands = new Discord.Collection();
-client.events = new Discord.Collection();
-client.aliases = new Discord.Collection();
 
-require('./modules/functions.js')(client);
-require('./modules/web_rehost')
-require('./modules/quote.js').init(client);
-/* Loading */
+if(!process.env.TOKEN) {
+	console.error('[ERROR::core] Missing ENV \'TOKEN\' for discord auth. Exiting...')
+	process.exit(1);
+}
 
-loadCommands(client);
-loadEvents(client);
-loadModules(client);
+require('./src/modules/functions.js')(client);
+//require('./modules/web_rehost')
+//require('./modules/quote.js').init(client);
 
-
-client.moduleManager = require('./modules/ModuleHandler.js');
-client.moduleManager.init(client);
+loadCore(client);
 
 /* end of loading */
 process.on('error',(err) => {
 	console.error(`[ERROR] Ran into critical error: \n${err.message}`);
-	process.exit
+	process.exit(1)
 })
 client.login(process.env.TOKEN);
