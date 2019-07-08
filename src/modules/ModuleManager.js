@@ -91,7 +91,8 @@ module.exports = class ModuleManager {
                 newModule.config.name = module.config.name;
                 //do logic on register modules
                 _this.modules[module.config.name] = newModule;
-                if(newModule.init) newModule.init(_this.client);
+                const logger = new this.client.Logger(module.config.name,{type:'module'})
+                if(newModule.init) newModule.init(_this.client,logger);
                 resolve();
             }catch(err) {
                 reject(err);   

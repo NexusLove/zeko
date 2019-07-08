@@ -3,7 +3,7 @@ const moment = require('moment');
 //const got = require('got'); //gists
 
 const util = require('util'); //used for easy global access
-exports.run = async (client, msg, args, flags) => {
+exports.run = async (client, msg, args, flags, logger) => {
 	if(msg.author.id !== "117024299788926978") return;
 	let output = true;
 	if(flags.output == false) output = false;
@@ -11,20 +11,20 @@ exports.run = async (client, msg, args, flags) => {
 	if(!code) return msg.channel.send("❌ There is nothing to eval")
 
 	if(!output) {
-		console.log(`⚠ ${msg.author.tag} ran an eval command (Output:False): ${code}`);
+		logger.warn(`${msg.author.tag} ran eval: (Output:False): ${code}`);
 		try {
 			console.log(code)
 			eval(code);
 			msg.react("✅")
 		}catch(err) {
 			msg.react("❌")
-			console.error(`Eval from ${msg.author.tag} failed: ${err.stack}`);
+			logger.error(`${msg.author.tag}'s eval failed: ${err.stack}`);
 		}
 		return;
 	}
 	try {
 		msg.delete().catch(() => {});
-		console.log(`⚠ ${msg.author.tag} ran an eval command: ${code}`);
+		logger.warn(`${msg.author.tag} ran eval: ${code}`);
 		const measure_start = Date.now();
 		let evaled = await eval(code);
 		const time_taken = (Date.now() - measure_start).toFixed(2);

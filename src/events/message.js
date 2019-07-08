@@ -1,10 +1,4 @@
 require('dotenv').load();
-//string test example
-const stringSim = require('string-similarity');
-const similarity = require('similarity');
-const jaroWinkler = require("jaro-winkler");
-const extractor = require("keyword-extractor");
-
 //modules
 //TODO: overwrite this with custom
 const stats = require('../../modules/stats.js').db;
@@ -37,35 +31,15 @@ module.exports = async (client, msg) => {
 		last_auto_remove[msg.author.id] = Date.now();
 		return;
 	}
-	/*if(msg.author.id === "303027173659246594" && msg.attachments.size > 0) {
-		msg.channel.send(`${msg.author} I'm sorry but that is currently against The Steve Empire's content regulations. ` + (violations >= 3 ? 'Continuation of these violations will result in punishment.' : ''))
-		violations++;
-		if(violations % 3 === 0) {
-			msg.delete().catch(() => {});
-			client.channels.get("521808450381021184").send(`⚠ **${msg.author} has violated the content regulations ${violations } times.**`)
-		}
-		return;
-	}*/
-	/*if(msg.mentions.users.size > 0 && msg.mentions.users.first().id === client.user.id) {
-		msg.channel.send("Yes?");
-	}*/
+
+	//custom code that will be moved
 	if(msg.guild && msg.guild.id === "551224997268553729") {
-		if(!msg.member.roles.has('551225872175202315')) {
-			if(msg.attachments.size > 0) {
-				msg.delete();
-				msg.channel.send(`${msg.member} ${msgs.lowerAttachment[Math.floor(Math.random()*msgs.lowerAttachment.length)]}`)
-			}
-		}
 		if(msg.content.toLowerCase().startsWith("train")) {
 			const trains = await fs.readdir('./db/trains');
 			const train = trains[Math.floor(Math.random()*trains.length)];
 			msg.channel.send(new Attachment(`./db/trains/${train}`))
 		}
 	}
-	if(msg.author.id === "165535234593521673" && msg.content === "¯\\_(ツ)_/¯")  {
-		msg.channel.send("¯\\_(ツ)_/¯")
-	}
-	client.moduleManager.messageHandler(msg);
 	if(msg.guild && msg.guild.id !== '137389758228725761' && !msg.content.includes(process.env.PREFIX)) {
 		if(/(despacito|des.{1,5}pa.{1,5}cito?)/gm.test(msg.content.toLowerCase().replace(/\s/gm,''))){
 			msg.delete();
@@ -80,27 +54,13 @@ module.exports = async (client, msg) => {
 		/*if(msg.content.toLowerCase().replace(/(despacito|des.{1,3}pa.{1,3}cito)/gm.test(msg.content.toLowerCase()))) {
 			
 		}*/
-	}else if(msg.channel.id === "497379777058045992") {
-		if(msg.content.startsWith(".") || msg.content.startsWith(">")) return;
-		let msgBefore = await msg.channel.fetchMessages({limit:5,before:msg.id});
-		msgBefore = msgBefore.filter(v => !v.author.bot && !v.content.startsWith(".") && !v.content.startsWith(">"));
-		if(!msgBefore || msgBefore.size == 0) return;
-		msgBefore = msgBefore.first().content;
-		const stringsim_results = stringSim.compareTwoStrings(msgBefore,msg.content);
-		const sim_results = similarity(msgBefore,msg.content);
-		const jaro_results = jaroWinkler(msgBefore,msg);
-
-		const prev_keywords = extractor.extract(msgBefore);
-		const this_keywords = extractor.extract(msg.content);
-		console.log("[keywordSim/prev]",prev_keywords);
-		console.log("[keywordSim/this]",this_keywords);
-		const keywordSim = stringSim.compareTwoStrings(prev_keywords.join(" "),this_keywords.join(" "));
-		console.log(keywordSim)
-		msg.channel.send(`**string-similarity: ** ${(stringsim_results*100).toFixed(4)}% | **similarity: ** ${(sim_results*100).toFixed(4)}% | ` +
-		`**jaroWinkler: ** ${(jaro_results*100).toFixed(4)}% | **keyword+string-similarity** ${(keywordSim*100).toFixed(4)}%`)
-		return;
 	}
-	
+
+	if(msg.author.id === "165535234593521673" && msg.content === "¯\\_(ツ)_/¯")  {
+		msg.channel.send("¯\\_(ツ)_/¯")
+	}
+	//load the legacy module message handler
+	client.moduleManager.messageHandler(msg);
 
 	const args = msg.content.split(/ +/g);
 	if(args.length === 0) return;
@@ -135,12 +95,15 @@ module.exports = async (client, msg) => {
                     }
                 }
 			}
-			return cmd.run(client,msg,newArgs,flags)
+			const logger = new client.Logger(command,{type:'command'});
+			return cmd.run(client,msg,newArgs,flags,logger)
 		}catch(err) {
 			msg.channel.send('**Command Error**\n`' + err.message + "`");
 		}
 		return; 
 	}
+
+	//custom code that should be removed
 	if(msg.channel.type === "dm" ) {
 		if(notified_dm.includes(msg.author.id)) return;
 		notified_dm.push(msg.author.id);
@@ -167,15 +130,7 @@ module.exports = async (client, msg) => {
 			//stats.get("global").update("imgs",m => m+=1).write();
 		}
 	}
-
-	/*if(msg.author.id === '177552117555396608') {
-		await msg.react('292088385772716042');
-		await msg.react('410580614983712768');
-		await msg.react('❌');
-		await msg.react('❓');
-		await msg.react('❗');
-		return msg.react('442114730757455873');
-	}*/
+	//custom code that should be removed
 	if(msg.cleanContent.toLowerCase().startsWith("xd") || msg.cleanContent.toLowerCase().replace(/[-!,.?\/]/,'') === "xd") msg.react('292088385772716042').catch(() => {});
 	if(msg.content.toLowerCase().includes("steve?")) {
 		if(msg.author.id === "303027173659246594") return;

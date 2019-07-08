@@ -1,4 +1,4 @@
-exports.run = (client,msg,args) => {
+exports.run = (client,msg,args,flags,logger) => {
 	
 };
 
