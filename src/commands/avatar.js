@@ -13,8 +13,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: 'avatar',
-	aliases:['avt'],
+	name: ['avatar','avt'],
 	description: '',
 	usage:'avatar @user'
 };

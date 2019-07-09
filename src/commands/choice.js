@@ -20,8 +20,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: 'choice',
-	aliases:['choose'],
+	name: ['choice','choose'],
 	description: 'Bot will choose between all the choices given',
 	usage:'choice choice one | choice two | and so on...'
 };

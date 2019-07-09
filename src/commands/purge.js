@@ -48,7 +48,6 @@ exports.config = {
 
 exports.help = {
 	name: 'purge',
-	aliases:[],
 	description: 'Remove messages from everyone or a certain user up to 100 in a channel.',
 	usage:'purge <amount> [user/* for all]'
 };

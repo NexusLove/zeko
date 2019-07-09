@@ -33,7 +33,6 @@ exports.config = {
 
 exports.help = {
 	name: 'help',
-	aliases:[],
 	description: 'okay',
 	usage:'help'
 };

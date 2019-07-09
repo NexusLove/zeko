@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const moment = require('moment');
 //const got = require('got'); //gists
 
 const util = require('util'); //used for easy global access

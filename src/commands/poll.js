@@ -39,8 +39,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: 'poll',
-	aliases:['polls'],
+	name: ['poll','polls'],
 	description: 'Makes a poll of choices, up to 6 choices.',
 	usage:'poll Name of poll | Choice A | Choice B'
 };

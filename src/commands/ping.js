@@ -14,7 +14,6 @@ exports.config = {
 
 exports.help = {
 	name: 'ping',
-	aliases:[],
 	description: 'Shows bot latency',
 	usage:'ping'
 };

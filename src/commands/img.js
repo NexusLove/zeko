@@ -11,8 +11,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: 'image',
-	aliases:['image','meme'],
+	name: ['image','meme'],
 	description: 'custom image editing',
 	usage:'image help'
 };

@@ -7,8 +7,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: '',
-	aliases:[],
+	name: [],
 	description: '',
 	usage:''
 };

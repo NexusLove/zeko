@@ -46,8 +46,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: 'uptime',
-	aliases:['botinfo','info','metrics'],
+	name:['uptime','botinfo','info','metrics'],
 	description: 'Displays bot information which includes: uptime, memory usage, bot links, api versions, and more',
 	usage:'info'
 };

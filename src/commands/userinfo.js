@@ -83,8 +83,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: 'userinfo',
-	aliases:['uinfo'],
+	name: ['userinfo','uinfo'],
 	description: 'Gives information about users',
 	usage:''
 };

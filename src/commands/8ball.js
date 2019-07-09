@@ -12,8 +12,7 @@ exports.config = {
 };
 
 exports.help = {
-	name: '8ball',
-	aliases:['eightball','ball8'],
+	name: ['8ball','eightball'],
 	description: 'The all seeing 8ball',
 	usage:'8ball <question>'
 };

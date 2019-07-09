@@ -1,11 +1,17 @@
-let logger;
+let logger, instance;
 module.exports = class ModuleManager {
     constructor(client) {
         this.modules = {};
         this.legacy_message_module_list = [];
         this.client = client;
         logger = new client.Logger('ModuleManager',{type:'module'});
-    }    
+        if (instance) return instance;
+        instance = this;
+        return instance;
+    }   
+    static getInstance() {
+        return instance || new ModuleManager();
+    } 
     messageHandler(msg) {
         const args = msg.content.split(/ +/g);
         const message = args.shift();
@@ -66,18 +72,26 @@ module.exports = class ModuleManager {
             if(!module.config) reject(new Error(`Invalid module registered.`));
     
             this._moduleCheck(module)
-            await this._reload(module);
-    
-            if(module.config.command) this._registerCommandModule(module);
-            logger.debug(`Registered ${module.config.command?"Command ":""}Module ${module.config.name}`);
-            resolve();
+            await this._reload(module)
+            .then(() => {
+                if(module.config.command) this._registerCommandModule(module);
+                //logger.debug(`Registered ${module.config.command?"Command ":""}Module ${module.config.name}`);
+                resolve();
+            })
+            .catch(err => {
+                reject(err);
+            })
         })
     }
     getModule(query) {
         return this.modules[query];
     }
-    getModules() {
-        return this.modules;
+    getModules(opts = {names:false}) {
+        if(opts.names) {
+            return Object.keys(this.modules)
+        }else{
+            return this.modules;
+        }
     }
 
     //private methods
@@ -88,6 +102,7 @@ module.exports = class ModuleManager {
                 //delete this.modules[module.config.name];
                 delete require.cache[require.resolve(`../../modules/${module.config.name}.js`)];
                 const newModule = require(`../../modules/${module.config.name}.js`)
+                if(!newModule.config) newModule.config = {}
                 newModule.config.name = module.config.name;
                 //do logic on register modules
                 _this.modules[module.config.name] = newModule;
@@ -103,7 +118,6 @@ module.exports = class ModuleManager {
         this.legacy_message_module_list.push({triggers:module.config.triggers,module:module.config.name}); //command module
     }
     _moduleCheck(module) {
-        if(!module.config.type) logger.warn(`Module ${module.config.name} is missing a module version type.`)
         if(module.config.command && module.config.triggers.length == 0) {
             logger.warn(`Module ${module.config.name} is a command with no triggers`)
         }

@@ -35,7 +35,6 @@ exports.config = {
 
 exports.help = {
 	name: 'edits',
-	aliases:[],
 	description: 'View the edit history of a message',
 	usage:'edits <message ID> ',
 };

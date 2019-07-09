@@ -59,6 +59,7 @@ exports.run = async(client,msg,args) => {
             } case "event":
             case "e": {
                 //not implemented
+                return msg.channel.send("Reloading events is currently not available.")
                 try {
                     const filepath = require.resolve(path.join(path_evt,args[1]))
                     delete require.cache[filepath]
@@ -86,7 +87,7 @@ exports.help = {
 	aliases:[
         'rl'
     ],
-	description: 'Reload a module or command',
-	usage:'rt <file type/list> [filename]'
+	description: 'Reload a custom module or a command',
+	usage:'rl <module/command/event/list> [filename]'
 };
  
