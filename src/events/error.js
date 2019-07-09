@@ -1,4 +1,5 @@
 
 module.exports = async (client,err) => {
-    console.error(`[Error] ${err.message}`)
+    const logger = new client.Logger("core");
+    logger.error(err.message)
 }

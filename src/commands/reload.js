@@ -5,7 +5,7 @@ const path_mod = path.join(__dirname,"/../modules");
 const path_evt = path.join(__dirname,"/../events");
 const path_cmd = path.join(__dirname,"/../commands");
 
-exports.run = async(client,msg,args) => {
+exports.run = async(client,msg,args,flags,logger) => {
 	if(args[0].toLowerCase() === "list") {
         try {
             const [modules,events,commands] = await Promise.all([
@@ -13,7 +13,6 @@ exports.run = async(client,msg,args) => {
                 fs.readdir(path_evt),
                 fs.readdir(path_cmd)
             ])
-            console.log(events)
             msg.author.send({embed:{
                 title:"Commands",
                 description:commands.join("\n")
@@ -28,7 +27,7 @@ exports.run = async(client,msg,args) => {
             }})
             
         }catch(err) {
-            msg.channel.send(`⚠ **Error Occurred** ${err.message}`)
+            msg.channel.send(`⚠ **Error Occurred** ${flags.debug?err.message:err.stack}`)
         }
     }else{
         switch(args[0].toLowerCase()) {
@@ -39,7 +38,7 @@ exports.run = async(client,msg,args) => {
                 client.moduleManager.reloadModule(args[1]).then(() => {
                     msg.channel.send(`✅ Reloaded Module **${args[1]}**`)
                 }).catch(err => {
-                    msg.channel.send(`⚠ **Error Occurred** ${err.message}`)
+                    msg.channel.send(`⚠ **Error Occurred** ${flags.debug?err.message:err.stack}`)
                 })
                 break;
             } case "command":
@@ -53,7 +52,7 @@ exports.run = async(client,msg,args) => {
     
                     msg.channel.send(`✅ Reloaded Command **${args[1]}**`)
                 }catch(err) {
-                    msg.channel.send(`⚠ **Error Occurred** ${err.message}`)
+                    msg.channel.send(`⚠ **Error Occurred** ${flags.debug?err.message:err.stack}`)
                 }
                 break;
             } case "event":
@@ -67,7 +66,7 @@ exports.run = async(client,msg,args) => {
     
                     msg.channel.send(`✅ Reloaded Event **${args[1]}**`)
                 }catch(err) {
-                    msg.channel.send(`⚠ **Error Occurred** ${err.message}`)
+                    msg.channel.send(`⚠ **Error Occurred** ${flags.debug?err.message:err.stack}`)
                 }
                 break;
             }

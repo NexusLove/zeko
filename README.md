@@ -1,5 +1,33 @@
-# Zeko
-A bot that started out as a testing bot and turned into a nice bot that I develop with
+# About
+A modular discord.js bot that comes loaded with useful commands and easy to use loading system.
 
-me@jackz.me
-Jackz#7627
+## Getting Started
+
+1. Clone the repo
+`git clone git@github.com:Jackzmc/zeko.git`
+2. Get discord token from https://discordapp.com/developers
+3. Create a ".env" file and add:
+`TOKEN=<your discord bot token>`
+4. Start your bot (`node index.js`)
+
+## Features
+* Dynamic file loading (folder-based)
+* Hot Reloadable modules (core and custom)
+* Custom logging system
+* Premade commands to use
+* Command help system
+
+## Documentation
+Visit the [wiki](https://github.com/jackzmc/zeko/wiki) for more information
+
+## License
+[MIT License](https://github.com/Jackzmc/zeko/blob/master/LICENSE)
+
+## Environmental Variables
+**\* Required**
+```env
+*TOKEN = discord bot token
+LOGGER_DEBUG_LEVEL = debug level of logger. Will be ignored if PRODUCTION is true
+LOADER_AUTO_RELOAD = enable auto reloading of modules/commands/events
+DATABASE_AUTOSAVE_INTERVAL = duration (ms) to autosave data.db & settings.db
+```

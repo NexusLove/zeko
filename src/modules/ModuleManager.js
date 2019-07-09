@@ -35,36 +35,20 @@ module.exports = class ModuleManager {
     reloadModule(name) {
         return new Promise((resolve,reject) => {
             const module = this.modules[name];
-            module
             if(!module) reject(new Error(`ModuleManager: No module found for ${name}`));
             if(module.reloadable != null && !module.reloadable) {
                 reject(new Error(`ModuleManager: Module ${name} cannot be reloaded.`))
                 logger.warn(`Reloading module ${name} failed: Not Reloadable`)
                 return;
             }
-            if(module.exit) {
-                module.exit()
-                .then(() => {
-                    this._reload(module)
-                    .then(() =>  {
-                        logger.info(`Successfully reloaded module ${name}`)
-                        resolve();
-                    });
-                })
-                .catch(err => {
-                    reject(err);
-                    logger.error(`Reloading module ${name} failed: ${err.stack}`);
-                })
-            }else{
-                this._reload(module)
-                .then(() => {
-                    logger.info(`Successfully reloaded module ${name}`)
-                    resolve();
-                }).catch(err => {
-                    logger.error(`Reloading module ${name} failed: ${err.message}`);
-                    reject(err);
-                })
-            }
+            this._reload(module)
+            .then(() => {
+                logger.info(`Successfully reloaded module ${name}`)
+                resolve();
+            }).catch(err => {
+                logger.error(`Reloading module ${name} failed: ${err.message}`);
+                reject(err);
+            })
         })
     }
     registerModule(module) {
@@ -97,9 +81,11 @@ module.exports = class ModuleManager {
     //private methods
     _reload(module) {
         const _this = this;
-        return new Promise((resolve,reject) => {
+        return new Promise(async(resolve,reject) => {
             try {
                 //delete this.modules[module.config.name];
+                if(module.exit) await module.exit(this.client);
+                
                 delete require.cache[require.resolve(`../../modules/${module.config.name}.js`)];
                 const newModule = require(`../../modules/${module.config.name}.js`)
                 if(!newModule.config) newModule.config = {}
@@ -107,7 +93,7 @@ module.exports = class ModuleManager {
                 //do logic on register modules
                 _this.modules[module.config.name] = newModule;
                 const logger = new this.client.Logger(module.config.name,{type:'module'})
-                if(newModule.init) newModule.init(_this.client,logger);
+                if(newModule.init) await newModule.init(_this.client,logger);
                 resolve();
             }catch(err) {
                 reject(err);   

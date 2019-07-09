@@ -3,6 +3,7 @@ require('dotenv').load();
 //TODO: overwrite this with custom
 const stats = require('../../modules/stats.js').db;
 const fs = require('fs').promises;
+const got = require('got')
 const {Attachment} = require('discord.js');
 //data
 let notified_dm = [];
@@ -23,6 +24,33 @@ let auto_remove_enabled = false;
 module.exports = async (client, msg) => {
 	if(msg.author.bot) return;
 	if(msg.channel.id === "291675586324070401") return;
+	if(msg.channel.id === "531281131186815006") {
+		//h
+		if(!msg.content.startsWith("!ignore")) {
+			const description = msg.content.split(/\n/);
+			const name = description.shift();
+			got('https://api.trello.com/1/cards',{
+				method:'POST',
+				json:true,
+				query:{
+					key:process.env.TRELLO_API_KEY,
+					token:process.env.TRELLO_API_TOKEN,
+					name:name,
+					desc:description.join("\n"),
+					pos:'bottom',
+					idList:"5d23885a5dd5f44eb791b59d"
+				}
+			}).then((r) => {
+				msg.react('✅');
+			}).catch(err => {
+				msg.react('❌')
+				msg.channel.send(`**${msg.author} Could not post suggestion:** ${err.message}`)
+				.then(m => m.delete(25000)).catch(() => {})
+				console.error(`[ERROR::event/message] Post by ${msg.author.tag} failed: ${err.response.body}`)
+			})
+		}
+		return;
+	}
 	if(auto_remove_enabled && msg.author.id === "303027173659246594") {
 		msg.delete();
 		if(!last_auto_remove[msg.author.id] || Date.now() - last_auto_remove[msg.author.id] > 40000) {
@@ -98,7 +126,7 @@ module.exports = async (client, msg) => {
 			const logger = new client.Logger(command,{type:'command'});
 			return cmd.run(client,msg,newArgs,flags,logger)
 		}catch(err) {
-			msg.channel.send('**Command Error**\n`' + err.message + "`");
+			msg.channel.send('**Command Error**\n`' + err.stack + "`");
 		}
 		return; 
 	}

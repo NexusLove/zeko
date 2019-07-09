@@ -23,30 +23,40 @@ module.exports = {
         }
 
         log(...args) {
-            console.log(`[${this.mod}] ${args.join(" ")}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            console.log(`[${date}] [${this.mod}] ${args.join(" ")}`)
         }
 
         warn(...args) {
-            console.warn(chalk`[WARN::${this.mod}] {yellow ${args.join(" ")}}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            console.warn(chalk`[${date}] [WARN::${this.mod}] {yellow ${args.join(" ")}}`)
         }
         error(...args) {
-            console.error(chalk`[ERROR::${this.mod}] {red ${args.join(" ")}}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            console.error(chalk`[${date}] [ERROR::${this.mod}] {red ${args.join(" ")}}`)
         }
         servere(...args) {
-            console.error(chalk`[SEVERE::${this.mod}] {red ${args.join(" ")}}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            console.error(chalk`[${date}] [SEVERE::${this.mod}] {red ${args.join(" ")}}`)
             process.exit(1);
         }
         success(...args) {
-            console.info(chalk`[${this.mod}] {green ${args.join(" ")}}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            console.info(chalk`[${date}] [${this.mod}] {green ${args.join(" ")}}`)
         }
 
         debug(...args) {
-            //process.env.debug_level
-            console.debug(`[DEBUG::${this.mod}] ${args.join(" ")}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            if(process.env.LOGGER_DEBUG_LEVEL > 0) {
+                console.debug(`[${date}] [DEBUG::${this.mod}] ${args.join(" ")}`)
+            }
         }
 
         info(...args) {
-            console.info(`[INFO::${this.mod}] ${args.join(" ")}`)
+            const date = new Date().toLocaleTimeString('en-US', {hour12:false})
+            console.info(`[${date}] [INFO::${this.mod}] ${args.join(" ")}`)
         }
     }
+}
+function fileWrite(text) {
 }

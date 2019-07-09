@@ -20,47 +20,47 @@ module.exports = {
             log.error('Internal Load failure, exiting.\n' + err.message);
             process.exit(1);
         })
-        const cmd_watcher = chokidar.watch(['src/commands','commands'], {
-            ignored: /(^|[\/\\])\../,
-            persistent: true
-        });
-        const mod_watcher = chokidar.watch(['modules'], {
-            ignored: /(^|[\/\\])\../,
-            persistent: true
-        });
+        if(process.env.LOADER_AUTO_RELOAD) {
+            log.debug('Watcher: Now active.')
+            const cmd_watcher = chokidar.watch(['src/commands','commands'], {
+                ignored: /(^|[\/\\])\../,
+                persistent: true
+            });
+            const mod_watcher = chokidar.watch(['modules'], {
+                ignored: /(^|[\/\\])\../,
+                persistent: true
+            });
 
-        cmd_watcher
-        .on('change', _path => {
-            const f = _path.replace(/^.*[\\\/]/, '')
-            if(f.split(".").slice(-1)[0] !== "js") return;
-            if(f.startsWith("_")) return;
-            const filename = f.split(".").slice(0,-1).join(".")
-            log.debug(`Watcher: Detected file change for command ${filename}, reloading...`)
-            try {
-                client.commands.delete(filename);
-                let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(__dirname,"/../../src/commands") : path.join(__dirname,"/../../commands");
-                const filepath = require.resolve(path.join(command_path,filename))
-                delete require.cache[filepath]
-                client.commands.set(filename,require(filepath));
-                log.info(`Watcher: Reloaded command ${filename} successfully`)
-            }catch(err) {
-                log.error(`Watcher: Failed to auto reload command ${filename}: ${err.message}`)
-
-            }
-        })
-
-        mod_watcher
-        .on('change', _path => {
-            const filename = _path.replace(/^.*[\\\/]/, '')
-            .split(".").slice(0,-1).join(".")
-            log.debug(`Watcher: Detected file change for module ${filename}, reloading...`)
-
-            client.moduleManager.reloadModule(filename,{custom:true})
-            .catch(err => {
-                log.error(`Watcher: Failed to auto reload module ${filename}: ${err.message}`)
+            cmd_watcher
+            .on('change', _path => {
+                const f = _path.replace(/^.*[\\\/]/, '')
+                if(f.split(".").slice(-1)[0] !== "js") return;
+                if(f.startsWith("_")) return;
+                const filename = f.split(".").slice(0,-1).join(".")
+                //log.debug(`Watcher: Detected file change for command ${filename}, reloading...`)
+                try {
+                    client.commands.delete(filename);
+                    let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(__dirname,"/../../src/commands") : path.join(__dirname,"/../../commands");
+                    const filepath = require.resolve(path.join(command_path,filename))
+                    delete require.cache[filepath]
+                    client.commands.set(filename,require(filepath));
+                    log.info(`Watcher: Reloaded command ${filename} successfully`)
+                }catch(err) {
+                    log.error(`Watcher: Failed to auto reload command ${filename}: ${err.message}`)
+                }
             })
-        })
 
+            mod_watcher
+            .on('change', _path => {
+                const filename = _path.replace(/^.*[\\\/]/, '')
+                .split(".").slice(0,-1).join(".")
+                //log.debug(`Watcher: Detected file change for module ${filename}, reloading...`)
+                client.moduleManager.reloadModule(filename,{custom:true})
+                .catch(err => {
+                    log.error(`Watcher: Failed to auto reload module ${filename}: ${err.message}`)
+                })
+            })
+        }
     }
 }
 async function loadCommands(client) {
@@ -160,7 +160,6 @@ async function loadEvents(client) {
 }
 async function loadModules(client) {
     const folders = ['modules'];
-    log.info(`Checking for modules to load..`);
     let custom = 0;
     let normal = 0;
     const promises = [];

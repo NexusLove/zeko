@@ -13,6 +13,10 @@ if(!process.env.TOKEN) {
 	console.error('[ERROR::core] Missing ENV \'TOKEN\' for discord auth. Exiting...')
 	process.exit(1);
 }
+if(process.env.PRODUCTION) {
+	process.env.LOGGER_DEBUG_LEVEL = 0;
+	process.env.DEBUG_LEVEL = 0;
+}
 
 require('./src/modules/functions.js')(client);
 //require('./modules/web_rehost')
