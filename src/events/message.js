@@ -38,7 +38,8 @@ module.exports = async (client, msg) => {
 					name:name,
 					desc:description.join("\n"),
 					pos:'bottom',
-					idList:"5d23885a5dd5f44eb791b59d"
+					idList:"5d23885a5dd5f44eb791b59d",
+					idLabels:"5d238854af988c41f23b78fe"
 				}
 			}).then((r) => {
 				msg.react('✅');
