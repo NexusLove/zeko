@@ -8,7 +8,8 @@ A modular discord.js bot that comes loaded with useful commands and easy to use 
 2. Get discord token from https://discordapp.com/developers
 3. Create a ".env" file and add:
 `TOKEN=<your discord bot token>`
-4. Start your bot (`node index.js`)
+4. Install node packages (`npm install`)
+5. Start your bot (`node index.js`)
 
 ## Features
 * Dynamic file loading (folder-based)
