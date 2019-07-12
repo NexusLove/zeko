@@ -112,6 +112,10 @@ async function loadCommands(client) {
                             log.warn(`${txt_custom} ${f} has no config or help value.`);
                             return resolve();
                         }
+                        if(!props.run) {
+                            log.warn(`${txt_custom} ${f} has no run function.`);
+                            return resolve();
+                        }
                         props.help.description = props.help.description||'[No description provided]'
                         props.config.custom = (i==1);
                     
