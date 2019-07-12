@@ -17,8 +17,9 @@ exports.run = (client,msg,args) => {
 		if(cmd.help.example) {
 			fields.push({name:'Examples',value:cmd.help.example});
 		}
+		const name = Array.isArray(cmd.help.name) ? cmd.help.name[0] : cmd.help.name;
 		return msg.channel.send({embed:{
-			title:`>${cmd.help.name}`,
+			title:`>${name}`,
 			description:`${cmd.help.description}\n**Usage: **\`${cmd.help.usage}\``,
 			fields
 		}})

@@ -5,10 +5,7 @@ exports.run = (client,msg,args) => {
 };
 
 exports.config = {
-	enabled: true,
-	usageIfNotSet: false,
-	permissions:0,
-	group:'fun'
+	usageIfNotSet: false
 };
 
 exports.help = {

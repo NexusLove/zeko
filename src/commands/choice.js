@@ -13,10 +13,7 @@ exports.run = (client,msg,args) => {
 };
 
 exports.config = {
-	enabled: true,
 	usageIfNotSet: true,
-	permissions:0,
-	group:'fun'
 };
 
 exports.help = {

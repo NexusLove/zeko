@@ -15,7 +15,7 @@ exports.run = (client,msg,args) => {
         }
         
     }
-    if(options.length <= 1) return msg.channel.send({embed:{title:`${this.help.name}`,description:`${this.help.description}\n\n**Usage:** \`\`${this.help.usage}\`\``}})
+    if(options.length <= 1) return msg.channel.send({embed:{title:`${this.help.name[0]}`,description:`${this.help.description}\n\n**Usage:** \`\`${this.help.usage}\`\``}})
     let index = 0;
     if(options.length > 6) return msg.channel.send('Poll can only have a maximum of 6 choices.');
     options = options.map(v => `${letters[index++]} - ${v}`)

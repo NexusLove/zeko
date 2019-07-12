@@ -6,10 +6,7 @@ exports.run = async (client,msg,args) => {
 };
 
 exports.config = {
-	enabled: true,
 	usageIfNotSet: false,
-	permissions:0,
-	group:'util'
 };
 
 exports.help = {
