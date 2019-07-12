@@ -1,3 +1,4 @@
+const path = require('path')
 let logger, instance;
 module.exports = class ModuleManager {
     constructor(client) {
@@ -52,25 +53,44 @@ module.exports = class ModuleManager {
         })
     }
     registerModule(module) {
+        const _this = this;
         return new Promise(async(resolve,reject) => {
+            
             if(!module.config) reject(new Error(`Invalid module registered.`));
-    
-            this._moduleCheck(module)
-            await this._reload(module)
-            .then(() => {
+            try {
+                this._moduleCheck(module)
+                const logger = new this.client.Logger(module.config.name,{type:'module'})
+                _this.modules[module.config.name] = module;
+
                 if(module.config.command) this._registerCommandModule(module);
-                //logger.debug(`Registered ${module.config.command?"Command ":""}Module ${module.config.name}`);
+                if(module.init) await module.init(_this.client,logger);
+
+
+                logger.debug(`Registered${module.config.core?" Core ":""}${module.config.command?"Command ":""}Module ${module.config.name}`);
                 resolve();
-            })
-            .catch(err => {
+            }catch(err) {
                 reject(err);
-            })
+            }
         })
     }
     getModule(query) {
         return this.modules[query];
     }
     getModules(opts = {names:false}) {
+        //{type: 'custom'}
+        let filtered;
+        if(opts.type) {
+            if(opts.type === "custom") {
+                filtered = this.modules.filter(v => !v.config.core)
+            }else if(opts.type === "core") {
+                filtered = this.modules.filter(v => v.config.core);
+            }else{
+                throw new Error("Unknown type specified of module");
+            }
+        }else{
+            filtered = this.modules;
+        }
+
         if(opts.names) {
             return Object.keys(this.modules)
         }else{
@@ -86,10 +106,13 @@ module.exports = class ModuleManager {
                 //delete this.modules[module.config.name];
                 if(module.exit) await module.exit(this.client);
                 
-                delete require.cache[require.resolve(`../../modules/${module.config.name}.js`)];
-                const newModule = require(`../../modules/${module.config.name}.js`)
+                const _path = path.join(_this.client.rootDir,module.config.core?"src/modules/":"modules/",`${module.config.name}.js`)
+
+                delete require.cache[require.resolve(_path)];
+                const newModule = require(_path)
                 if(!newModule.config) newModule.config = {}
                 newModule.config.name = module.config.name;
+                newModule.config.core = module.config.core;
                 //do logic on register modules
                 _this.modules[module.config.name] = newModule;
                 const logger = new this.client.Logger(module.config.name,{type:'module'})

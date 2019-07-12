@@ -1,12 +1,13 @@
 const fs = require('fs').promises;
 const path = require('path');
 const chokidar = require('chokidar');
-let client, log;
+let client, log, dirname;
 module.exports = {
     config:{
         type:'internal'
     },
-    loadCore(client) {
+    loadCore(client,root_dir) {
+        dirname = root_dir;
         log = new client.Logger('loader');
         internalCustomCheck()
         .then(() => {
@@ -50,7 +51,7 @@ module.exports = {
                 //log.debug(`Watcher: Detected file change for command ${filename}, reloading...`)
                 try {
                     client.commands.delete(filename);
-                    let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(__dirname,"/../../src/commands") : path.join(__dirname,"/../../commands");
+                    let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(dirname,"src/commands") : path.join(dirname,"commands");
                     const filepath = require.resolve(path.join(command_path,filename))
                     delete require.cache[filepath]
                     client.commands.set(filename,require(filepath));
@@ -99,7 +100,7 @@ async function loadCommands(client) {
     for(let i=0;i<folders.length;i++) {
         const folder = folders[i];
         const txt_custom = (i==1)?' Custom' : '';
-        const filepath = path.join(__dirname,'/../../',folder);
+        const filepath = path.join(dirname,folder);
         await fs.readdir(filepath)
         .then((files) => {
             files.forEach(f => {
@@ -117,7 +118,7 @@ async function loadCommands(client) {
                             return resolve();
                         }
                         props.help.description = props.help.description||'[No description provided]'
-                        props.config.custom = (i==1);
+                        props.config.core = (i==0);
                     
                         if(Array.isArray(props.help.name)) {
                             if(props.help.name.length === 0) {
@@ -161,7 +162,7 @@ async function loadEvents(client) {
     for(let i=0;i<folders.length;i++) {
         const folder = folders[i];
         const txt_custom = (i==1)?' Custom' : '';
-        const filepath = path.join(__dirname,'/../../',folder);
+        const filepath = path.join(dirname,folder);
         await fs.readdir(filepath)
         .then(files => {
             files.forEach(file => {
@@ -193,14 +194,14 @@ async function loadEvents(client) {
 
 }
 async function loadModules(client) {
-    const folders = ['modules'];
+    const folders = ['src/modules','modules'];
     let custom = 0;
     let normal = 0;
     const promises = [];
     for(let i=0;i<folders.length;i++) {
         const folder = folders[i];
         const txt_custom = (i==0)?'Custom ' : '';
-        const filepath = path.join(__dirname,'/../../',folder);
+        const filepath = path.join(dirname,folder);
         await fs.readdir(filepath)
         .then(files => {
             
@@ -214,7 +215,7 @@ async function loadModules(client) {
                             let props = require(`${filepath}/${f}`);
                             if(!props.config) props.config = {}
                             props.config.name = f.split(".")[0];
-                            props.config.custom = (i==0);
+                            props.config.core = (i==0);
                             client.moduleManager.registerModule(props)
                             .then(() => {
                                 if(i==0) custom++; else normal++;

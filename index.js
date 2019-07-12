@@ -1,5 +1,4 @@
 //import modules
-const {loadCore} = require('./src/modules/loader.js')
 const Discord = require("discord.js");
 require('dotenv').load();
 //start a new discord client
@@ -11,12 +10,12 @@ const client = new Discord.Client({
 	messageCacheMaxSize:100
 });  
 //load environmental parser (parse to numbers, process owner ids)
-require('./src/modules/EnvLoader')(client);
+require('./src/modules/loaders/EnvLoader')(client);
 //load functions to the client object
 require('./src/modules/functions.js')(client);
 
 //finally start loading
-loadCore(client);
+require('./src/modules/loaders/loader.js').loadCore(client,__dirname);
 
 //final error catch area
 process.on('error',(err) => {

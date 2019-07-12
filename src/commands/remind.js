@@ -2,9 +2,9 @@ const {stripIndents} = require('common-tags')
 const moment = require('moment');
 const ms = require('parse-duration');
 
-//const moduleManager = require('../src/modules/ModuleManager').getInstance(); //module manager doesnt support core
-//const remind = moduleManager.getModule('remind');
-const remind = require('../modules/remind');
+const moduleManager = require('../modules/loaders/ModuleManager').getInstance(); //module manager doesnt support core
+const remind = moduleManager.getModule('remind',{core:true});
+//const remind = require('../modules/remind');
 exports.run = (client,msg,args) => {
     switch(args[0].toLowerCase()) {
         case "list":
