@@ -132,7 +132,8 @@ async function loadCommands(client) {
                         }else{
                             client.commands.set(props.help.name, props);
                         }
-                        if(props.init) props.init(client);
+                        const logger = new client.Logger(props.help.name,{type:'command'})
+                        if(props.init) props.init(client,logger);
                         if(i==1) custom++; else normal++;
                         resolve();
                     }catch(err) {

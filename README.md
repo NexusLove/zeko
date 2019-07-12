@@ -32,4 +32,5 @@ LOGGER_DEBUG_LEVEL = debug level of logger. Will be ignored if PRODUCTION is tru
 LOADER_AUTO_RELOAD = enable auto reloading of modules/commands/events
 DATABASE_AUTOSAVE_INTERVAL = duration (ms) to autosave data.db & settings.db
 UPDATER_IGNORE_[minor/patch] = Updater will ignore minor or patch updates
+OWNER_IDS = gives access to eval command. Comma separated list of ids
 ```

@@ -1,8 +1,20 @@
 const Discord = require("discord.js");
 //const got = require('got'); //gists
-
+let OWNER_IDS = [];
+exports.init = (client,logger) => {
+	try {
+		const ids = client.env.get("OWNER_IDS").required().asArray();
+	}catch(err) {
+		logger.warn("Missing environment var OWNER_IDS, therefore eval will not work.");
+	}
+}
 exports.run = async (client, msg, args, flags, logger) => {
-	if(msg.author.id !== "117024299788926978") return;
+	if(OWNER_IDS.length == 0) {
+		return msg.channel.send("There is no users given access to this command")
+	}else if(!OWNER_IDS.includes(msg.author.id)) {
+		return msg.channel.send("You do not have permission to use this command.");
+	}
+
 	let output = true;
 	if(flags.output == false) output = false;
 	const code = args.join(" ");
