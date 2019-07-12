@@ -32,18 +32,16 @@ exports.run = async(client,msg,args) => {
 			}
 
 		}
-		msg.channel.bulkDelete(deleteList).catch(() => {})
-		msg.channel.send(`** Cleared ${amount} messages**`).then(m => m.delete(10000))
-		.catch(() => {})
+		msg.channel.bulkDelete(deleteList)
+		.then(() => {
+			msg.channel.send(`** Cleared ${amount} messages**`).then(m => m.delete(10000))
+		}).catch(() => {})
 	});
 
 };
 
 exports.config = {
-	enabled: true,
 	usageIfNotSet: true,
-	permissions:2,
-	group:'moderation'
 };
 
 exports.help = {

@@ -24,14 +24,24 @@ module.exports = {
             log.debug('Watcher: Now active.')
             const cmd_watcher = chokidar.watch(['src/commands','commands'], {
                 ignored: /(^|[\/\\])\../,
+                ignoreInitial: true,
                 persistent: true
             });
+            const event_watcher = chokidar.watch(['src/events','events'], {
+                ignored: /(^|[\/\\])\../,
+                ignoreInitial: true,
+                persistent: true
+            })
             const mod_watcher = chokidar.watch(['modules'], {
                 ignored: /(^|[\/\\])\../,
+                ignoreInitial: true,
                 persistent: true
             });
 
             cmd_watcher
+            .on('add',_path => {
+                log.debug('Detected new cmd: ',_path)
+            })
             .on('change', _path => {
                 const f = _path.replace(/^.*[\\\/]/, '')
                 if(f.split(".").slice(-1)[0] !== "js") return;
@@ -50,7 +60,25 @@ module.exports = {
                 }
             })
 
+            event_watcher
+            .on('add',_path => {
+                log.debug('Detected new event: ',_path)
+            })
+            .on('change',_path => {
+                const filename = _path.replace(/^.*[\\\/]/, '')
+                .split(".").slice(0,-1).join(".")
+                //log.debug(`Watcher: Detected file change for module ${filename}, reloading...`)
+                return; //not implemented yet
+                client.eventManager.reloadEvent(filename,{custom:true})
+                .catch(err => {
+                    log.error(`Watcher: Failed to auto reload event ${filename}: ${err.message}`)
+                })
+            })
+
             mod_watcher
+            .on('add',_path => {
+                log.debug('Detected new mod: ',_path)
+            })
             .on('change', _path => {
                 const filename = _path.replace(/^.*[\\\/]/, '')
                 .split(".").slice(0,-1).join(".")
@@ -140,10 +168,11 @@ async function loadEvents(client) {
                     if(!event || typeof event !== 'function') {
                         return log.warn(`${txt_custom} ${file} is not setup correctly!`);
                     }
+                    const logger = new client.Logger(eventName[0])
                     if(eventName.length >= 2 && eventName[1].toLowerCase() === "once") {
-                        client.once(eventName[0], event.bind(null, client));
+                        client.once(eventName[0], event.bind(null, client,logger));
                     }else{
-                        client.on(eventName, event.bind(null, client));
+                        client.on(eventName[0], event.bind(null, client,logger));
                     }
                     delete require.cache[require.resolve(`${filepath}/${file}`)];
                     if(i==1) custom++; else normal++;

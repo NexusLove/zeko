@@ -21,7 +21,7 @@ const msgs = {
 }
 let last_auto_remove = {};
 let auto_remove_enabled = false;
-module.exports = async (client, msg) => {
+module.exports = async (client, logger, msg) => {
 	if(msg.author.bot) return;
 	if(msg.channel.id === "291675586324070401") return;
 	if(msg.channel.id === "531281131186815006") {
@@ -47,7 +47,7 @@ module.exports = async (client, msg) => {
 				msg.react('❌')
 				msg.channel.send(`**${msg.author} Could not post suggestion:** ${err.message}`)
 				.then(m => m.delete(25000)).catch(() => {})
-				console.error(`[ERROR::event/message] Post by ${msg.author.tag} failed: ${err.response.body}`)
+				logger.error(`Post by ${msg.author.tag} failed: ${err.response.body}`)
 			})
 		}
 		return;
@@ -60,7 +60,7 @@ module.exports = async (client, msg) => {
 		last_auto_remove[msg.author.id] = Date.now();
 		return;
 	}
-
+	client.moduleManager.messageHandler(msg);
 	//custom code that will be moved
 	if(msg.guild && msg.guild.id === "551224997268553729") {
 		if(msg.content.toLowerCase().startsWith("train")) {
@@ -89,7 +89,7 @@ module.exports = async (client, msg) => {
 		msg.channel.send("¯\\_(ツ)_/¯")
 	}
 	//load the legacy module message handler
-	client.moduleManager.messageHandler(msg);
+	
 
 	const args = msg.content.split(/ +/g);
 	if(args.length === 0) return;

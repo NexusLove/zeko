@@ -19,7 +19,8 @@ module.exports = {
                     prefix = "cmd/";
                     break;
             }
-            this.mod = (prefix? prefix+name : name).toLowerCase();
+            const module_name = prefix? prefix+name : name
+            this.mod = module_name.toLowerCase();
         }
 
         log(...args) {

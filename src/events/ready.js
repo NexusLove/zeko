@@ -1,5 +1,5 @@
 
-module.exports =  async(client) => {
-	const log = new client.Logger("ready",{type:'event'});
-	log.info(`Bot now ready`);
+module.exports =  async(client, logger) => {
+	//const log = new client.Logger("ready",{type:'event'});
+	logger.info(`Bot now ready`);
 }

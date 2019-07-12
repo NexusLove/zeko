@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 //const got = require('got'); //gists
 
-const util = require('util'); //used for easy global access
 exports.run = async (client, msg, args, flags, logger) => {
 	if(msg.author.id !== "117024299788926978") return;
 	let output = true;
