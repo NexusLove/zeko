@@ -12,10 +12,10 @@ const client = new Discord.Client({
 //load environmental parser (parse to numbers, process owner ids)
 require('./src/modules/loaders/EnvLoader')(client);
 //load functions to the client object
-require('./src/modules/functions.js')(client);
+require('./src/modules/loaders/functions.js')(client);
 
 //finally start loading
-require('./src/modules/loaders/loader.js').loadCore(client,__dirname);
+require('./src/modules/loaders/loader.js').loadCore(client);
 
 //final error catch area
 process.on('error',(err) => {

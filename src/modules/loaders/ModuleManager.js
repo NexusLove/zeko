@@ -66,7 +66,7 @@ module.exports = class ModuleManager {
                 if(module.init) await module.init(_this.client,logger);
 
 
-                logger.debug(`Registered${module.config.core?" Core ":""}${module.config.command?"Command ":""}Module ${module.config.name}`);
+                logger.debug(`Registered${module.config.core?" Core ":" "}${module.config.command?"Command ":""}Module ${module.config.name}`);
                 resolve();
             }catch(err) {
                 reject(err);
@@ -107,17 +107,24 @@ module.exports = class ModuleManager {
                 if(module.exit) await module.exit(this.client);
                 
                 const _path = path.join(_this.client.rootDir,module.config.core?"src/modules/":"modules/",`${module.config.name}.js`)
-
-                delete require.cache[require.resolve(_path)];
-                const newModule = require(_path)
-                if(!newModule.config) newModule.config = {}
-                newModule.config.name = module.config.name;
-                newModule.config.core = module.config.core;
-                //do logic on register modules
-                _this.modules[module.config.name] = newModule;
-                const logger = new this.client.Logger(module.config.name,{type:'module'})
-                if(newModule.init) await newModule.init(_this.client,logger);
-                resolve();
+                try {
+                    delete require.cache[require.resolve(_path)];
+                    const newModule = require(_path)
+                    if(!newModule.config) newModule.config = {}
+                    newModule.config.name = module.config.name;
+                    newModule.config.core = module.config.core;
+                    //do logic on register modules
+                    _this.modules[module.config.name] = newModule;
+                    const logger = new this.client.Logger(module.config.name,{type:'module'})
+                    if(newModule.init) await newModule.init(_this.client,logger);
+                    resolve();
+                } catch(err) {
+                    if(err.code === 'ENOENT') {
+                        reject(new Error("Module does not exist"))
+                    }else{
+                        reject(err);
+                    }
+                }
             }catch(err) {
                 reject(err);   
             }

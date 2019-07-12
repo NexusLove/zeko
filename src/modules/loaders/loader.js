@@ -6,8 +6,8 @@ module.exports = {
     config:{
         type:'internal'
     },
-    loadCore(client,root_dir) {
-        dirname = root_dir;
+    loadCore(client) {
+        dirname = client.rootDir;
         log = new client.Logger('loader');
         internalCustomCheck()
         .then(() => {
@@ -33,7 +33,7 @@ module.exports = {
                 ignoreInitial: true,
                 persistent: true
             })
-            const mod_watcher = chokidar.watch(['modules'], {
+            const mod_watcher = chokidar.watch(['src/modules','modules'], {
                 ignored: /(^|[\/\\])\../,
                 ignoreInitial: true,
                 persistent: true
@@ -44,6 +44,7 @@ module.exports = {
                 log.debug('Detected new cmd: ',_path)
             })
             .on('change', _path => {
+                //TODO: allow support for group loading
                 const f = _path.replace(/^.*[\\\/]/, '')
                 if(f.split(".").slice(-1)[0] !== "js") return;
                 if(f.startsWith("_")) return;
@@ -57,7 +58,7 @@ module.exports = {
                     client.commands.set(filename,require(filepath));
                     log.info(`Watcher: Reloaded command ${filename} successfully`)
                 }catch(err) {
-                    log.error(`Watcher: Failed to auto reload command ${filename}: ${err.message}`)
+                    log.error(`Watcher: Failed to auto reload command ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
                 }
             })
 
@@ -72,7 +73,7 @@ module.exports = {
                 return; //not implemented yet
                 client.eventManager.reloadEvent(filename,{custom:true})
                 .catch(err => {
-                    log.error(`Watcher: Failed to auto reload event ${filename}: ${err.message}`)
+                    log.error(`Watcher: Failed to auto reload event ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
                 })
             })
 
@@ -81,12 +82,13 @@ module.exports = {
                 log.debug('Detected new mod: ',_path)
             })
             .on('change', _path => {
+                if((/(loaders)(\\|\/)/.test(_path))) return; //dont want it to load core loaders
                 const filename = _path.replace(/^.*[\\\/]/, '')
                 .split(".").slice(0,-1).join(".")
                 //log.debug(`Watcher: Detected file change for module ${filename}, reloading...`)
                 client.moduleManager.reloadModule(filename,{custom:true})
                 .catch(err => {
-                    log.error(`Watcher: Failed to auto reload module ${filename}: ${err.message}`)
+                    log.error(`Watcher: Failed to auto reload module ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
                 })
             })
         }
@@ -101,51 +103,100 @@ async function loadCommands(client) {
         const folder = folders[i];
         const txt_custom = (i==1)?' Custom' : '';
         const filepath = path.join(dirname,folder);
-        await fs.readdir(filepath)
-        .then((files) => {
-            files.forEach(f => {
-                if(f.split(".").slice(-1)[0] !== "js") return;
-                if(f.startsWith("_")) return;
-                promises.push(new Promise((resolve,reject) => {
-                    try {
-                        let props = require(`${filepath}/${f}`);
-                        if(!props.help || !props.config) {
-                            log.warn(`${txt_custom} ${f} has no config or help value.`);
-                            return resolve();
-                        }
-                        if(!props.run) {
-                            log.warn(`${txt_custom} ${f} has no run function.`);
-                            return resolve();
-                        }
-                        props.help.description = props.help.description||'[No description provided]'
-                        props.config.core = (i==0);
-                    
-                        if(Array.isArray(props.help.name)) {
-                            if(props.help.name.length === 0) {
-                                log.warn(`${f} has no names or aliases defined.`)
-                            }else{
-                                const name = props.help.name.shift();
-                                props.help.name.forEach(alias => {
-                                    client.aliases.set(alias,name);
-                                })
-                                client.commands.set(name,props);
+        await fs.readdir(filepath,{withFileTypes:true})
+        .then(files => {
+            files.forEach(dirent => {
+                if(dirent.isDirectory()) {
+                    const sub_filepath = path.join(filepath,dirent.name);
+                    fs.readdir(sub_filepath)
+                    .then(sub_files => {
+                        sub_files.forEach(f => {
+                            if(f.split(".").slice(-1)[0] !== "js") return;
+                            if(f.startsWith("_")) return;
+                            promises.push(new Promise((resolve,reject) => {
+                                try {
+                                    let props = require(`${sub_filepath}/${f}`);
+                                    if(!props.help || !props.config) {
+                                        log.warn(`${txt_custom} ${f} has no config or help value.`);
+                                        return resolve();
+                                    }
+                                    if(!props.run) {
+                                        log.warn(`${txt_custom} ${f} has no run function.`);
+                                        return resolve();
+                                    }
+                                    props.help.description = props.help.description||'[No description provided]'
+                                    props.config.group = dirent.name;
+                                    props.config.core = (i==0);
+                                
+                                    if(Array.isArray(props.help.name)) {
+                                        if(props.help.name.length === 0) {
+                                            log.warn(`${f} has no names or aliases defined.`)
+                                        }else{
+                                            const name = props.help.name.shift();
+                                            props.help.name.forEach(alias => {
+                                                client.aliases.set(alias,name);
+                                            })
+                                            client.commands.set(name,props);
+                                        }
+                                    }else{
+                                        client.commands.set(props.help.name, props);
+                                    }
+                                    const logger = new client.Logger(props.help.name,{type:'command'})
+                                    if(props.init) props.init(client,logger);
+                                    if(i==1) custom++; else normal++;
+                                    resolve();
+                                }catch(err) {
+                                    log.error(`${txt_custom} Command ${f} had an error:\n    ${process.env.PRODUCTION?err.message:err.stack}`);
+                                    reject(err);
+                                }
+                            }))
+                        })
+                    })
+                }else{
+                    const f = dirent.name;
+                    if(f.split(".").slice(-1)[0] !== "js") return;
+                    if(f.startsWith("_")) return;
+                    promises.push(new Promise((resolve,reject) => {
+                        try {
+                            let props = require(`${filepath}/${f}`);
+                            if(!props.help || !props.config) {
+                                log.warn(`${txt_custom} ${f} has no config or help value.`);
+                                return resolve();
                             }
-                        }else{
-                            client.commands.set(props.help.name, props);
+                            if(!props.run) {
+                                log.warn(`${txt_custom} ${f} has no run function.`);
+                                return resolve();
+                            }
+                            props.help.description = props.help.description||'[No description provided]'
+                            props.config.core = (i==0);
+                            props.config.group = null;
+                        
+                            if(Array.isArray(props.help.name)) {
+                                if(props.help.name.length === 0) {
+                                    log.warn(`${f} has no names or aliases defined.`)
+                                }else{
+                                    const name = props.help.name.shift();
+                                    props.help.name.forEach(alias => {
+                                        client.aliases.set(alias,name);
+                                    })
+                                    client.commands.set(name,props);
+                                }
+                            }else{
+                                client.commands.set(props.help.name, props);
+                            }
+                            const logger = new client.Logger(props.help.name,{type:'command'})
+                            if(props.init) props.init(client,logger);
+                            if(i==1) custom++; else normal++;
+                            resolve();
+                        }catch(err) {
+                            log.error(`${txt_custom} Command ${f} had an error:\n    ${process.env.PRODUCTION?err.message:err.stack}`);
+                            reject(err);
                         }
-                        const logger = new client.Logger(props.help.name,{type:'command'})
-                        if(props.init) props.init(client,logger);
-                        if(i==1) custom++; else normal++;
-                        resolve();
-                    }catch(err) {
-                        log.error(`${txt_custom} Command ${f} had an error:\n    ${err.stack}`);
-                        reject(err);
-                    }
-                }))
-                
+                    }))
+                }
             });
         }).catch(err => {
-            log.error(`Loading${txt_custom} ${folder} failed:\n    ${err.stack}`);
+            log.error(`Loading${txt_custom} ${folder} failed:\n    ${process.env.PRODUCTION?err.message:err.stack}`);
         })
     }
     Promise.all(promises).then(() => {
@@ -202,12 +253,46 @@ async function loadModules(client) {
         const folder = folders[i];
         const txt_custom = (i==0)?'Custom ' : '';
         const filepath = path.join(dirname,folder);
-        await fs.readdir(filepath)
+        //read the folder path, and get dirs
+        await fs.readdir(filepath,{withFileTypes:true})
         .then(files => {
-            
-            files.forEach(f => {
-                fs.stat(`${filepath}/${f}`)
-                .then(() => {
+            files.forEach(dirent => {
+                if(dirent.isDirectory()) {
+                    if(dirent.name === "loaders") return; //dont load the loaders with module manager
+                    const sub_filepath = path.join(filepath,dirent.name);
+                    fs.readdir(sub_filepath)
+                    .then(sub_files => {
+                        sub_files.forEach(f => {
+                            if(f.split(".").slice(-1)[0] !== "js") return;
+                            if(f.startsWith("_")) return;
+                            promises.push(new Promise((resolve,reject) => {
+                                try {
+                                    let props = require(`${sub_filepath}/${f}`);
+                                    if(!props.config) props.config = {}
+                                    props.config.name = f.split(".")[0];
+                                    props.config.core = (i==0);
+                                    props.config.group = dirent.name;
+                                    client.moduleManager.registerModule(props)
+                                    .then(() => {
+                                        if(i==0) custom++; else normal++;
+                                        resolve();
+                                    })
+                                    .catch(err => {
+                                        log.error(`${txt_custom} Module ${f} was not loaded by ModuleManager: \n ${err.message}`)
+                                        reject(err);
+                                    })
+                                }catch(err) {
+                                    log.error(`${txt_custom} Module ${f} had an error:\n    ${err.stack}`);
+                                    reject(err);
+                                }
+                            }))
+                        })
+                    })
+                    .catch(err => {
+                        log.error(`Loading group ${dirent.name} failed:\n    ${process.env.PRODUCTION?err.message:err.stack}`);
+                    })
+                }else {
+                    const f = dirent.name;
                     if(f.split(".").slice(-1)[0] !== "js") return;
                     if(f.startsWith("_")) return;
                     promises.push(new Promise((resolve,reject) => {
@@ -222,18 +307,18 @@ async function loadModules(client) {
                                 resolve();
                             })
                             .catch(err => {
-                                log.error(`${txt_custom} Module ${f} was not loaded by ModuleManager: \n ${err.message}`)
+                                log.error(`${txt_custom} Module ${f} was not loaded by ModuleManager: \n ${process.env.PRODUCTION?err.message:err.stack}`)
                                 reject(err);
                             })
                         }catch(err) {
-                            log.error(`${txt_custom} Module ${f} had an error:\n    ${err.stack}`);
+                            log.error(`${txt_custom} Module ${f} had an error:\n    ${process.env.PRODUCTION?err.message:err.stack}`);
                             reject(err);
                         }
                     }))
-                });
+                }
             });
         }).catch(err => {
-            log.error(`Loading ${txt_custom}${folder} failed:\n    ${err.stack}`);
+            log.error(`Loading ${txt_custom}${folder} failed:\n    ${process.env.PRODUCTION?err.message:err.stack}`);
         })
     }
 
