@@ -31,4 +31,5 @@ Visit the [wiki](https://github.com/jackzmc/zeko/wiki) for more information
 LOGGER_DEBUG_LEVEL = debug level of logger. Will be ignored if PRODUCTION is true
 LOADER_AUTO_RELOAD = enable auto reloading of modules/commands/events
 DATABASE_AUTOSAVE_INTERVAL = duration (ms) to autosave data.db & settings.db
+UPDATER_IGNORE_[minor/patch] = Updater will ignore minor or patch updates
 ```
