@@ -66,7 +66,7 @@ module.exports = class ModuleManager {
                 if(module.init) await module.init(_this.client,logger);
 
 
-                logger.debug(`Registered${module.config.core?" Core ":" "}${module.config.command?"Command ":""}Module ${module.config.name}`);
+                //logger.debug(`Registered${module.config.core?" Core ":" "}${module.config.command?"Command ":""}Module ${module.config.name}`);
                 resolve();
             }catch(err) {
                 reject(err);

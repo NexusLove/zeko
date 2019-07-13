@@ -227,10 +227,28 @@ async function loadEvents(client) {
                     }
                     const logger = new client.Logger(eventName[0])
                     if(eventName.length >= 2 && eventName[1].toLowerCase() === "once") {
-                        client.once(eventName[0], event.bind(null, client,logger));
+                        if(i==1) {
+                            //temporarily custom loading
+                            client.eventManager.registerEvent(eventName[0],{once:true})
+                            .catch(err => {
+                                log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
+                            })
+                        }else{
+                            client.once(eventName[0], event.bind(null, client,logger));
+                        }
                     }else{
-                        client.on(eventName[0], event.bind(null, client,logger));
+                        if(i==1) {
+                            //temporarily custom loading
+                            client.eventManager.registerEvent(eventName[0],{once:false})
+                            .catch(err => {
+                                log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
+                            })
+                        }else{
+                            client.on(eventName[0], event.bind(null, client,logger));
+
+                        }
                     }
+                    
                     delete require.cache[require.resolve(`${filepath}/${file}`)];
                     if(i==1) custom++; else normal++;
                 }catch(err) {
