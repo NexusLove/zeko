@@ -58,16 +58,12 @@ exports.run = async(client,msg,args,flags,logger) => {
             } case "event":
             case "e": {
                 //not implemented
-                return msg.channel.send("Reloading events is currently not available.")
-                try {
-                    const filepath = require.resolve(path.join(path_evt,args[1]))
-                    delete require.cache[filepath]
-                    require(filepath)
-    
+                //return msg.channel.send("Reloading events is currently not available.")
+                client.eventManager.reloadEvent(args[1]).then(() => {
                     msg.channel.send(`✅ Reloaded Event **${args[1]}**`)
-                }catch(err) {
+                }).catch(err => {
                     msg.channel.send(`⚠ **Error Occurred** ${flags.debug?err.message:err.stack}`)
-                }
+                })
                 break;
             }
             default: {
