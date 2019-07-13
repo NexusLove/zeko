@@ -1,6 +1,7 @@
 const {inspect} = require('util');
 const {Collection} = require('discord.js')
 const ModuleManager = require('./ModuleManager.js');
+const EventManager = require('./EventManager.js');
 const Logger = require('../logger.js');
 const path = require('path')
 
@@ -14,6 +15,7 @@ module.exports = (client) => {
     //load internal modules
     client.Logger = Logger.Logger;
     client.moduleManager =  new ModuleManager(client)
+    client.eventManager = new EventManager(client)
 
     //load variables
     client.config = config;

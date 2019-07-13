@@ -5,6 +5,7 @@ ability to reload (somehow),
 
 and ability to run custom before (and maybe after) core events.
 */
+const path = require('path')
 let logger, instance;
 module.exports = class EventManager {
     constructor(client) {
@@ -18,20 +19,27 @@ module.exports = class EventManager {
     static getInstance() {
         return instance || new EventManager();
     } 
-    reloadEvent(event,opts = {once:false}) {
+    reloadEvent(event) {
         const _this = this;
         return new Promise(async(resolve,reject) => {
             try {
-                delete require.cache[require.resolve(`../../events/${ame}.js`)];
-                const event_src = require(`../../events/${name}.js`);
-                _this.events[name] = {
-                    event:event_src,
-                    config:{
-                        name:name,
-                        once:opts.once
-                    }
+                const _path = path.join(_this.client.rootDir,"events",`${event.config.name}.js`)
+                delete require.cache[require.resolve(_path)];
+                this.client.removeListener(event.config.name,event.config.bind)
+
+                const event_src = require(_path);
+                const logger = new _this.client.Logger(name,{type:'event'})
+                const bind = event_src.bind(null, _this.client,logger);
+
+                _this.events[event.config.name] = {
+                    event:bind,
+                    config:event.config
                 }
-                const logger = new this.client.Logger(name,{type:'event'})
+                if(event.config.once) {
+                    _this.client.once(name,bind);
+                }else{
+                    _this.client.on(name,bind);
+                }
                 resolve();
             }catch(err) {
                 reject(err);   
@@ -39,18 +47,31 @@ module.exports = class EventManager {
         })
     }
     registerEvent(name,opts = {once:false}) {
+        const _this = this;
         return new Promise((resolve,reject) => {
-            delete require.cache[require.resolve(`../../events/${name}.js`)];
-            const event_src = require(`../../events/${name}.js`);
-            _this.events[name] = {
-                event:event_src,
-                config:{
-                    name:name,
-                    once:opts.once
+            try {
+                const _path = path.join(_this.client.rootDir,"events",`${opts.once?`${name}.once`:name}.js`)
+                delete require.cache[require.resolve(_path)];
+                const event_src = require(_path);
+                const logger = new _this.client.Logger(name,{type:'event'})
+                const bind = event_src.bind(null, _this.client,logger);
+    
+                _this.events[name] = {
+                    event:bind,
+                    config:{
+                        name:name,
+                        once:opts.once
+                    }
                 }
+                if(opts.once) {
+                    _this.client.once(name,bind);
+                }else{
+                    _this.client.on(name,bind);
+                }
+                resolve();
+            }catch(err) {
+                reject(err);
             }
-            const logger = new this.client.Logger(name,{type:'event'})
-            this.client.on(name,event_src)
         })
     }
     getEvent(query) {
