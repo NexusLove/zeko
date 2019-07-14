@@ -12,7 +12,7 @@ exports.init = (client,logger) => {
 exports.run = async (client, msg, args, flags, logger) => {
 	if(OWNER_IDS.length == 0) {
 		return msg.channel.send("There is no users given access to this command")
-	}else if(!OWNER_IDS.includes(msg.author.id)) {
+	}else if(!client.permissions.isAuthorized(msg.author.id,'owner')) {
 		return msg.channel.send("You do not have permission to use this command.");
 	}
 
