@@ -27,6 +27,7 @@ exports.run = async(client,msg,args,flags,logger) => {
 			}).catch(err => {
 				msg.channel.send("⚠ Could not load image: " + err.message)
 			})
+			break;
 		}case "generate":
 		case "gen":
 		case "create": {
