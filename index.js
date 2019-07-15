@@ -9,6 +9,8 @@ const client = new Discord.Client({
 	messageSweepInterval:600,
 	messageCacheMaxSize:100
 });  
+
+
 //load environmental parser (parse to numbers, process owner ids)
 require('./src/modules/loaders/EnvLoader')(client);
 //load functions to the client object

@@ -41,7 +41,7 @@ module.exports = {
 
             cmd_watcher
             .on('add',_path => {
-                log.debug('Detected new cmd: ',_path)
+                log.debug('Detected a new command (',_path,'). Restart to load')
             })
             .on('change', _path => {
                 //TODO: allow support for group loading
@@ -64,14 +64,16 @@ module.exports = {
 
             event_watcher
             .on('add',_path => {
-                log.debug('Detected new event: ',_path)
+                log.debug('Detected a new event (',_path,'). Restart to load')
             })
             .on('change',_path => {
                 const filename = _path.replace(/^.*[\\\/]/, '')
                 .split(".").slice(0,-1).join(".")
                 //log.debug(`Watcher: Detected file change for module ${filename}, reloading...`)
-                return; //not implemented yet
                 client.eventManager.reloadEvent(filename,{custom:true})
+                .then(() => {
+                    log.info(`Watcher: Reloaded event ${filename} successfully`)
+                })
                 .catch(err => {
                     log.error(`Watcher: Failed to auto reload event ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
                 })
@@ -79,7 +81,7 @@ module.exports = {
 
             mod_watcher
             .on('add',_path => {
-                log.debug('Detected new mod: ',_path)
+                log.debug('Detected a new module (',_path,'). Restart to load')
             })
             .on('change', _path => {
                 if((/(loaders)(\\|\/)/.test(_path))) return; //dont want it to load core loaders
@@ -87,6 +89,9 @@ module.exports = {
                 .split(".").slice(0,-1).join(".")
                 //log.debug(`Watcher: Detected file change for module ${filename}, reloading...`)
                 client.moduleManager.reloadModule(filename,{custom:true})
+                .then(() => {
+                    log.info(`Watcher: Reloaded module ${filename} successfully`)
+                })
                 .catch(err => {
                     log.error(`Watcher: Failed to auto reload module ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
                 })
@@ -222,31 +227,40 @@ async function loadEvents(client) {
                 eventName.pop();
                 try {
                     const event = require(`${filepath}/${file}`);
-                    if(!event || typeof event !== 'function') {
-                        return log.warn(`${txt_custom} ${file} is not setup correctly!`);
+                    if(i==0) { //core
+                        if(!event || typeof event !== 'function') {
+                            return log.warn(`Event ${txt_custom} ${file} is not setup correctly!`);
+                        }
+                    }else{ //custom
+                        if(!event || (!event.before && !event.after)) {
+                            return log.warn(`Custom Event ${file} is not setup correctly!`);
+                        }
                     }
+                    
                     const logger = new client.Logger(eventName[0])
                     if(eventName.length >= 2 && eventName[1].toLowerCase() === "once") {
-                        if(i==1) {
-                            //temporarily custom loading
-                            client.eventManager.registerEvent(eventName[0],{once:true})
-                            .catch(err => {
-                                log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
-                            })
-                        }else{
-                            client.once(eventName[0], event.bind(null, client,logger));
-                        }
+                        client.eventManager.registerEvent(eventName[0],{once:true,core:i==0})
+                        .catch(err => {
+                            log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
+                        })
+                        // if(i==1) {
+                        //     //temporarily custom loading
+                            
+                        // }else{
+                        //     client.once(eventName[0], event.bind(null, client,logger));
+                        // }
                     }else{
-                        if(i==1) {
-                            //temporarily custom loading
-                            client.eventManager.registerEvent(eventName[0],{once:false})
-                            .catch(err => {
-                                log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
-                            })
-                        }else{
-                            client.on(eventName[0], event.bind(null, client,logger));
+                        client.eventManager.registerEvent(eventName[0],{once:false,core:i==0})
+                        .catch(err => {
+                            log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
+                        })
+                        // if(i==1) {
+                        //     //temporarily custom loading
+                            
+                        // }else{
+                        //     client.on(eventName[0], event.bind(null, client,logger));
 
-                        }
+                        // }
                     }
                     
                     delete require.cache[require.resolve(`${filepath}/${file}`)];

@@ -4,6 +4,7 @@ const moment = require('moment');
 require('moment-duration-format');
 require('moment-timezone');
 const {platform} = require('os');
+const package = require('../../package.json')
 exports.run = (client,msg,args) => {
 	/*if(args[0]) {
 		if(args[0] === "commands") {
@@ -36,7 +37,7 @@ exports.run = (client,msg,args) => {
 				inline:true
 			},
 		],
-		footer:{text:`Created by Jackz#7627 | nodejs ${process.version} | djs v${version}`},
+		footer:{text:`Created by Jackz#7627 | nodejs ${process.version} | djs v${version} | Zeko ${package.version}`},
 		timestamp:client.readyAt
 	}})
 };
