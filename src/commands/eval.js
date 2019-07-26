@@ -1,16 +1,22 @@
 const Discord = require("discord.js");
 //const got = require('got'); //gists
-let OWNER_IDS = [];
 exports.init = (client,logger) => {
 	try {
-		const ids = client.env.get("OWNER_IDS").required().asArray();
+		const ids = process.env.OWNER_IDS.split(",");
+		console.log(ids)
 		OWNER_IDS = ids;
 	}catch(err) {
-		logger.warn("Missing environment var OWNER_IDS, therefore eval will not work.");
+		
 	}
 }
 exports.run = async (client, msg, args, flags, logger) => {
+	if(!process.env.OWNER_IDS) {
+		logger.warn("Missing environment var OWNER_IDS, therefore eval will not work.");
+		return msg.channel.send("There is no users given access to this command")
+	}
+	const OWNER_IDS = process.env.OWNER_IDS.split(",");
 	if(OWNER_IDS.length == 0) {
+		logger.warn("Missing environment var OWNER_IDS, therefore eval will not work.");
 		return msg.channel.send("There is no users given access to this command")
 	}else if(!client.permissions.isAuthorized(msg.author.id,'owner')) {
 		return msg.channel.send("You do not have permission to use this command.");
@@ -57,7 +63,7 @@ exports.run = async (client, msg, args, flags, logger) => {
 					inline:true
 				},
 				{
-					name:`📤 OUTPUT <${type}>`,
+					name:`📤 OUTPUT [${type}]`,
 					value:`\`\`\`js\n${evaled}\n\`\`\``,
 					inline:true
 				}
@@ -79,7 +85,7 @@ exports.run = async (client, msg, args, flags, logger) => {
 					inline:true
 				},
 				{
-					name:`📤 OUTPUT`,
+					name:`📤 OUTPUT [error]`,
 					value:`\`\`\`js\n${client.clean(err.message)}\n\`\`\``,
 					inline:true
 				}
@@ -92,7 +98,7 @@ exports.run = async (client, msg, args, flags, logger) => {
 };
 
 exports.config = {
-	usageIfNotSet: true,
+	usageIfNotSet: false,
 	hidden:true,
 	flags: {
 		output: "boolean"

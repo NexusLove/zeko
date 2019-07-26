@@ -51,13 +51,11 @@ module.exports = class EventManager {
                     logger.error(`Custom Event ${name} errored: ${err.message}`)
                 })
             }
-        }else{
-            if(core) {
-                Promise.resolve(core.event(...args))
-                .catch(err => {
-                    logger.error(`Core Event ${name} errored: ${err.message}`)
-                })
-            }
+        }else if(core){
+            Promise.resolve(core.event(...args))
+            .catch(err => {
+                logger.error(`Core Event ${name} errored: ${err.message}`)
+            })
         }
         /*logger.debug(JSON.stringify({
             event:name,

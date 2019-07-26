@@ -1,6 +1,6 @@
 {
   "name": "zeko",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -41,6 +41,7 @@
     "pouchdb": "^7.0.0",
     "qr-image": "^3.2.0",
     "qrcode-reader": "^1.0.4",
+    "random-js": "^2.1.0",
     "rimraf": "^2.6.2",
     "semver-parser": "^3.0.1",
     "simple-git": "^1.107.0",
@@ -48,6 +49,6 @@
     "uuid": "^3.3.2",
     "wav": "^1.0.2",
     "website-scraper": "^3.3.2",
-    "ytdl-core": "^0.26.3"
+    "ytdl-core": "^0.29.3"
   }
 }
