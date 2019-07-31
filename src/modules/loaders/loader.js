@@ -50,16 +50,25 @@ module.exports = {
                 if(f.startsWith("_")) return;
                 const filename = f.split(".").slice(0,-1).join(".")
                 //log.debug(`Watcher: Detected file change for command ${filename}, reloading...`)
-                try {
-                    client.commands.delete(filename);
-                    let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(dirname,"src/commands") : path.join(dirname,"commands");
-                    const filepath = require.resolve(path.join(command_path,filename))
-                    delete require.cache[filepath]
-                    client.commands.set(filename,require(filepath));
-                    log.info(`Watcher: Reloaded command ${filename} successfully`)
-                }catch(err) {
-                    log.error(`Watcher: Failed to auto reload command ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
-                }
+                setTimeout(() => {
+                    try {
+                        client.commands.delete(filename);
+                        let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(dirname,"src/commands") : path.join(dirname,"commands");
+                        const filepath = require.resolve(path.join(command_path,filename))
+                        delete require.cache[filepath]
+                        const command_file = require(filepath)
+                        if(command_file.init) {
+                            const _logger = new client.Logger(filename,{type:'command'});
+                            command_file.init(client,_logger)
+                        }
+                        if(!command_file.run) log.warn(`Watcher: File ${filename} is missing run property`)
+                        client.commands.set(filename,command_file);
+                        log.info(`Watcher: Reloaded command ${filename} successfully`)
+                    }catch(err) {
+                        log.error(`Watcher: Failed to auto reload command ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
+                    }
+                },500)
+                
             })
 
             event_watcher

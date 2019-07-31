@@ -41,7 +41,7 @@ module.exports = class EventManager {
                                 let cancelled = (r instanceof Object) ? r.cancel : false;
                                 if(!cancelled) custom.event.after(...args);
                             }).catch(err => {
-                                logger.error(`Core Event ${name} errored: ${err.message}`)
+                                logger.error(`Core Event ${name} errored: ${process.env.PRODUCTION?err.message:err.stack}`)
                             })
                         }else{
                             custom.event.after(...args)

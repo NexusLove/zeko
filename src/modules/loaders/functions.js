@@ -22,6 +22,7 @@ module.exports = (client) => {
 
     //load variables
     client.config = config;
+    client.prefix = process.env.PREFIX||">"
     client.rootDir = path.resolve(__dirname,"../../../"); //push root dir into path
 
     //extra functions

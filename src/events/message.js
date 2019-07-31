@@ -1,4 +1,5 @@
 
+const getopts = require("getopts")
 module.exports = async (client, logger, msg) => {
 	return new Promise((resolve,reject) => {
 		if(msg.author.bot) return resolve();
@@ -9,34 +10,32 @@ module.exports = async (client, logger, msg) => {
 	
 		if(msg.content.startsWith(process.env.PREFIX) && cmd) {
 			try {
-				let flags = {};
-				const newArgs = msg.cleanContent.split(/ +/g).slice(1);
-				for(let i=0;i<args.length;i++) {
-					const flag = args[i].split("=");
-					if(flag.length === 2 && flag[0].startsWith("$")) {
-						flag[0] = flag[0].substr(1);
-						if(!/^[A-Za-z]+$/.test(flag[0].toLowerCase())) continue; //flag must be alpha chars
-						if(!flag[0] || !flag[1] || flag[0].length === 0 || flag[1].length === 0) continue;
-						newArgs.splice(i,1);
-						if(!cmd.config.flags) {
-							flags[flag[0].toLowerCase()] = flag[1];
-							continue;
-						}
-						
-						switch(cmd.config.flags[flag[0].toLowerCase()]) {
-							case "number":
-								flags[flag[0].toLowerCase()] = parseInt(flag[1]);
-								break;
-							case "boolean":
-								flags[flag[0].toLowerCase()] = (flag[1] == 'true')
-								break;
-							default:
-								flags[flag[0].toLowerCase()] = flag[1];
-						}
-					}
+				/*
+				flags: {
+					help: String
 				}
-				const logger = new client.Logger(command,{type:'command'});
-				cmd.run(client,msg,newArgs,flags,logger)
+
+
+				*/
+				const flags_options = parseOptions(cmd.config.flags);
+				const options = getopts(msg.cleanContent.split(/ +/g).slice(1), {
+					boolean: flags_options.boolean,
+					string: flags_options.string,
+					alias: Object.assign({help: "h",},flags_options.aliases),
+					default: {
+						help:false
+					}
+				})
+				// logger.debug(flags_options)
+				// logger.debug(options)
+				// logger.debug("new_args",options._)
+				if(options.help || cmd.config.usageIfNot) {
+					const help = client.commands.get('help').generateHelpCommand(client,cmd);
+					return msg.channel.send(help)
+				}
+				const newArgs = options._;
+				const _logger = new client.Logger(command,{type:'command'});
+				cmd.run(client,msg,newArgs,options,_logger)
 				resolve();
 			}catch(err) {
 				msg.channel.send('**Command Error**\n`' + err.stack + "`");
@@ -44,4 +43,43 @@ module.exports = async (client, logger, msg) => {
 			}
 		}
 	})
+}
+
+function parseOptions(flags = {}) {
+	let result = {
+		string:[],
+		boolean:['help'],
+		aliases:{},
+		misc:[]
+	}
+	for(const key in flags) {
+		if(!flags.hasOwnProperty(key)) continue;
+		
+		if(flags[key] === Boolean || flags[key] === "boolean") {
+			result.boolean.push(key);
+		}else if(Array.isArray(flags[key])) {
+			//if alias option only includes 1 or less ignore
+			if(flags[key].length <= 1) continue;
+			result.aliases[flags[key][0]] = flags[key].slice(1)
+		}else if(typeof(flags[key]) === "object") {
+			/*
+			{ type: Boolean, aliases: ['t','turbo'] }
+			*/
+			if(flags[key].type && flags[key].aliases) {
+				//again, if alias option only includes 0
+				if(flags[key].aliases.length <= 0) return;
+				if(flags[key].type === Boolean || flags[key].type === "boolean") {
+					//Push the first alias
+					result.boolean.push(key)
+					result.aliases[key] = flags[key].aliases
+				}else if(flags[key].type === String || flags[key].type === "string") {
+					result.string.push(key)
+					result.aliases[key] = flags[key].aliases
+				}
+			} 
+		} else{
+			result.string.push(key);
+		}
+	}
+	return result;
 }
