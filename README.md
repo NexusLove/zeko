@@ -26,4 +26,4 @@ Visit the [wiki](https://github.com/jackzmc/zeko/wiki) for more information
 [MIT License](https://github.com/Jackzmc/zeko/blob/master/LICENSE)
 
 ## Configuration
-View the [configuration guide](https://github.com/Jackzmc/zeko/wiki/Configuration)
+View the [configuration guide](https://github.com/Jackzmc/zeko/wiki/Configuration) for required settings & optional settings.
