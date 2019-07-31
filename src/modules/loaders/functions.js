@@ -8,6 +8,7 @@ const path = require('path')
 const {settings: config} = require('../database');
 module.exports = (client) => {
     //collection of commands, events, and aliases
+    client.commandGroups = [];
     client.commands = new Collection();
     client.events = new Collection();
     client.aliases = new Collection();

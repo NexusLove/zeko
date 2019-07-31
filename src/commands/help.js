@@ -6,6 +6,9 @@ exports.run = (client,msg,args) => {
 		if(!cmd) return msg.channel.send("Couldn't find that command");
 		return msg.channel.send(this.generateHelpCommand(client,cmd))
 	}else{
+		/*if(client.commandGroups.size > 0) {
+			msg.channel.send('**__Commands__**\n');
+		}*/
 		msg.channel.send('**__Commands__**\n' + client.commands.filter(cmd => !cmd.config.hidden).map(v => `**${v.help.name}** - ${v.help.description}` ).join("\n"))
 	}
 };

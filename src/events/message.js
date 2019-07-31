@@ -18,10 +18,8 @@ module.exports = async (client, logger, msg) => {
 				const options = getopts(msg.cleanContent.split(/ +/g).slice(1), {
 					boolean: flags_options.boolean,
 					string: flags_options.string,
-					alias: Object.assign({help: "h",},flags_options.aliases),
-					default: {
-						help:false
-					}
+					alias: flags_options.aliases,
+					default: flags_options.defaults
 				})
 				//show help message if flag: help, or no args & usageIfNotSet is true
 				if(options.help || cmd.config.usageIfNotSet) {
@@ -45,8 +43,11 @@ function parseOptions(flags = {}) {
 	let result = {
 		string:[],
 		boolean:['help'],
-		aliases:{},
-		misc:[]
+		aliases:{help:'h'},
+		misc:[],
+		defaults:{
+			help:false
+		}
 	}
 	for(const key in flags) {
 		if(!flags.hasOwnProperty(key)) continue;
@@ -61,16 +62,17 @@ function parseOptions(flags = {}) {
 			/*
 			{ type: Boolean, aliases: ['t','turbo'] }
 			*/
-			if(flags[key].type && flags[key].aliases) {
+			if(flags[key].type) {
 				//again, if alias option only includes 0
-				if(flags[key].aliases.length <= 0) return;
 				if(flags[key].type === Boolean || flags[key].type === "boolean") {
 					//Push the first alias
 					result.boolean.push(key)
-					result.aliases[key] = flags[key].aliases
+					if(flags[key].aliases) result.aliases[key] = flags[key].aliases
+					if(flags[key].default) result.defaults[key] = flags[key].default
 				}else if(flags[key].type === String || flags[key].type === "string") {
 					result.string.push(key)
-					result.aliases[key] = flags[key].aliases
+					if(flags[key].aliases) result.aliases[key] = flags[key].aliases
+					if(flags[key].default) result.defaults[key] = flags[key].default
 				}
 			} 
 		} else{

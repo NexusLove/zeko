@@ -100,13 +100,15 @@ exports.config = {
 	usageIfNotSet: false,
 	hidden:true,
 	flags: {
-		output: "boolean"
+		output: {
+			type: Boolean,
+			default: true	
+		}
 	}
 };
 
 exports.help = {
 	name: 'eval',
-	aliases:[],
 	description: 'Evalutes code',
 	usage:'eval <test command>',
 };

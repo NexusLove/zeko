@@ -146,6 +146,7 @@ async function loadCommands(client) {
                                     }
                                     props.help.description = props.help.description||'[No description provided]'
                                     props.config.group = dirent.name;
+                                    if(!client.commandGroups.includes(dirent.name)) client.commandGroups.push(dirent.name)
                                     props.config.core = (i==0);
                                     //allows support for name to be an array or a single string
                                     if(Array.isArray(props.help.name)) {
@@ -308,6 +309,7 @@ async function loadModules(client) {
                                     props.config.name = f.split(".")[0];
                                     props.config.core = (i==0);
                                     props.config.group = dirent.name;
+                                    
                                     client.moduleManager.registerModule(props)
                                     .then(() => {
                                         if(i==0) custom++; else normal++;
