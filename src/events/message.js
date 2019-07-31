@@ -3,20 +3,14 @@ const getopts = require("getopts")
 module.exports = async (client, logger, msg) => {
 	return new Promise((resolve,reject) => {
 		if(msg.author.bot) return resolve();
-		const args = msg.content.split(/ +/g);
+		const args = msg.content.split(/\s+/g);
 		if(args.length === 0) return resolve();
-		const command = args.shift().slice(process.env.PREFIX.length).toLowerCase();
+		if(/\s/.test(client.prefix)) args.shift();
+		const command = /\s/.test(client.prefix) ? args.shift().toLowerCase() : args.shift().slice(client.prefix.length).toLowerCase();
 		const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
 	
 		if(msg.content.startsWith(process.env.PREFIX) && cmd) {
 			try {
-				/*
-				flags: {
-					help: String
-				}
-
-
-				*/
 				const flags_options = parseOptions(cmd.config.flags);
 				const options = getopts(msg.cleanContent.split(/ +/g).slice(1), {
 					boolean: flags_options.boolean,

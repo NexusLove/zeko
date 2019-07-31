@@ -1,6 +1,6 @@
 //import modules
 const Discord = require("discord.js");
-require('dotenv').load();
+require('dotenv').config();
 //start a new discord client
 const client = new Discord.Client({
 	disableEveryone:true,
