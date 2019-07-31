@@ -2,15 +2,18 @@
 const getopts = require("getopts")
 module.exports = async (client, logger, msg) => {
 	return new Promise((resolve,reject) => {
+		//ignore if bot
 		if(msg.author.bot) return resolve();
+		//split msg into []
 		const args = msg.content.split(/\s+/g);
 		if(args.length === 0) return resolve();
-		if(/\s/.test(client.prefix)) args.shift();
-		const command = /\s/.test(client.prefix) ? args.shift().toLowerCase() : args.shift().slice(client.prefix.length).toLowerCase();
-		const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
-	
+		if(/\s/.test(client.prefix)) args.shift(); //shift if prefix has space
+		const command_name = /\s/.test(client.prefix) ? args.shift().toLowerCase() : args.shift().slice(client.prefix.length).toLowerCase();
+		const cmd = client.commands.get(command_name) || client.commands.get(client.aliases.get(command_name));
+		//only run if message starts with prefix, and command is found
 		if(msg.content.startsWith(process.env.PREFIX) && cmd) {
 			try {
+				//parse arguments with getopts package (--flag)
 				const flags_options = parseOptions(cmd.config.flags);
 				const options = getopts(msg.cleanContent.split(/ +/g).slice(1), {
 					boolean: flags_options.boolean,
@@ -20,12 +23,14 @@ module.exports = async (client, logger, msg) => {
 						help:false
 					}
 				})
+				//show help message if flag: help, or no args & usageIfNotSet is true
 				if(options.help || cmd.config.usageIfNotSet) {
 					const help = client.commands.get('help').generateHelpCommand(client,cmd);
 					return msg.channel.send(help)
 				}
 				const newArgs = options._;
-				const _logger = new client.Logger(command,{type:'command'});
+				const _logger = new client.Logger(command_name,{type:'command'});
+				//finally, run command and resolve promise
 				cmd.run(client,msg,newArgs,options,_logger)
 				resolve();
 			}catch(err) {

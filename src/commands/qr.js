@@ -9,6 +9,7 @@ exports.run = async(client,msg,args,flags,logger) => {
 	} 
 	switch(args[0].toLowerCase()) {
 		case "view": {
+			//check if there is an url or attachment. Attachment > url
 			const possibleUrl = args.slice(1).join(" ");
 			if(msg.attachments.size === 0 && !possibleUrl) return msg.channel.send('Please upload an image with the command');
 			if(msg.attachments.size > 0 && !msg.attachments.first().height) return msg.channel.send('Please upload an image.');

@@ -13,6 +13,7 @@ module.exports = class ModuleManager {
     static getInstance() {
         return instance || new ModuleManager();
     } 
+    //LEGACY COMPONENT. NEEDS TO BE SET ON FIRE AND REMOVED
     messageHandler(msg) {
         const args = msg.content.split(/ +/g);
         const message = args.shift();

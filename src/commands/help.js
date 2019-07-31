@@ -12,7 +12,7 @@ exports.run = (client,msg,args) => {
 
 exports.generateHelpCommand = (client,cmd) => {
 	let fields = [];
-	//disable for now
+	//print information about flags if not hidden
 	if(cmd.config.flags && !cmd.config.hideFlags) {
 		const flags = [];
 		for(const key in cmd.config.flags) {
@@ -35,9 +35,11 @@ exports.generateHelpCommand = (client,cmd) => {
 		}
 		fields.push({name:'Flags',value:flags.join("\n")})
 	}
+	//add fields to the embed
 	if(cmd.help.fields) {
 		fields = fields.concat(cmd.help.fields)
 	} 
+	//add example field, filling in %prefix%
 	if(cmd.help.example) {
 		fields.push({name:'Examples',value:cmd.help.example.replace(PREFIX_REGEX,client.prefix)});
 	}

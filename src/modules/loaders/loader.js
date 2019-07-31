@@ -11,6 +11,7 @@ module.exports = {
         log = new client.Logger('loader');
         internalCustomCheck()
         .then(() => {
+            //load modules first, and after its done, load commands and events at the same time
             loadModules(client).then(() => {
                 Promise.all([
                     loadCommands(client),
@@ -21,6 +22,7 @@ module.exports = {
             log.error('Internal Load failure, exiting.\n' + err.message);
             process.exit(1);
         })
+        //check if LOADER_AUTO_RELOAD is set to true, to enable auto watch reload
         if(process.env.LOADER_AUTO_RELOAD) {
             log.debug('Watcher: Now active.')
             const cmd_watcher = chokidar.watch(['src/commands','commands'], {
@@ -38,7 +40,7 @@ module.exports = {
                 ignoreInitial: true,
                 persistent: true
             });
-
+            //main command watcher
             cmd_watcher
             .on('add',_path => {
                 log.debug('Detected a new command (',_path,'). Restart to load')
@@ -49,9 +51,10 @@ module.exports = {
                 if(f.split(".").slice(-1)[0] !== "js") return;
                 if(f.startsWith("_")) return;
                 const filename = f.split(".").slice(0,-1).join(".")
-                //log.debug(`Watcher: Detected file change for command ${filename}, reloading...`)
+                //set timeout, sometimes it gets a change before file is complete. Should port to the other 2 _watchers
                 setTimeout(() => {
                     try {
+                        //delete command from map, load it, initalize it, and then add it back if successful
                         client.commands.delete(filename);
                         let command_path = (/(src)(\\|\/)/.test(_path)) ? path.join(dirname,"src/commands") : path.join(dirname,"commands");
                         const filepath = require.resolve(path.join(command_path,filename))
@@ -109,15 +112,16 @@ module.exports = {
     }
 }
 async function loadCommands(client) {
+    //just set the folders it should load from
     const folders = ['src/commands','commands'];
     let custom = 0;
     let normal = 0;
     const promises = [];
     for(let i=0;i<folders.length;i++) {
         const folder = folders[i];
-        const txt_custom = (i==1)?' Custom' : '';
+        const txt_custom = (i==1)?' Custom' : ''; //ugly solution, but checks if its a custom command
         const filepath = path.join(dirname,folder);
-        await fs.readdir(filepath,{withFileTypes:true})
+        await fs.readdir(filepath,{withFileTypes:true}) //read directory, returns directs which can check if folder, to support cmd groups
         .then(files => {
             files.forEach(dirent => {
                 if(dirent.isDirectory()) {
@@ -125,10 +129,12 @@ async function loadCommands(client) {
                     fs.readdir(sub_filepath)
                     .then(sub_files => {
                         sub_files.forEach(f => {
+                            //ignore files that arent *.js, or have _ prefixed
                             if(f.split(".").slice(-1)[0] !== "js") return;
                             if(f.startsWith("_")) return;
                             promises.push(new Promise((resolve,reject) => {
                                 try {
+                                    //load file, check required properties (help,config,run)
                                     let props = require(`${sub_filepath}/${f}`);
                                     if(!props.help || !props.config) {
                                         log.warn(`${txt_custom} ${f} has no config or help value.`);
@@ -141,7 +147,7 @@ async function loadCommands(client) {
                                     props.help.description = props.help.description||'[No description provided]'
                                     props.config.group = dirent.name;
                                     props.config.core = (i==0);
-                                
+                                    //allows support for name to be an array or a single string
                                     if(Array.isArray(props.help.name)) {
                                         if(props.help.name.length === 0) {
                                             log.warn(`${f} has no names or aliases defined.`)
@@ -167,11 +173,13 @@ async function loadCommands(client) {
                         })
                     })
                 }else{
+                    //same as above, dont run if not *.js or prefixed with _
                     const f = dirent.name;
                     if(f.split(".").slice(-1)[0] !== "js") return;
                     if(f.startsWith("_")) return;
                     promises.push(new Promise((resolve,reject) => {
                         try {
+                            //load file, check required properties (help,config,run)
                             let props = require(`${filepath}/${f}`);
                             if(!props.help || !props.config) {
                                 log.warn(`${txt_custom} ${f} has no config or help value.`);
@@ -184,7 +192,7 @@ async function loadCommands(client) {
                             props.help.description = props.help.description||'[No description provided]'
                             props.config.core = (i==0);
                             props.config.group = null;
-                        
+                            //allows support for name to be an array or a single string
                             if(Array.isArray(props.help.name)) {
                                 if(props.help.name.length === 0) {
                                     log.warn(`${f} has no names or aliases defined.`)
@@ -245,31 +253,18 @@ async function loadEvents(client) {
                             return log.warn(`Custom Event ${file} is not setup correctly!`);
                         }
                     }
-                    
+                    //this is probably still broken. Event manager doesnt care about .once. property
                     const logger = new client.Logger(eventName[0])
                     if(eventName.length >= 2 && eventName[1].toLowerCase() === "once") {
                         client.eventManager.registerEvent(eventName[0],{once:true,core:i==0})
                         .catch(err => {
                             log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
                         })
-                        // if(i==1) {
-                        //     //temporarily custom loading
-                            
-                        // }else{
-                        //     client.once(eventName[0], event.bind(null, client,logger));
-                        // }
                     }else{
                         client.eventManager.registerEvent(eventName[0],{once:false,core:i==0})
                         .catch(err => {
                             log.error(`${txt_custom} Event ${eventName[0]} was not loaded by EventManager: \n ${err.message}`)
                         })
-                        // if(i==1) {
-                        //     //temporarily custom loading
-                            
-                        // }else{
-                        //     client.on(eventName[0], event.bind(null, client,logger));
-
-                        // }
                     }
                     
                     delete require.cache[require.resolve(`${filepath}/${file}`)];
@@ -294,7 +289,7 @@ async function loadModules(client) {
         const folder = folders[i];
         const txt_custom = (i==0)?'Custom ' : '';
         const filepath = path.join(dirname,folder);
-        //read the folder path, and get dirs
+        //read the folder path, and get dirs. Same as commands fetching basically
         await fs.readdir(filepath,{withFileTypes:true})
         .then(files => {
             files.forEach(dirent => {
@@ -370,7 +365,7 @@ async function loadModules(client) {
         //errors are already logged in the promises
     })
 }
-
+//creates custom folders if they dont exist
 function internalCustomCheck() {
     return new Promise((resolve,reject) => {
         const folders = ["commands","events","modules"]

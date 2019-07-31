@@ -1,7 +1,8 @@
 //import modules
 const Discord = require("discord.js");
+//load .env file into process.env
 require('dotenv').config();
-//start a new discord client
+//start a new discord client,
 const client = new Discord.Client({
 	disableEveryone:true,
 	disabledEvents: ['TYPING_START','CHANNEL_PINS_UPDATE','USER_NOTE_UPDATE','RELATIONSHIP_ADD','RELATIONSHIP_REMOVE'],
