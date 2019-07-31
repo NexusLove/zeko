@@ -1,3 +1,4 @@
+const PREFIX_REGEX = new RegExp(/%(prefix|p)%/,"g")
 exports.run = (client,msg,args) => {
 	if(args[0]) {
 		const cmd = client.commands
@@ -11,10 +12,20 @@ exports.run = (client,msg,args) => {
 
 exports.generateHelpCommand = (client,cmd) => {
 	let fields = [];
-	if(cmd.config.flags) {
+	//disable for now
+	if(cmd.config.flags && !cmd.config.hideFlags) {
 		const flags = [];
 		for(const key in cmd.config.flags) {
-			flags.push(`${key}:${cmd.config.flags[key]}`)
+			const value = cmd.config.flags[key];
+			let type = getType(cmd.config.flags[key]);
+			if(type === "Object") {
+				if(value.type) {
+					type = getType(value.type)
+				}else{
+					type = "Object";
+				}
+			}
+			flags.push(`**${key}:** ${type}`)
 		}
 		fields.push({name:'Flags',value:flags.join("\n")})
 	}
@@ -22,12 +33,12 @@ exports.generateHelpCommand = (client,cmd) => {
 		fields = fields.concat(cmd.help.fields)
 	} 
 	if(cmd.help.example) {
-		fields.push({name:'Examples',value:cmd.help.example});
+		fields.push({name:'Examples',value:cmd.help.example.replace(PREFIX_REGEX,client.prefix)});
 	}
 	const name = Array.isArray(cmd.help.name) ? cmd.help.name[0] : cmd.help.name;
 	return {embed:{
 		title:`${client.prefix}${name}`,
-		description:`${cmd.help.description}\n**Usage: **\`${cmd.help.usage}\``,
+		description:`${cmd.help.description.replace(PREFIX_REGEX,client.prefix)}\n**Usage: **\`${client.prefix}${cmd.help.usage.replace(PREFIX_REGEX,"")}\``,
 		fields
 	}}
 }
@@ -42,3 +53,15 @@ exports.help = {
 	usage:'help'
 };
  
+function getType(value) {
+	if(value === String || value === "string") {
+		return "String"
+	}else if(value === Boolean || value === "boolean") {
+		return "Boolean"
+	}else if(Array.isArray(value)) {
+		return "Array";
+	}else if(typeof value === "object") {
+		return "Object"
+	}
+	return "Unknown";
+}
