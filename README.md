@@ -17,6 +17,7 @@ A modular discord.js bot that comes loaded with useful commands and easy to use 
 * Custom logging system
 * Premade commands to use
 * Command help system
+* Command flag system (linux getopts)
 
 ## Documentation
 Visit the [wiki](https://github.com/jackzmc/zeko/wiki) for more information
