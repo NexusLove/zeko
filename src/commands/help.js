@@ -17,15 +17,21 @@ exports.generateHelpCommand = (client,cmd) => {
 		const flags = [];
 		for(const key in cmd.config.flags) {
 			const value = cmd.config.flags[key];
-			let type = getType(cmd.config.flags[key]);
+			let type = getType(value);
+			let description = null;
+			//if the value is an object, then parse the sub object 
 			if(type === "Object") {
+				//only valid if there is a type attribute
 				if(value.type) {
+					//reset type to the type of flag
 					type = getType(value.type)
+					//set the description if there is one (will be undefined)
+					description = value.description;
 				}else{
 					type = "Object";
 				}
 			}
-			flags.push(`**${key}:** ${type}`)
+			flags.push(`**[${type}] ${key}** ${description||''}`)
 		}
 		fields.push({name:'Flags',value:flags.join("\n")})
 	}
