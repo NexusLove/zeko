@@ -26,10 +26,7 @@ module.exports = async (client, logger, msg) => {
 						help:false
 					}
 				})
-				// logger.debug(flags_options)
-				// logger.debug(options)
-				// logger.debug("new_args",options._)
-				if(options.help || cmd.config.usageIfNot) {
+				if(options.help || cmd.config.usageIfNotSet) {
 					const help = client.commands.get('help').generateHelpCommand(client,cmd);
 					return msg.channel.send(help)
 				}

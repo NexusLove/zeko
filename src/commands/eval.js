@@ -30,7 +30,6 @@ exports.run = async (client, msg, args, flags, logger) => {
 	if(!output) {
 		logger.warn(`${msg.author.tag} ran eval: (Output:False): ${code}`);
 		try {
-			console.log(code)
 			eval(code);
 			msg.react("✅")
 		}catch(err) {

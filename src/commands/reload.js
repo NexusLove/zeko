@@ -74,7 +74,10 @@ exports.run = async(client,msg,args,flags,logger) => {
 };
 
 exports.config = {
-	usageIfNotSet: true
+    usageIfNotSet: true,
+    flags:{
+        debug:Boolean
+    }
 };
 
 exports.help = {
