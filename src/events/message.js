@@ -54,6 +54,7 @@ function parseOptions(flags = {}) {
 		
 		if(flags[key] === Boolean || flags[key] === "boolean") {
 			result.boolean.push(key);
+			result.defaults[key] = false;
 		}else if(Array.isArray(flags[key])) {
 			//if alias option only includes 1 or less ignore
 			if(flags[key].length <= 1) continue;

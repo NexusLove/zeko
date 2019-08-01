@@ -16,6 +16,7 @@ exports.run = async(client,msg,args) => {
 		let deleteList = [];
 		let amount = 0;
 		let message = messages.array()
+		deleteList.push(msg) //delete the command message itself
 		for(let i=0;i<message.length;i++) {
 			if(!user) {
 				amount++;
