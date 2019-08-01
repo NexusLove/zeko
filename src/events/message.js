@@ -17,11 +17,32 @@ module.exports = async (client, logger, msg) => {
 				const flags_options = parseOptions(cmd.config.flags);
 				const options = getopts(msg.cleanContent.split(/ +/g).slice(1), {
 					boolean: flags_options.boolean,
-					string: flags_options.string,
+					string: flags_options.string, //includes numbers
 					alias: flags_options.aliases,
 					default: flags_options.defaults
 				})
 				const newArgs = options._;
+				let flags = {};
+				//do a final process, parsing number flags as numbers from string, and removing aliases
+				const names = Object.keys(flags_options.aliases).concat(flags_options.boolean,flags_options.string)
+				for(const key in options) {
+					if(key === "_") continue;
+					//flags_options.number is object of default values
+					if(!names.includes(key)) continue; //ignore aliases, dont use them
+					if(flags_options.number[key] != null) {
+						console.log(options[key]?`parse`:`default [${flags_options.number[key]}]`,`${key}=${options[key]}`,parseInt(options[key]))
+						//use default if blank/null, otherwise parse
+						if(!options[key] || options[key] == "") {
+							flags[key] = flags_options.number[key];
+						}else{
+							flags[key] = parseInt(options[key]);
+						}
+					}else{
+						flags[key] = options[key]
+					}
+				}
+				console.log("flag_options",flags_options);
+				console.log("new_flags",flags)
 				//show help message if flag: help, or no args & usageIfNotSet is true
 				if(options.help || (cmd.config.usageIfNotSet && newArgs.length == 0)) {
 					const help = client.commands.get('help').generateHelpCommand(client,cmd);
@@ -42,9 +63,9 @@ module.exports = async (client, logger, msg) => {
 function parseOptions(flags = {}) {
 	let result = {
 		string:[],
+		number:{},
 		boolean:['help'],
 		aliases:{help:'h'},
-		misc:[],
 		defaults:{
 			help:false
 		}
@@ -55,6 +76,8 @@ function parseOptions(flags = {}) {
 		if(flags[key] === Boolean || flags[key] === "boolean") {
 			result.boolean.push(key);
 			result.defaults[key] = false;
+		}else if(flags[key] === Number || flags[key] === "number") {
+			result.string.push(key);
 		}else if(Array.isArray(flags[key])) {
 			//if alias option only includes 1 or less ignore
 			if(flags[key].length <= 1) continue;
@@ -68,13 +91,15 @@ function parseOptions(flags = {}) {
 				if(flags[key].type === Boolean || flags[key].type === "boolean") {
 					//Push the first alias
 					result.boolean.push(key)
-					if(flags[key].aliases) result.aliases[key] = flags[key].aliases
 					if(flags[key].default) result.defaults[key] = flags[key].default
 				}else if(flags[key].type === String || flags[key].type === "string") {
 					result.string.push(key)
-					if(flags[key].aliases) result.aliases[key] = flags[key].aliases
 					if(flags[key].default) result.defaults[key] = flags[key].default
+				}else if(flags[key].type === Number || flags[key].type === "number") {
+					result.string.push(key);
+					result.number[key] = flags[key].default;
 				}
+				if(flags[key].aliases) result.aliases[key] = flags[key].aliases
 			} 
 		} else{
 			result.string.push(key);
