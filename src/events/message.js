@@ -70,11 +70,12 @@ function parseOptions(flags = {}) {
 	for(const key in flags) {
 		if(!flags.hasOwnProperty(key)) continue;
 		
-		if(flags[key] === Boolean || flags[key] === "boolean") {
+		if(flags[key] === Boolean || flags[key].toLowerCase() === "boolean") {
 			result.boolean.push(key);
 			result.defaults[key] = false;
-		}else if(flags[key] === Number || flags[key] === "number") {
+		}else if(flags[key] === Number || flags[key].toLowerCase() === "number") {
 			result.string.push(key);
+			result.number[key] = 0;
 		}else if(Array.isArray(flags[key])) {
 			//if alias option only includes 1 or less ignore
 			if(flags[key].length <= 1) continue;
@@ -92,7 +93,7 @@ function parseOptions(flags = {}) {
 				}else if(flags[key].type === String || flags[key].type === "string") {
 					result.string.push(key)
 					if(flags[key].default) result.defaults[key] = flags[key].default
-				}else if(flags[key].type === Number || flags[key].type === "number") {
+				}else if(flags[key].type === Number || flags[key].type.toLowerCase() === "number") {
 					result.string.push(key);
 					result.number[key] = flags[key].default;
 				}

@@ -65,12 +65,12 @@ exports.help = {
 };
  
 function getType(value) {
-	if(value === String || value === "string") {
+	if(value === String || value.toLowerCase() === "string") {
 		return "String"
-	}else if(value === Boolean || value === "boolean") {
+	}else if(value === Boolean || value.toLowerCase() === "boolean") {
 		return "Boolean"
-	}else if(Array.isArray(value)) {
-		return "Array";
+	}else if(value === Number || value.toLowerCase() === "number") {
+		return "Number";
 	}else if(typeof value === "object") {
 		return "Object"
 	}
