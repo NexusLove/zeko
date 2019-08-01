@@ -44,7 +44,11 @@ exports.generateHelpCommand = (client,cmd) => {
 	} 
 	//add example field, filling in %prefix%
 	if(cmd.help.example) {
-		fields.push({name:'Examples',value:cmd.help.example.replace(PREFIX_REGEX,client.prefix)});
+		const value = Array.isArray(cmd.help.example) ? cmd.help.example.join("\n") : cmd.help.example
+		fields.push({name:'Examples',value:value.replace(PREFIX_REGEX,client.prefix)});
+	}else if(cmd.help.examples) {
+		const value = Array.isArray(cmd.help.examples) ? cmd.help.examples.join("\n") : cmd.help.examples
+		fields.push({name:'Examples',value:value.replace(PREFIX_REGEX,client.prefix)});
 	}
 	const name = Array.isArray(cmd.help.name) ? cmd.help.name[0] : cmd.help.name;
 	return {embed:{
@@ -65,14 +69,14 @@ exports.help = {
 };
  
 function getType(value) {
-	if(value === String || value.toLowerCase() === "string") {
-		return "String"
-	}else if(value === Boolean || value.toLowerCase() === "boolean") {
-		return "Boolean"
-	}else if(value === Number || value.toLowerCase() === "number") {
-		return "Number";
-	}else if(typeof value === "object") {
+	if(typeof value === "object") {
 		return "Object"
+	}else if(value === String || (typeof value === "string" && value.toLowerCase() === "string")) {
+		return "String"
+	}else if(value === Boolean || (typeof value === "string" && value.toLowerCase() === "boolean")) {
+		return "Boolean"
+	}else if(value === Number || (typeof value === "string" && value.toLowerCase() === "number")) {
+		return "Number";
 	}
 	return "Unknown";
 }

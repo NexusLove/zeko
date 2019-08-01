@@ -50,7 +50,7 @@ module.exports = async (client, logger, msg) => {
 				cmd.run(client,msg,newArgs,options,_logger)
 				resolve();
 			}catch(err) {
-				msg.channel.send('**Command Error**\n`' + err.stack + "`");
+				msg.channel.send('**Command Error**\n`' + err.stack + "`").catch(err => logger.warn("Failed to send command error message",err.message))
 				reject(err);
 			}
 		}
@@ -75,23 +75,23 @@ function parseOptions(flags = {}) {
 			*/
 			if(flags[key].type) {
 				//again, if alias option only includes 0
-				if(flags[key].type === Boolean || flags[key].type === "boolean") {
+				if(flags[key].type === Boolean || (typeof value === "string" && flags[key].type === "boolean")) {
 					//Push the first alias
 					result.boolean.push(key)
 					if(flags[key].default) result.defaults[key] = flags[key].default
 				}else if(flags[key].type === String || flags[key].type === "string") {
 					result.string.push(key)
 					if(flags[key].default) result.defaults[key] = flags[key].default
-				}else if(flags[key].type === Number || flags[key].type.toLowerCase() === "number") {
+				}else if(flags[key].type === Number || (typeof value === "string" && flags[key].type.toLowerCase() === "number")) {
 					result.string.push(key);
 					result.number[key] = flags[key].default;
 				}
 				if(flags[key].aliases) result.aliases[key] = flags[key].aliases
 			} 
-		}else if(flags[key] === Boolean || flags[key].toLowerCase() === "boolean") {
+		}else if(flags[key] === Boolean || (typeof value === "string" && flags[key].toLowerCase() === "boolean")) {
 			result.boolean.push(key);
 			result.defaults[key] = false;
-		}else if(flags[key] === Number || flags[key].toLowerCase() === "number") {
+		}else if(flags[key] === Number || (typeof value === "string" && flags[key].toLowerCase() === "number")) {
 			result.string.push(key);
 			result.number[key] = 0;
 		}else if(Array.isArray(flags[key])) {

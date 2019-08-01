@@ -1,6 +1,6 @@
 {
   "name": "zeko",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -49,6 +49,7 @@
     "semver-parser": "^3.0.1",
     "simple-git": "^1.107.0",
     "simple-youtube-api": "^5.0.2",
+    "unescape": "^1.0.1",
     "uuid": "^3.3.2",
     "wav": "^1.0.2",
     "website-scraper": "^3.3.2",
