@@ -69,18 +69,7 @@ function parseOptions(flags = {}) {
 	}
 	for(const key in flags) {
 		if(!flags.hasOwnProperty(key)) continue;
-		
-		if(flags[key] === Boolean || flags[key].toLowerCase() === "boolean") {
-			result.boolean.push(key);
-			result.defaults[key] = false;
-		}else if(flags[key] === Number || flags[key].toLowerCase() === "number") {
-			result.string.push(key);
-			result.number[key] = 0;
-		}else if(Array.isArray(flags[key])) {
-			//if alias option only includes 1 or less ignore
-			if(flags[key].length <= 1) continue;
-			result.aliases[flags[key][0]] = flags[key].slice(1)
-		}else if(typeof(flags[key]) === "object") {
+		if(typeof(flags[key]) === "object") {
 			/*
 			{ type: Boolean, aliases: ['t','turbo'] }
 			*/
@@ -99,7 +88,17 @@ function parseOptions(flags = {}) {
 				}
 				if(flags[key].aliases) result.aliases[key] = flags[key].aliases
 			} 
-		} else{
+		}else if(flags[key] === Boolean || flags[key].toLowerCase() === "boolean") {
+			result.boolean.push(key);
+			result.defaults[key] = false;
+		}else if(flags[key] === Number || flags[key].toLowerCase() === "number") {
+			result.string.push(key);
+			result.number[key] = 0;
+		}else if(Array.isArray(flags[key])) {
+			//if alias option only includes 1 or less ignore
+			if(flags[key].length <= 1) continue;
+			result.aliases[flags[key][0]] = flags[key].slice(1)
+		}else {
 			result.string.push(key);
 		}
 	}
