@@ -21,12 +21,12 @@ module.exports = async (client, logger, msg) => {
 					alias: flags_options.aliases,
 					default: flags_options.defaults
 				})
+				const newArgs = options._;
 				//show help message if flag: help, or no args & usageIfNotSet is true
-				if(options.help || cmd.config.usageIfNotSet) {
+				if(options.help || (cmd.config.usageIfNotSet && newArgs.length == 0)) {
 					const help = client.commands.get('help').generateHelpCommand(client,cmd);
 					return msg.channel.send(help)
 				}
-				const newArgs = options._;
 				const _logger = new client.Logger(command_name,{type:'command'});
 				//finally, run command and resolve promise
 				cmd.run(client,msg,newArgs,options,_logger)
