@@ -30,7 +30,6 @@ module.exports = async (client, logger, msg) => {
 					//flags_options.number is object of default values
 					if(!names.includes(key)) continue; //ignore aliases, dont use them
 					if(flags_options.number[key] != null) {
-						console.log(options[key]?`parse`:`default [${flags_options.number[key]}]`,`${key}=${options[key]}`,parseInt(options[key]))
 						//use default if blank/null, otherwise parse
 						if(!options[key] || options[key] == "") {
 							flags[key] = flags_options.number[key];
@@ -41,8 +40,6 @@ module.exports = async (client, logger, msg) => {
 						flags[key] = options[key]
 					}
 				}
-				console.log("flag_options",flags_options);
-				console.log("new_flags",flags)
 				//show help message if flag: help, or no args & usageIfNotSet is true
 				if(options.help || (cmd.config.usageIfNotSet && newArgs.length == 0)) {
 					const help = client.commands.get('help').generateHelpCommand(client,cmd);
