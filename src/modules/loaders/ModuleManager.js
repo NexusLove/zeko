@@ -105,7 +105,8 @@ module.exports = class ModuleManager {
         return new Promise(async(resolve,reject) => {
             try {
                 //delete this.modules[module.config.name];
-                if(module.exit) await module.exit(this.client);
+                const _logger = new this.client.Logger(module.config.name,{type:'module'})
+                if(module.exit) await module.exit(this.client,_logger);
                 
                 const _path = path.join(_this.client.rootDir,module.config.core?"src/modules/":"modules/",`${module.config.name}.js`)
                 try {
@@ -116,8 +117,7 @@ module.exports = class ModuleManager {
                     newModule.config.core = module.config.core;
                     //do logic on register modules
                     _this.modules[module.config.name] = newModule;
-                    const logger = new this.client.Logger(module.config.name,{type:'module'})
-                    if(newModule.init) await newModule.init(_this.client,logger);
+                    if(newModule.init) await newModule.init(_this.client,_logger);
                     resolve();
                 } catch(err) {
                     if(err.code === 'ENOENT') {
