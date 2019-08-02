@@ -14,6 +14,8 @@ and view the wiki for more information and [required and optional configurations
 * Command help system
 * Command flag system (linux getopts)
 
+and more at the [zeko-modules respository](https://github.com/jackzmc/zeko-modules)
+
 ## Developer Documentation
 Visit the [wiki](https://github.com/jackzmc/zeko/wiki) for more information
 
