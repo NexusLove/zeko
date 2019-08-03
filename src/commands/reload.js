@@ -1,9 +1,9 @@
 const fs = require('fs').promises;
 const path = require('path')
 
-const path_mod = path.join(__dirname,"/../modules");
-const path_evt = path.join(__dirname,"/../events");
-const path_cmd = path.join(__dirname,"/../commands");
+const path_mod = path.join(__dirname,"/../../modules");
+const path_evt = path.join(__dirname,"/../../events");
+const path_cmd = path.join(__dirname,"/../../commands");
 
 exports.run = async(client,msg,args,flags,logger) => {
 	if(args[0].toLowerCase() === "list") {
@@ -76,7 +76,12 @@ exports.run = async(client,msg,args,flags,logger) => {
 exports.config = {
     usageIfNotSet: true,
     flags:{
-        debug:Boolean
+        debug:Boolean,
+        core:{
+            type:Boolean,
+            description:"Reload core files instead of custom",
+            aliases:['c']
+        }
     }
 };
 
