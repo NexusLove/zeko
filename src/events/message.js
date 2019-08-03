@@ -4,14 +4,22 @@ module.exports = async (client, logger, msg) => {
 	return new Promise((resolve,reject) => {
 		//ignore if bot
 		if(msg.author.bot) return resolve();
-		//split msg into []
-		const args = msg.content.split(/\s+/g);
-		if(args.length === 0) return resolve();
-		if(/\s/.test(client.prefix)) args.shift(); //shift if prefix has space
-		const command_name = /\s/.test(client.prefix) ? args.shift().toLowerCase() : args.shift().slice(client.prefix.length).toLowerCase();
+		//credit to: https://stackoverflow.com/a/46946633, supports quotes to be taken as args
+		const args = msg.content.match(/\\?.|^$/g).reduce((p, c) => {
+			if(c === '"'){
+				p.quote ^= 1;
+			}else if(!p.quote && c === ' '){
+				p.a.push('');
+			}else{
+				p.a[p.a.length-1] += c.replace(/\\(.)/,"$1");
+			}
+			return  p;
+		}, {a: ['']}).a
+		if(/^[A-Za-z0-9]+/.test(client.prefix)) args.shift(); //shift if need to use symbol based prefix
+		const command_name = /^[A-Za-z0-9]+/.test(client.prefix) ? args.shift().toLowerCase() : args.shift().slice(client.prefix.length).toLowerCase();
 		const cmd = client.commands.get(command_name) || client.commands.get(client.aliases.get(command_name));
 		//only run if message starts with prefix, and command is found
-		if(msg.content.startsWith(process.env.PREFIX) && cmd) {
+		if(msg.content.startsWith(client.prefix) && cmd) {
 			try {
 				//parse arguments with getopts package (--flag)
 				const flags_options = parseOptions(cmd.config.flags);
