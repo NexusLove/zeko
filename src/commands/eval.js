@@ -1,14 +1,5 @@
 const Discord = require("discord.js");
 //const got = require('got'); //gists
-exports.init = (client,logger) => {
-	try {
-		const ids = process.env.OWNER_IDS.split(",");
-		console.log(ids)
-		OWNER_IDS = ids;
-	}catch(err) {
-		
-	}
-}
 exports.run = async (client, msg, args, flags, logger) => {
 	if(!process.env.OWNER_IDS) {
 		logger.warn("Missing environment var OWNER_IDS, therefore eval will not work.");

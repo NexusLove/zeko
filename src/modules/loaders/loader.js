@@ -68,7 +68,7 @@ module.exports = {
                         client.commands.set(filename,command_file);
                         log.info(`Watcher: Reloaded command ${filename} successfully`)
                     }catch(err) {
-                        log.error(`Watcher: Failed to auto reload command ${filename}: ${process.env.PRODUCTION?err.message:err.stack}`)
+                        log.error(`Watcher: ${filename} Failed Reload: ${process.env.PRODUCTION?err.message:err.stack}`)
                     }
                 },500)
                 

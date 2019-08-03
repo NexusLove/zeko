@@ -14,7 +14,7 @@ exports.config = {
 
 exports.help = {
 	name: ['avatar','avt'],
-	description: '',
+	description: 'Get the full sized avatar and an url of a user',
 	usage:'avatar @user'
 };
  

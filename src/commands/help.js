@@ -6,13 +6,36 @@ exports.run = (client,msg,args) => {
 		if(!cmd) return msg.channel.send("Couldn't find that command");
 		return msg.channel.send(this.generateHelpCommand(client,cmd))
 	}else{
-		/*if(client.commandGroups.size > 0) {
-			msg.channel.send('**__Commands__**\n');
-		}*/
-		msg.channel.send('**__Commands__**\n' + client.commands.filter(cmd => !cmd.config.hidden).map(v => `**${v.help.name}** - ${v.help.description}` ).join("\n"))
+		const grouped = {core:[]} //core first
+		client.commandGroups.forEach(v => grouped[v] = []);
+		grouped['misc'] = []; //want it to be the last group
+		//push all commands into their group
+		client.commands.keyArray().forEach(key => {
+			let v = client.commands.get(key);
+			v._NAME = key;
+
+			if(v.config.core) return grouped['core'].push(v)
+			grouped[v.group||'misc'].push(v)
+		})
+		//loop the sorted commands
+		for(const key in grouped) {
+			//make the name pretty, and filter non-hidden groups
+			const group_name = key.charAt(0).toUpperCase() + key.slice(1);
+			const cmds = grouped[key].filter(cmd => !cmd.config.hidden);
+			if(cmds.length === 0) continue;
+			//send embed of commands, only if well there is commands
+			msg.author.send({embed:{
+				title:`${group_name} Commands`,
+				description: cmds.map(v => {
+					const desc = v.help.description.replace(/\*\*/g,'\\**')
+					return `**${v._NAME}** - ${desc}`
+				}).join("\n")
+			}})
+		}
+		//clarify (for other users and the author) thats in the dm
+		msg.channel.send("** 📬 Help has been sent to your DM**")
 	}
 };
-
 exports.generateHelpCommand = (client,cmd) => {
 	let fields = [];
 	//print information about flags if not hidden
