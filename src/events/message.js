@@ -112,3 +112,25 @@ function parseOptions(flags = {}) {
 	}
 	return result;
 }
+
+class Arguments {
+	constructor(message,isWordPrefix = false) {
+		this._text = message;
+		this.slice_amount = isWordPrefix ? 1:2
+	}
+	getArgs() {
+		return this._text.split(/\s+/).slice(this.slice_amount)
+	}
+	getFullArgs() {
+		return this._text.match(/\\?.|^$/g).reduce((p, c) => {
+			if(c === '"'){
+				p.quote ^= 1;
+			}else if(!p.quote && c === ' '){
+				p.a.push('');
+			}else{
+				p.a[p.a.length-1] += c.replace(/\\(.)/,"$1");
+			}
+			return  p;
+		}, {a: ['']}).slice(this.slice_amount);
+	}
+}
