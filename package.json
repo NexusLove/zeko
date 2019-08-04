@@ -45,7 +45,7 @@
     "random-js": "^2.1.0",
     "rimraf": "^2.6.2",
     "semver-parser": "^3.0.1",
-    "simple-git": "^1.107.0",
+    "simple-git": "^1.124.0",
     "simple-youtube-api": "^5.0.2",
     "unescape": "^1.0.1",
     "uuid": "^3.3.2",

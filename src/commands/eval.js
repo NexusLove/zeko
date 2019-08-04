@@ -36,7 +36,7 @@ exports.run = async (client, msg, args, flags, logger) => {
 		let evaled = await eval(code);
 		const time_taken = (Date.now() - measure_start).toFixed(2);
 		const type = typeof(evaled);
-		evaled = client.clean(evaled);
+		evaled = client.utils.clean(evaled);
 		if(evaled.length >= 1024) { 
 			evaled = evaled.slice(0,1000) + "...";
 		}
@@ -76,14 +76,14 @@ exports.run = async (client, msg, args, flags, logger) => {
 				},
 				{
 					name:`📤 OUTPUT [error]`,
-					value:`\`\`\`js\n${client.clean(err.message)}\n\`\`\``,
+					value:`\`\`\`js\n${client.utils.clean(err.message)}\n\`\`\``,
 					inline:true
 				}
 			],
 			footer:{text:(err.constructor) ? err.constructor.name : 'Unknown type of error'}
 		}});
 		//console.warn(err.stack)
-		//msg.channel.send(`\`ERROR\` \`\`\`xl\n${client.clean(err)}\n\`\`\``);
+		//msg.channel.send(`\`ERROR\` \`\`\`xl\n${client.utils.clean(err)}\n\`\`\``);
 	}
 };
 

@@ -16,7 +16,7 @@ module.exports = {
                 }).forEach(v => {
                     const author = client.users.get(v.author);
                     const channel = client.channels.get(v.channel) || author;
-                    channel.send(`**${author} You wished to be reminded of: **\n\`\n${client.clean(v.content)}\`\n`)
+                    channel.send(`**${author} You wished to be reminded of: **\n\`\n${client.utils.clean(v.content)}\`\n`)
                     remind.remove({id:v.id}).write();
                 })
             }catch(err){
