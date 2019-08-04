@@ -26,7 +26,7 @@ module.exports = (client) => {
     client.prefix = process.env.PREFIX||">"
     client.rootDir = path.resolve(__dirname,"../../../"); //push root dir into path
 
-    client.utils = require('../utils.js',client)
+    client.utils = require('../utils.js')(client)
 
 }
 //patch client events, so we can intercept any events 
